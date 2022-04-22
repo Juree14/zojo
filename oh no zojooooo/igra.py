@@ -232,6 +232,7 @@ while True:
     elif mode == "spd_kocka" and atk_button_pressed == True:
         atk_kocka_value.write( "{}".format(value), font=("Arial", 40, "normal"))
         atk_button_pressed == False
+# zan je prijazna driska
         
         
 
