@@ -1,6 +1,11 @@
+
 import turtle
 import random
 import time
+
+
+
+
 
 wn = turtle.Screen()
 wn.title("OH NO, Zojoooo!")
@@ -9,9 +14,21 @@ wn.title("OH NO, Zojoooo!")
 wn.bgcolor("blue")
 wn.setup(width=800, height=600)
 wn.tracer(0)
-wn.addshape('ew.gif')
+
+wn.cv._rootwindow.resizable(False, False)
+
+# dodajanje slik
+wn.addshape('slike\zojo.gif')
+wn.addshape('slike\zojoback.gif')
+wn.addshape('slike\Zojoright.gif')
+wn.addshape('slike\leftZojo.gif')
+wn.addshape('slike\hisa.gif')
+wn.addshape('slike\gal3.gif')
 
 #Spremenljivke
+
+mode = "zacetek"
+
 atk_button_pressed = False
 def_button_pressed = False
 spd_button_pressed = False
@@ -21,6 +38,8 @@ min = 1
 atk_spremenljivka = False
 def_spremenljivka = False
 spd_spremenljivka = False
+
+neki = True
 
 
 # Zacetna stran
@@ -60,7 +79,7 @@ def start_button():
     start.write("START", font=("Arial", 30, "normal"))
 start_button()
 
-mode = "zacetek"
+
 def start_click(x,y):
     global mode
     if start_x <= x <= start_x + start_length:
@@ -405,8 +424,6 @@ def soba_delitev_moci():
                     if mode == "begin":
                         begin_button.clear()
                         mode = "svet"
-                        naredi_igralca()
-                        svet()
                         atk_kocka.clear()
                         def_kocka.clear()
                         dge_kocka.clear()
@@ -420,47 +437,166 @@ def soba_delitev_moci():
                         def_kocka_value.clear()
                         spd_kocka_value.clear()
                         dge_kocka_value.clear()
+                        svet()
+                        hisa_funkcija()
+                        monster_funkcija()
+                        naredi_igralca()
         wn.onclick(begin_click)
 
 # svet
 
 def svet():
+    wn.bgcolor("#c9c9c9")
+
+#hisa
+def hisa_funkcija():
+    global hisa
+    hisa = turtle.Turtle()
+    hisa.speed(0)
+    hisa.shape('slike\hisa.gif')
+    hisa.penup()
+    hisa.goto(250, 150)
+def hisa_premik():
+    if mode == "svet":
+        hisa.setx(250)
+        hisa.sety(150)
+    if mode == "svet_desno":
+        hisa.setx(1000)
+        hisa.sety(1000)
+
+#monster
+def monster_funkcija():
+    global monster
+    monster = turtle.Turtle()
+    monster.speed(0)
+    monster.shape('slike\gal3.gif')
+    monster.penup()
+    monster.goto(1000, 1000)
+
+def monster_premik():
+    if mode == "svet_desno":
+        monster.setx(250)
+        monster.sety(0)
+    if mode == "svet":
+        monster.setx(1000)
+        monster.sety(1000)
+    if mode == "fight_screen_monster":
+        monster.setx(1000)
+        monster.sety(1000)
+# svet desno
+def svet_desno():
     wn.bgcolor("green")
 
+    monster_premik()
+
+# fight screen monster
+
+def fight_screen_monster():
+    wn.bgcolor("#c9c9c9")
+    monster_premik()
+    igralec_premik()
+
+
+# premikanje igralca
+
+def igralec_premik():
+    if mode == "fight_screen_monster":
+        igralec.setx(igralec.xcor() + 300)
+        igralec.sety(igralec.ycor() + 300)
+    if mode == "svet_desno":
+        igralec.setx(igralec.xcor() - 300)
+        igralec.sety(igralec.ycor() - 300)
 
 
 
 
 # Igralec #naredi_igralca()
 def naredi_igralca():
+    global igralec
     igralec = turtle.Turtle()
     igralec.speed(0)
-# Gal naredi sliko
-    igralec.shape('ew.gif')
+    igralec.shape('slike\zojo.gif')
     igralec.penup()
     igralec.goto(0,-250)
 
-#Premikanje igralca
+# hoja igralca
 
     def igralec_up():
-        y = igralec.ycor()
-        y += 5
-        igralec.sety(y)
+        global mode
+        if mode == "svet":
+            if not (igralec.ycor() > 50 and igralec.xcor() > 110):
+                y = igralec.ycor()
+                y += 5
+                igralec.sety(y)
+                igralec.shape('slike\zojoback.gif')
+        if mode == "svet_desno":
+            y = igralec.ycor()
+            y += 5
+            igralec.sety(y)
+            igralec.shape('slike\zojoback.gif')
+
 
     def igralec_down():
-        y = igralec.ycor()
-        y -= 5
-        igralec.sety(y)
+        global mode
+        if mode == "svet":
+            if not( igralec.ycor() > 60 and igralec.xcor() > 110):
+                y = igralec.ycor()
+                y -= 5
+                igralec.sety(y)
+                igralec.shape('slike\zojo.gif')
+        if mode == "svet_desno":
+            y = igralec.ycor()
+            y -= 5
+            igralec.sety(y)
+            igralec.shape('slike\zojo.gif')
+            
 
     def igralec_right():
-        x = igralec.xcor()
-        x += 5
-        igralec.setx(x)
+        global mode
+        if mode == "svet":
+            if not (igralec.ycor() > 60 and igralec.xcor() > 105):
+                x = igralec.xcor()
+                x += 5
+                igralec.setx(x)
+                igralec.shape('slike\Zojoright.gif')
+            if igralec.xcor() > 390:
+                mode = "svet_desno"
+                svet_desno()
+                hisa_premik()
+                monster_premik()
+                igralec.goto(-390,igralec.ycor())
+        if mode == "svet_desno":
+            x = igralec.xcor()
+            x += 5
+            igralec.setx(x)
+            igralec.shape('slike\Zojoright.gif')
+            if (igralec.ycor() > monster.ycor() - 20 and igralec.xcor() > monster.xcor() - 65 and igralec.ycor() < monster.ycor() + 70):
+                mode = "fight_screen_monster"
+                fight_screen_monster()
 
+        
     def igralec_left():
-        x = igralec.xcor()
-        x -= 5
-        igralec.setx(x)
+        global mode
+        if mode == "svet":
+            if  not (igralec.ycor() > 60 and igralec.xcor() > 110):
+                x = igralec.xcor()
+                x -= 5
+                igralec.setx(x)
+                igralec.shape('slike\leftZojo.gif')
+        if mode == "svet_desno":
+            x = igralec.xcor()
+            x -= 5
+            igralec.setx(x)
+            igralec.shape('slike\leftZojo.gif')
+            if igralec.xcor() < -390:
+                mode = "svet"
+                svet()
+                hisa_premik()
+                monster_premik()
+                igralec.goto(390,igralec.ycor())
+    
+        
+
 
 # Tipkovnica
     wn.listen()
@@ -469,6 +605,9 @@ def naredi_igralca():
     wn.onkeypress(igralec_right, "d")
     wn.onkeypress(igralec_left, "a")
 
+    
+
+                
 # loop igre 
 while True:
     wn.update()
@@ -553,13 +692,10 @@ while True:
     if mode == "begin" and dge_button_pressed == True:
         dge_kocka_value.write( "{}".format(dge_value), font=("Arial", 40, "normal"))
         dge_button_pressed = False
+
+    
+
+    
+
     
         
-        
-
-
-    
-    
-
-
-
