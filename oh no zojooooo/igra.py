@@ -43,13 +43,15 @@ neki = True
 
 
 # Zacetna stran
+
+#gal narise title
 pen = turtle.Turtle()
 pen.speed(0)
 pen.color("white")
 pen.penup()
 pen.hideturtle()
 pen.goto(0, 150)
-pen.write("OH NO, Zojoooo!", align="center", font=("Arial", 35, "normal"))
+pen.write("OH NO, Zojoooo!", align="center", font=("gameovercre", 35, "normal"))
 
 # Start gumb
 start = turtle.Turtle()
@@ -76,7 +78,7 @@ def start_button():
     start.goto(start_x, start_y)
     start.end_fill()
     start.goto(start_x + 35, start_y + 25)
-    start.write("START", font=("Arial", 30, "normal"))
+    start.write("START", font=("gameovercre", 30, "normal"))
 start_button()
 
 
@@ -100,7 +102,7 @@ def soba_delitev_moci():
     roll_stat.penup()
     roll_stat.hideturtle()
     roll_stat.goto(0, 190)
-    roll_stat.write("Roll for stats", align="center", font=("Arial", 35, "normal"))
+    roll_stat.write("Roll for stats", align="center", font=("gameovercre", 35, "normal"))
 
     atk = turtle.Turtle()
     atk.speed(0)
@@ -108,7 +110,7 @@ def soba_delitev_moci():
     atk.penup()
     atk.hideturtle()
     atk.goto(-230, 100)
-    atk.write("ATK", align="center", font=("Arial", 30, "normal"))
+    atk.write("ATK", align="center", font=("gameovercre", 30, "normal"))
 
     defense = turtle.Turtle()
     defense.speed(0)
@@ -116,7 +118,7 @@ def soba_delitev_moci():
     defense.penup()
     defense.hideturtle()
     defense.goto(-75, 100)
-    defense.write("DEF", align="center", font=("Arial", 30, "normal"))
+    defense.write("DEF", align="center", font=("gameovercre", 30, "normal"))
 
     spd = turtle.Turtle()
     spd.speed(0)
@@ -124,7 +126,7 @@ def soba_delitev_moci():
     spd.penup()
     spd.hideturtle()
     spd.goto(75, 100)
-    spd.write("SPD", align="center", font=("Arial", 30, "normal"))
+    spd.write("SPD", align="center", font=("gameovercre", 30, "normal"))
 
     dge = turtle.Turtle()
     dge.speed(0)
@@ -132,7 +134,7 @@ def soba_delitev_moci():
     dge.penup()
     dge.hideturtle()
     dge.goto(230, 100)
-    dge.write("DGE", align="center", font=("Arial", 30, "normal"))
+    dge.write("DGE", align="center", font=("gameovercre", 30, "normal"))
 
 # atk-kocka
     atk_kocka = turtle.Turtle()
@@ -184,7 +186,7 @@ def soba_delitev_moci():
         atk_button.goto(atk_button_x, atk_button_y)
         atk_button.end_fill()
         atk_button.goto(atk_button_x + 17, atk_button_y + 32)
-        atk_button.write("ROLL", font=("Arial", 20, "normal"))
+        atk_button.write("ROLL", font=("gameovercre", 20, "normal"))
     atk_button_press()
 
     
@@ -274,7 +276,7 @@ def soba_delitev_moci():
         def_button.goto(def_button_x, def_button_y)
         def_button.end_fill()
         def_button.goto(def_button_x + 17, def_button_y + 32)
-        def_button.write("ROLL", font=("Arial", 20, "normal"))
+        def_button.write("ROLL", font=("gameovercre", 20, "normal"))
     def_button_press()
 
 
@@ -332,7 +334,7 @@ def soba_delitev_moci():
         spd_button.goto(spd_button_x, spd_button_y)
         spd_button.end_fill()
         spd_button.goto(spd_button_x + 17, spd_button_y + 32)
-        spd_button.write("ROLL", font=("Arial", 20, "normal"))
+        spd_button.write("ROLL", font=("gameovercre", 20, "normal"))
     spd_button_press()
 
 
@@ -386,7 +388,7 @@ def soba_delitev_moci():
         dge_button.goto(dge_button_x, dge_button_y)
         dge_button.end_fill()
         dge_button.goto(dge_button_x + 17, dge_button_y + 32)
-        dge_button.write("ROLL", font=("Arial", 20, "normal"))
+        dge_button.write("ROLL", font=("gameovercre", 20, "normal"))
     dge_button_press()
     
 # begin
@@ -414,7 +416,7 @@ def soba_delitev_moci():
             begin_button.goto(begin_button_x, begin_button_y)
             begin_button.end_fill()
             begin_button.goto(begin_button_x + 40, begin_button_y + 28)
-            begin_button.write("BEGIN", font=("Arial", 30, "normal"))
+            begin_button.write("BEGIN", font=("gameovercre", 30, "normal"))
         begin_button_press()
 
         def begin_click(x,y):
@@ -449,6 +451,7 @@ def svet():
     wn.bgcolor("#c9c9c9")
 
 #hisa
+
 def hisa_funkcija():
     global hisa
     hisa = turtle.Turtle()
@@ -489,12 +492,191 @@ def svet_desno():
 
     monster_premik()
 
-# fight screen monster
+# monster fight screen
 
 def fight_screen_monster():
+    global mode 
+    
     wn.bgcolor("#c9c9c9")
     monster_premik()
     igralec_premik()
+    fight_button_on()
+    mode = "start_fight"
+
+
+# premik gumbov
+
+def delete_button():
+    if mode == "svet_desno":
+        fight_button.clear()
+        dont_fight_button.clear()
+        items_button.clear()
+        
+    
+
+# fight gumb
+
+    
+def fight_button_on():
+    global fight_button
+    global fight_button_x
+    global fight_button_y
+    global fight_button_length
+    global fight_button_width
+    fight_button = turtle.Turtle()
+    fight_button.hideturtle()
+    fight_button.speed(0)
+    fight_button.pencolor("black")
+    fight_button.color("black")
+
+    fight_button_x = -220
+    fight_button_y = -200
+    fight_button_length = 130
+    fight_button_width = 80
+
+    
+    def fight_button_press():
+        fight_button.penup()
+        fight_button.fillcolor("white")
+        fight_button.begin_fill()
+        fight_button.goto(fight_button_x, fight_button_y)
+        fight_button.goto(fight_button_x + fight_button_length, fight_button_y)
+        fight_button.goto(fight_button_x + fight_button_length, fight_button_y + fight_button_width)
+        fight_button.goto(fight_button_x, fight_button_y + fight_button_width)
+        fight_button.goto(fight_button_x, fight_button_y)
+        fight_button.end_fill()
+        fight_button.goto(fight_button_x + 30, fight_button_y + 23)
+        fight_button.write("FIGHT", font=("gameovercre", 20, "normal"))
+    fight_button_press()
+
+
+
+
+# items gumb
+
+    global items_button
+    global items_button_x
+    global items_button_y
+    global items_button_length
+    global items_button_width
+    items_button = turtle.Turtle()
+    items_button.hideturtle()
+    items_button.speed(0)
+    items_button.pencolor("black")
+    items_button.color("black")
+
+    items_button_x = -65
+    items_button_y = -200
+    items_button_length = 130
+    items_button_width = 80
+
+    
+    def items_button_press():
+        items_button.penup()
+        items_button.fillcolor("white")
+        items_button.begin_fill()
+        items_button.goto(items_button_x, items_button_y)
+        items_button.goto(items_button_x + items_button_length, items_button_y)
+        items_button.goto(items_button_x + items_button_length, items_button_y + items_button_width)
+        items_button.goto(items_button_x, items_button_y + items_button_width)
+        items_button.goto(items_button_x, items_button_y)
+        items_button.end_fill()
+        items_button.goto(items_button_x + 27, items_button_y + 23)
+        items_button.write("ITEMS", font=("gameovercre", 20, "normal"))
+    items_button_press()
+
+# dont fight gumb
+    global dont_fight_button
+    global dont_fight_button_x
+    global dont_fight_button_y
+    global dont_fight_button_length
+    global dont_fight_button_width
+    dont_fight_button = turtle.Turtle()
+    dont_fight_button.hideturtle()
+    dont_fight_button.speed(0)
+    dont_fight_button.pencolor("black")
+    dont_fight_button.color("black")
+
+    dont_fight_button_x = 90
+    dont_fight_button_y = -200
+    dont_fight_button_length = 130
+    dont_fight_button_width = 80
+
+    
+    def dont_fight_button_press():
+        dont_fight_button.penup()
+        dont_fight_button.fillcolor("white")
+        dont_fight_button.begin_fill()
+        dont_fight_button.goto(dont_fight_button_x, dont_fight_button_y)
+        dont_fight_button.goto(dont_fight_button_x + dont_fight_button_length, dont_fight_button_y)
+        dont_fight_button.goto(dont_fight_button_x + dont_fight_button_length, dont_fight_button_y + dont_fight_button_width)
+        dont_fight_button.goto(dont_fight_button_x, dont_fight_button_y + dont_fight_button_width)
+        dont_fight_button.goto(dont_fight_button_x, dont_fight_button_y)
+        dont_fight_button.end_fill()
+        dont_fight_button.goto(dont_fight_button_x + 20, dont_fight_button_y + 10)
+        dont_fight_button.write(" DON'T\n FIGHT", font=("gameovercre", 20, "normal"))
+    dont_fight_button_press()
+    
+
+# run gumb
+    if mode == "in_fight":
+        global run_button
+        global run_button_x
+        global run_button_y
+        global run_button_length
+        global run_button_width
+        run_button = turtle.Turtle()
+        run_button.hideturtle()
+        run_button.speed(0)
+        run_button.pencolor("black")
+        run_button.color("black")
+
+        run_button_x = 90
+        run_button_y = -200
+        run_button_length = 130
+        run_button_width = 80
+
+    
+        def run_button_press():
+            run_button.penup()
+            run_button.fillcolor("white")
+            run_button.begin_fill()
+            run_button.goto(run_button_x, run_button_y)
+            run_button.goto(run_button_x + run_button_length, run_button_y)
+            run_button.goto(run_button_x + run_button_length, run_button_y + run_button_width)
+            run_button.goto(run_button_x, run_button_y + run_button_width)
+            run_button.goto(run_button_x, run_button_y)
+            run_button.end_fill()
+            run_button.goto(run_button_x + 40, run_button_y + 23)
+            run_button.write("RUN", font=("gameovercre", 20, "normal"))
+        run_button_press()
+
+# detektor pritiska gumbov
+    def fight_click(x,y):
+        global mode
+        if mode == "start_fight":
+            if fight_button_x <= x <= fight_button_x + fight_button_length:
+                if fight_button_y <= y <= fight_button_y + fight_button_width:
+                    print("hi")
+        if mode == "start_fight":
+            if items_button_x <= x <= items_button_x + items_button_length:
+                if items_button_y <= y <= items_button_y + items_button_width:
+                    print("hi")
+        if mode == "in_fight":
+            if run_button_x <= x <= run_button_x + run_button_length:
+                if run_button_y <= y <= run_button_y + run_button_width:
+                    print("hi")
+        if mode == "start_fight":
+            if dont_fight_button_x <= x <= dont_fight_button_x + dont_fight_button_length:
+                if dont_fight_button_y <= y <= dont_fight_button_y + dont_fight_button_width:
+                    mode = "svet_desno"
+                    svet_desno()
+                    delete_button()
+                    igralec_premik()
+                
+    wn.onclick(fight_click)
+
+
 
 
 # premikanje igralca
@@ -504,7 +686,7 @@ def igralec_premik():
         igralec.setx(igralec.xcor() + 300)
         igralec.sety(igralec.ycor() + 300)
     if mode == "svet_desno":
-        igralec.setx(igralec.xcor() - 300)
+        igralec.setx(igralec.xcor() - 320)
         igralec.sety(igralec.ycor() - 300)
 
 
@@ -572,6 +754,7 @@ def naredi_igralca():
             igralec.shape('slike\Zojoright.gif')
             if (igralec.ycor() > monster.ycor() - 20 and igralec.xcor() > monster.xcor() - 65 and igralec.ycor() < monster.ycor() + 70):
                 mode = "fight_screen_monster"
+                time.sleep(0.1)
                 fight_screen_monster()
 
         
@@ -604,6 +787,10 @@ def naredi_igralca():
     wn.onkeypress(igralec_down, "s")
     wn.onkeypress(igralec_right, "d")
     wn.onkeypress(igralec_left, "a")
+    wn.onkeypress(igralec_up, "W")
+    wn.onkeypress(igralec_down, "S")
+    wn.onkeypress(igralec_right, "D")
+    wn.onkeypress(igralec_left, "A")
 
     
 
@@ -622,12 +809,12 @@ while True:
         atk_kocka_value.penup()
         atk_kocka_value.goto(-245, -28)
         atk_value = int(random.uniform(1,10))
-        atk_kocka_value.write( "{}".format(atk_value), font=("Arial", 40, "normal"))
+        atk_kocka_value.write( "{}".format(atk_value), font=("gameovercre", 40, "normal"))
         time.sleep(0.1)
         atk_kocka_value.clear()
         
     if mode == "def_kocka" and atk_button_pressed == True:
-        atk_kocka_value.write( "{}".format(atk_value), font=("Arial", 40, "normal"))
+        atk_kocka_value.write( "{}".format(atk_value), font=("gameovercre", 40, "normal"))
         atk_button_pressed == False
         if atk_value < 4 and atk_spremenljivka == False:
             min += (5 - atk_value)
@@ -644,12 +831,12 @@ while True:
         def_kocka_value.penup()
         def_kocka_value.goto(-90, -28)
         def_value = int(random.uniform(min,10))
-        def_kocka_value.write( "{}".format(def_value), font=("Arial", 40, "normal"))
+        def_kocka_value.write( "{}".format(def_value), font=("gameovercre", 40, "normal"))
         time.sleep(0.1)
         def_kocka_value.clear()
         
     if mode == "spd_kocka" and def_button_pressed == True:
-        def_kocka_value.write( "{}".format(def_value), font=("Arial", 40, "normal"))
+        def_kocka_value.write( "{}".format(def_value), font=("gameovercre", 40, "normal"))
         def_button_pressed == False
         if def_value < 4 and def_spremenljivka == False:
             min += (5 - def_value)
@@ -665,12 +852,12 @@ while True:
         spd_kocka_value.penup()
         spd_kocka_value.goto(60, -28)
         spd_value = int(random.uniform(min,10))
-        spd_kocka_value.write( "{}".format(spd_value), font=("Arial", 40, "normal"))
+        spd_kocka_value.write( "{}".format(spd_value), font=("gameovercre", 40, "normal"))
         time.sleep(0.1)
         spd_kocka_value.clear()
         
     if mode == "dge_kocka" and spd_button_pressed == True:
-        spd_kocka_value.write( "{}".format(spd_value), font=("Arial", 40, "normal"))
+        spd_kocka_value.write( "{}".format(spd_value), font=("gameovercre", 40, "normal"))
         spd_button_pressed == False
         if spd_value < 4 and spd_spremenljivka == False:
             min += (5 - spd_value)
@@ -685,12 +872,12 @@ while True:
         dge_kocka_value.penup()
         dge_kocka_value.goto(215, -28)
         dge_value = int(random.uniform(min,10))
-        dge_kocka_value.write( "{}".format(dge_value), font=("Arial", 40, "normal"))
+        dge_kocka_value.write( "{}".format(dge_value), font=("gameovercre", 40, "normal"))
         time.sleep(0.1)
         dge_kocka_value.clear()
         
     if mode == "begin" and dge_button_pressed == True:
-        dge_kocka_value.write( "{}".format(dge_value), font=("Arial", 40, "normal"))
+        dge_kocka_value.write( "{}".format(dge_value), font=("gameovercre", 40, "normal"))
         dge_button_pressed = False
 
     
