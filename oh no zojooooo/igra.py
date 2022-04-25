@@ -5,8 +5,6 @@ import time
 
 
 
-
-
 wn = turtle.Screen()
 wn.title("OH NO, Zojoooo!")
 # Gal naredi ozadje
@@ -24,10 +22,12 @@ wn.addshape('slike\Zojoright.gif')
 wn.addshape('slike\leftZojo.gif')
 wn.addshape('slike\hisa.gif')
 wn.addshape('slike\gal3.gif')
+wn.addshape('slike\inventory.gif')
 
 #Spremenljivke
 
 mode = "zacetek"
+curent_mode = ""
 
 atk_button_pressed = False
 def_button_pressed = False
@@ -39,7 +39,7 @@ atk_spremenljivka = False
 def_spremenljivka = False
 spd_spremenljivka = False
 
-neki = True
+
 
 
 # Zacetna stran
@@ -443,7 +443,39 @@ def soba_delitev_moci():
                         hisa_funkcija()
                         monster_funkcija()
                         naredi_igralca()
+                        make_inventory()
         wn.onclick(begin_click)
+
+# Inventory
+
+def make_inventory():
+    global inventory
+    inventory = turtle.Turtle()
+    inventory.speed(0)
+    inventory.shape('slike\inventory.gif')
+    inventory.penup()
+    inventory.goto(1000, 1000)
+
+def open_inventory():
+    global mode
+    global curent_mode
+    global inventory
+    if mode != "start_fight":
+        if mode != "inventory":
+            inventory.setx(0)
+            inventory.sety(0)
+            curent_mode = mode
+            mode = "inventory"
+        elif mode == "inventory":
+            inventory.setx(1050)
+            inventory.sety(1050)
+            mode = curent_mode
+    
+
+
+
+
+
 
 # svet
 
@@ -703,6 +735,7 @@ def naredi_igralca():
 
 # hoja igralca
 
+
     def igralec_up():
         global mode
         if mode == "svet":
@@ -777,7 +810,7 @@ def naredi_igralca():
                 hisa_premik()
                 monster_premik()
                 igralec.goto(390,igralec.ycor())
-    
+
         
 
 
@@ -792,6 +825,8 @@ def naredi_igralca():
     wn.onkeypress(igralec_right, "D")
     wn.onkeypress(igralec_left, "A")
 
+    wn.onkeypress(open_inventory, "e")
+    wn.onkeypress(open_inventory, "E")
     
 
                 
