@@ -1,4 +1,6 @@
 
+from asyncio.mixins import _global_lock
+from glob import glob
 import turtle
 import random
 import time
@@ -23,11 +25,16 @@ wn.addshape('slike\leftZojo.gif')
 wn.addshape('slike\hisa.gif')
 wn.addshape('slike\gal3.gif')
 wn.addshape('slike\inventory.gif')
+wn.addshape('slike\woodensword.gif')
+wn.addshape('slike\heal_potion.gif')
+wn.addshape('slike\stats.gif')
+wn.addshape('slike\srcek.gif')
 
 #Spremenljivke
 
 mode = "zacetek"
 curent_mode = ""
+inventory_on = False
 
 atk_button_pressed = False
 def_button_pressed = False
@@ -420,6 +427,7 @@ def soba_delitev_moci():
         begin_button_press()
 
         def begin_click(x,y):
+            global inventory_on
             global mode
             if begin_button_x <= x <= begin_button_x + begin_button_length:
                 if begin_button_y <= y <= begin_button_y + begin_button_width:
@@ -444,7 +452,82 @@ def soba_delitev_moci():
                         monster_funkcija()
                         naredi_igralca()
                         make_inventory()
+                        inventory_on = True
+                        make_wooden_sword()
+                        make_heal_potion()
+                        user_interface_on()
         wn.onclick(begin_click)
+
+
+# igralceva statistika
+
+
+def user_interface_on():
+    global user_interface
+    user_interface = turtle.Turtle()
+    user_interface.speed(0)
+    user_interface.shape('slike\stats.gif')
+    user_interface.penup()
+    user_interface.goto(-245,258)
+
+
+    ui_atk = turtle.Turtle()
+    ui_atk.hideturtle()
+    ui_atk.speed(0)
+    ui_atk.pencolor("black")
+    ui_atk.color("#ffe838")
+    ui_atk.penup()
+    ui_atk.goto(-382, 256)
+    ui_atk.write( "{}".format(atk_value), font=("gameovercre", 16, "normal"))
+
+    ui_def = turtle.Turtle()
+    ui_def.hideturtle()
+    ui_def.speed(0)
+    ui_def.pencolor("black")
+    ui_def.color("#ffe838")
+    ui_def.penup()
+    ui_def.goto(-330, 256)
+    ui_def.write( "{}".format(def_value), font=("gameovercre", 16, "normal"))
+
+    ui_spd = turtle.Turtle()
+    ui_spd.hideturtle()
+    ui_spd.speed(0)
+    ui_spd.pencolor("black")
+    ui_spd.color("#ffe838")
+    ui_spd.penup()
+    ui_spd.goto(-282, 256)
+    ui_spd.write( "{}".format(spd_value), font=("gameovercre", 16, "normal"))
+
+    ui_dge = turtle.Turtle()
+    ui_dge.hideturtle()
+    ui_dge.speed(0)
+    ui_dge.pencolor("black")
+    ui_dge.color("#ffe838")
+    ui_dge.penup()
+    ui_dge.goto(-232, 256)
+    ui_dge.write( "{}".format(dge_value), font=("gameovercre", 16, "normal"))
+
+    global ui_srcek1
+    ui_srcek1 = turtle.Turtle()
+    ui_srcek1.speed(0)
+    ui_srcek1.shape('slike\srcek.gif')
+    ui_srcek1.penup()
+    ui_srcek1.goto(-375, 240)
+
+    global ui_srcek2
+    ui_srcek2 = turtle.Turtle()
+    ui_srcek2.speed(0)
+    ui_srcek2.shape('slike\srcek.gif')
+    ui_srcek2.penup()
+    ui_srcek2.goto(-345, 240)
+
+    global ui_srcek3
+    ui_srcek3 = turtle.Turtle()
+    ui_srcek3.speed(0)
+    ui_srcek3.shape('slike\srcek.gif')
+    ui_srcek3.penup()
+    ui_srcek3.goto(-315, 240)
+
 
 # Inventory
 
@@ -460,20 +543,160 @@ def open_inventory():
     global mode
     global curent_mode
     global inventory
-    if mode != "start_fight":
-        if mode != "inventory":
+    if inventory_on == True:
+        if mode != "weapons" and mode != "items":
             inventory.setx(0)
             inventory.sety(0)
             curent_mode = mode
-            mode = "inventory"
-        elif mode == "inventory":
+            mode = "weapons"
+            move_wooden_sword()
+            inventory_button_on()
+
+        elif mode == "weapons" or mode == "items":
             inventory.setx(1050)
             inventory.sety(1050)
             mode = curent_mode
+            move_wooden_sword()
+            delete_inventory_buttons()
+            move_heal_potion()
+            
+            
     
+# orozje
+
+def make_wooden_sword():
+    global wooden_sword
+    wooden_sword = turtle.Turtle()
+    wooden_sword.speed(0)
+    wooden_sword.shape('slike\woodensword.gif')
+    wooden_sword.penup()
+    wooden_sword.goto(1000,1000)
+
+def move_wooden_sword():
+    if inventory_on == True:
+        if mode == "weapons":
+            wooden_sword.setx(-225) #tuki not bo spremenljivka, ki se bo menjavala glede na kok itemov bo v inventoriju
+            wooden_sword.sety(-75)
+        elif mode != "weapons":
+            wooden_sword.setx(1000)
+            wooden_sword.sety(1000)
+
+
+# items
+        
+def make_heal_potion():
+    global heal_potion
+    heal_potion = turtle.Turtle()
+    heal_potion.speed(0)
+    heal_potion.shape('slike\heal_potion.gif')
+    heal_potion.penup()
+    heal_potion.goto(1000,1000)
+
+def move_heal_potion():
+    if inventory_on == True:
+        if mode == "items":
+            heal_potion.setx(-225)
+            heal_potion.sety(-75)
+        elif mode != "items":
+            heal_potion.setx(1000)
+            heal_potion.sety(1000)
+
+
+# gumb za inventory iteme
+
+def inventory_button_on():
+    global intventory_items_button
+    global intventory_items_button_x
+    global intventory_items_button_y
+    global intventory_items_button_length
+    global intventory_items_button_width
+    intventory_items_button = turtle.Turtle()
+    intventory_items_button.hideturtle()
+    intventory_items_button.speed(0)
+    intventory_items_button.pencolor("black")
+    intventory_items_button.color("black")
+
+    intventory_items_button_x = 20
+    intventory_items_button_y = 19
+    intventory_items_button_length = 215
+    intventory_items_button_width = 56
+
+    
+    def intventory_items_button_press():
+        intventory_items_button.penup()
+        intventory_items_button.fillcolor("#FFFB83")
+        intventory_items_button.begin_fill()
+        intventory_items_button.goto(intventory_items_button_x, intventory_items_button_y)
+        intventory_items_button.goto(intventory_items_button_x + intventory_items_button_length, intventory_items_button_y)
+        intventory_items_button.goto(intventory_items_button_x + intventory_items_button_length, intventory_items_button_y + intventory_items_button_width)
+        intventory_items_button.goto(intventory_items_button_x, intventory_items_button_y + intventory_items_button_width)
+        intventory_items_button.goto(intventory_items_button_x, intventory_items_button_y)
+        intventory_items_button.end_fill()
+        intventory_items_button.goto(intventory_items_button_x + 55, intventory_items_button_y + 3)
+        intventory_items_button.write("ITEMS", font=("gameovercre", 30, "normal"))
+    intventory_items_button_press()
+
+# gumb za inventory orozja
+
+    global intventory_weapons_button
+    global intventory_weapons_button_x
+    global intventory_weapons_button_y
+    global intventory_weapons_button_length
+    global intventory_weapons_button_width
+    intventory_weapons_button = turtle.Turtle()
+    intventory_weapons_button.hideturtle()
+    intventory_weapons_button.speed(0)
+    intventory_weapons_button.pencolor("black")
+    intventory_weapons_button.color("black")
+
+    intventory_weapons_button_x = -240
+    intventory_weapons_button_y = 19
+    intventory_weapons_button_length = 215
+    intventory_weapons_button_width = 56
+
+    
+    def intventory_weapons_button_press():
+        intventory_weapons_button.penup()
+        intventory_weapons_button.fillcolor("#FFFB83")
+        intventory_weapons_button.begin_fill()
+        intventory_weapons_button.goto(intventory_weapons_button_x, intventory_weapons_button_y)
+        intventory_weapons_button.goto(intventory_weapons_button_x + intventory_weapons_button_length, intventory_weapons_button_y)
+        intventory_weapons_button.goto(intventory_weapons_button_x + intventory_weapons_button_length, intventory_weapons_button_y + intventory_weapons_button_width)
+        intventory_weapons_button.goto(intventory_weapons_button_x, intventory_weapons_button_y + intventory_weapons_button_width)
+        intventory_weapons_button.goto(intventory_weapons_button_x, intventory_weapons_button_y)
+        intventory_weapons_button.end_fill()
+        intventory_weapons_button.goto(intventory_weapons_button_x + 20, intventory_weapons_button_y + 3)
+        intventory_weapons_button.write("WEAPONS", font=("gameovercre", 30, "normal"))
+    intventory_weapons_button_press()
 
 
 
+
+    def intventory_items_click(x,y):
+        global mode
+        global inventory_on
+        if mode == "weapons":
+            if intventory_items_button_x <= x <= intventory_items_button_x + intventory_items_button_length:
+                if intventory_items_button_y <= y <= intventory_items_button_y + intventory_items_button_width:
+                    mode = "items"
+                    move_heal_potion()
+                    move_wooden_sword()
+        if mode == "items":
+            if intventory_weapons_button_x <= x <= intventory_weapons_button_x + intventory_weapons_button_length:
+                if intventory_weapons_button_y <= y <= intventory_weapons_button_y + intventory_items_button_width:
+                    mode = "weapons"
+                    move_wooden_sword()
+                    move_heal_potion()
+                    
+        
+                
+    wn.onclick(intventory_items_click)
+
+def delete_inventory_buttons():
+    if mode != "inventory":
+        intventory_items_button.clear()
+        intventory_weapons_button.clear()
+        
 
 
 
@@ -686,6 +909,7 @@ def fight_button_on():
 # detektor pritiska gumbov
     def fight_click(x,y):
         global mode
+        global inventory_on
         if mode == "start_fight":
             if fight_button_x <= x <= fight_button_x + fight_button_length:
                 if fight_button_y <= y <= fight_button_y + fight_button_width:
@@ -705,6 +929,7 @@ def fight_button_on():
                     svet_desno()
                     delete_button()
                     igralec_premik()
+                    inventory_on = True
                 
     wn.onclick(fight_click)
 
@@ -768,6 +993,7 @@ def naredi_igralca():
 
     def igralec_right():
         global mode
+        global inventory_on
         if mode == "svet":
             if not (igralec.ycor() > 60 and igralec.xcor() > 105):
                 x = igralec.xcor()
@@ -789,6 +1015,7 @@ def naredi_igralca():
                 mode = "fight_screen_monster"
                 time.sleep(0.1)
                 fight_screen_monster()
+                inventory_on = False
 
         
     def igralec_left():
