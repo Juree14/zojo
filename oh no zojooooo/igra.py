@@ -29,6 +29,11 @@ wn.addshape('slike\woodensword.gif')
 wn.addshape('slike\heal_potion.gif')
 wn.addshape('slike\stats.gif')
 wn.addshape('slike\srcek.gif')
+wn.addshape('slike\WEAPONS.gif')
+wn.addshape('slike\ITEMS.gif')
+wn.addshape('slike\monster_interface.gif')
+wn.addshape('slike\svet1.gif')
+wn.addshape('slike\prozorno_ozadje.gif')
 
 #Spremenljivke
 
@@ -448,7 +453,6 @@ def soba_delitev_moci():
                         spd_kocka_value.clear()
                         dge_kocka_value.clear()
                         svet()
-                        hisa_funkcija()
                         monster_funkcija()
                         naredi_igralca()
                         make_inventory()
@@ -456,6 +460,7 @@ def soba_delitev_moci():
                         make_wooden_sword()
                         make_heal_potion()
                         user_interface_on()
+                        make_monster_interface()
         wn.onclick(begin_click)
 
 
@@ -475,7 +480,7 @@ def user_interface_on():
     ui_atk.hideturtle()
     ui_atk.speed(0)
     ui_atk.pencolor("black")
-    ui_atk.color("#ffe838")
+    ui_atk.color("#FEDA41")
     ui_atk.penup()
     ui_atk.goto(-382, 256)
     ui_atk.write( "{}".format(atk_value), font=("gameovercre", 16, "normal"))
@@ -484,7 +489,7 @@ def user_interface_on():
     ui_def.hideturtle()
     ui_def.speed(0)
     ui_def.pencolor("black")
-    ui_def.color("#ffe838")
+    ui_def.color("#FEDA41")
     ui_def.penup()
     ui_def.goto(-330, 256)
     ui_def.write( "{}".format(def_value), font=("gameovercre", 16, "normal"))
@@ -493,7 +498,7 @@ def user_interface_on():
     ui_spd.hideturtle()
     ui_spd.speed(0)
     ui_spd.pencolor("black")
-    ui_spd.color("#ffe838")
+    ui_spd.color("#FEDA41")
     ui_spd.penup()
     ui_spd.goto(-282, 256)
     ui_spd.write( "{}".format(spd_value), font=("gameovercre", 16, "normal"))
@@ -502,7 +507,7 @@ def user_interface_on():
     ui_dge.hideturtle()
     ui_dge.speed(0)
     ui_dge.pencolor("black")
-    ui_dge.color("#ffe838")
+    ui_dge.color("#FEDA41")
     ui_dge.penup()
     ui_dge.goto(-232, 256)
     ui_dge.write( "{}".format(dge_value), font=("gameovercre", 16, "normal"))
@@ -703,24 +708,10 @@ def delete_inventory_buttons():
 # svet
 
 def svet():
-    wn.bgcolor("#c9c9c9")
+    wn.bgpic("slike\svet1.gif")
 
-#hisa
 
-def hisa_funkcija():
-    global hisa
-    hisa = turtle.Turtle()
-    hisa.speed(0)
-    hisa.shape('slike\hisa.gif')
-    hisa.penup()
-    hisa.goto(250, 150)
-def hisa_premik():
-    if mode == "svet":
-        hisa.setx(250)
-        hisa.sety(150)
-    if mode == "svet_desno":
-        hisa.setx(1000)
-        hisa.sety(1000)
+
 
 #monster
 def monster_funkcija():
@@ -741,9 +732,33 @@ def monster_premik():
     if mode == "fight_screen_monster":
         monster.setx(1000)
         monster.sety(1000)
+
+# monster interface
+def make_monster_interface():
+    global monster_interface
+    monster_interface = turtle.Turtle()
+    monster_interface.speed(0)
+    monster_interface.shape('slike\monster_interface.gif')
+    monster_interface.penup()
+    monster_interface.goto(1000, 1000)
+def move_monster_interface():
+    if mode == "svet_desno":
+        monster_interface.setx(1000)
+        monster_interface.sety(1000)
+        monster.setx(1000)
+        monster.sety(1000)
+    if mode == "start_fight":
+        monster_interface.setx(242)
+        monster_interface.sety(270)
+        monster.setx(250)
+        monster.sety(0)
+    
+
+
 # svet desno
 def svet_desno():
-    wn.bgcolor("green")
+    wn.bgpic('slike\prozorno_ozadje.gif')
+    wn.bgcolor("#57c219")
 
     monster_premik()
 
@@ -905,19 +920,32 @@ def fight_button_on():
             run_button.goto(run_button_x + 40, run_button_y + 23)
             run_button.write("RUN", font=("gameovercre", 20, "normal"))
         run_button_press()
-
-# detektor pritiska gumbov
+    
+# detektor pritiska  fight gumbov
     def fight_click(x,y):
         global mode
         global inventory_on
         if mode == "start_fight":
             if fight_button_x <= x <= fight_button_x + fight_button_length:
                 if fight_button_y <= y <= fight_button_y + fight_button_width:
-                    print("hi")
+                    make_fight_weapons()
+                    move_fight_weapons()
+                    fight_back_button_on()
+                    fight_button.clear()
+                    items_button.clear()
+                    dont_fight_button.clear()
+                    mode = "fight_weapons"
+                    
         if mode == "start_fight":
             if items_button_x <= x <= items_button_x + items_button_length:
                 if items_button_y <= y <= items_button_y + items_button_width:
-                    print("hi")
+                    make_fight_items()
+                    move_fight_items()
+                    fight_back_button_on()
+                    fight_button.clear()
+                    items_button.clear()
+                    dont_fight_button.clear()
+                    mode = "fight_items"
         if mode == "in_fight":
             if run_button_x <= x <= run_button_x + run_button_length:
                 if run_button_y <= y <= run_button_y + run_button_width:
@@ -926,13 +954,102 @@ def fight_button_on():
             if dont_fight_button_x <= x <= dont_fight_button_x + dont_fight_button_length:
                 if dont_fight_button_y <= y <= dont_fight_button_y + dont_fight_button_width:
                     mode = "svet_desno"
+                    move_monster_interface()
                     svet_desno()
                     delete_button()
                     igralec_premik()
+                    monster_interface.clear()
                     inventory_on = True
                 
     wn.onclick(fight_click)
 
+# weapons
+
+def make_fight_weapons():
+    global fight_weapons
+    fight_weapons = turtle.Turtle()
+    fight_weapons.speed(0)
+    fight_weapons.shape('slike\WEAPONS.gif')
+    fight_weapons.penup()
+    fight_weapons.goto(0,-183)
+
+
+def move_fight_weapons():
+    if mode != "fight_weapons":
+        fight_weapons.setx(0)
+        fight_weapons.sety(-183)
+    if mode == "fight_weapons":
+        fight_weapons.setx(1000)
+        fight_weapons.sety(1000)
+
+def make_fight_items():
+    global fight_items
+    fight_items = turtle.Turtle()
+    fight_items.speed(0)
+    fight_items.shape('slike\ITEMS.gif')
+    fight_items.penup()
+    fight_items.goto(0,-183)
+
+def move_fight_items():
+    if mode != "fight_items":
+        fight_items.setx(0)
+        fight_items.sety(-183)
+    if mode == "fight_items":
+        fight_items.setx(1000)
+        fight_items.sety(1000)
+
+
+#back button
+
+def fight_back_button_on():
+    global fight_back_button
+    global fight_back_button_x
+    global fight_back_button_y
+    global fight_back_button_length
+    global fight_back_button_width
+    fight_back_button = turtle.Turtle()
+    fight_back_button.hideturtle()
+    fight_back_button.speed(0)
+    fight_back_button.pencolor("black")
+    fight_back_button.color("black")
+
+    fight_back_button_x = 207
+    fight_back_button_y = -272
+    fight_back_button_length = 130
+    fight_back_button_width = 80
+
+    
+    def fight_back_button_press():
+        fight_back_button.penup()
+        fight_back_button.fillcolor("#FEDA41")
+        fight_back_button.begin_fill()
+        fight_back_button.goto(fight_back_button_x, fight_back_button_y)
+        fight_back_button.goto(fight_back_button_x + fight_back_button_length, fight_back_button_y)
+        fight_back_button.goto(fight_back_button_x + fight_back_button_length, fight_back_button_y + fight_back_button_width)
+        fight_back_button.goto(fight_back_button_x, fight_back_button_y + fight_back_button_width)
+        fight_back_button.goto(fight_back_button_x, fight_back_button_y)
+        fight_back_button.end_fill()
+        fight_back_button.goto(fight_back_button_x + 30, fight_back_button_y + 23)
+        fight_back_button.write("BACK", font=("gameovercre", 20, "normal"))
+    fight_back_button_press()
+
+    def back_button_click(x,y):
+        global mode
+        if mode == "fight_weapons":
+            if fight_back_button_x <= x <= fight_back_button_x + fight_back_button_length:
+                if fight_back_button_y <= y <= fight_back_button_y + fight_back_button_width:
+                    move_fight_weapons()
+                    fight_back_button.clear()
+                    mode = "start_fight"
+                    fight_button_on()
+        if mode == "fight_items":
+            if fight_back_button_x <= x <= fight_back_button_x + fight_back_button_length:
+                if fight_back_button_y <= y <= fight_back_button_y + fight_back_button_width:
+                    move_fight_items()
+                    fight_back_button.clear()
+                    mode = "start_fight"
+                    fight_button_on()
+    wn.onclick(back_button_click)
 
 
 
@@ -956,7 +1073,7 @@ def naredi_igralca():
     igralec.speed(0)
     igralec.shape('slike\zojo.gif')
     igralec.penup()
-    igralec.goto(0,-250)
+    igralec.goto(0,-200)
 
 # hoja igralca
 
@@ -964,7 +1081,7 @@ def naredi_igralca():
     def igralec_up():
         global mode
         if mode == "svet":
-            if not (igralec.ycor() > 50 and igralec.xcor() > 110):
+            if not (igralec.ycor() > 50 and igralec.xcor() > 65):
                 y = igralec.ycor()
                 y += 5
                 igralec.sety(y)
@@ -995,7 +1112,7 @@ def naredi_igralca():
         global mode
         global inventory_on
         if mode == "svet":
-            if not (igralec.ycor() > 60 and igralec.xcor() > 105):
+            if not (igralec.ycor() > 60 and igralec.xcor() > 50):
                 x = igralec.xcor()
                 x += 5
                 igralec.setx(x)
@@ -1003,7 +1120,6 @@ def naredi_igralca():
             if igralec.xcor() > 390:
                 mode = "svet_desno"
                 svet_desno()
-                hisa_premik()
                 monster_premik()
                 igralec.goto(-390,igralec.ycor())
         if mode == "svet_desno":
@@ -1015,6 +1131,7 @@ def naredi_igralca():
                 mode = "fight_screen_monster"
                 time.sleep(0.1)
                 fight_screen_monster()
+                move_monster_interface()
                 inventory_on = False
 
         
@@ -1034,7 +1151,6 @@ def naredi_igralca():
             if igralec.xcor() < -390:
                 mode = "svet"
                 svet()
-                hisa_premik()
                 monster_premik()
                 igralec.goto(390,igralec.ycor())
 
