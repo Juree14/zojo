@@ -1,10 +1,8 @@
 
-from asyncio.mixins import _global_lock
-from glob import glob
 import turtle
 import random
 import time
-
+import pickle
 
 
 wn = turtle.Screen()
@@ -34,12 +32,14 @@ wn.addshape('slike\ITEMS.gif')
 wn.addshape('slike\monster_interface.gif')
 wn.addshape('slike\svet1.gif')
 wn.addshape('slike\prozorno_ozadje.gif')
+wn.addshape('slike\menu.gif')
 
 #Spremenljivke
 
 mode = "zacetek"
 curent_mode = ""
 inventory_on = False
+menu_True = False
 
 atk_button_pressed = False
 def_button_pressed = False
@@ -461,6 +461,7 @@ def soba_delitev_moci():
                         make_heal_potion()
                         user_interface_on()
                         make_monster_interface()
+                        make_menu()
         wn.onclick(begin_click)
 
 
@@ -1170,13 +1171,105 @@ def naredi_igralca():
 
     wn.onkeypress(open_inventory, "e")
     wn.onkeypress(open_inventory, "E")
+
+
+    wn.onkeypress(menu_on, "Escape")
+
+# menu
+
+def make_menu():
+    global menu
+    menu = turtle.Turtle()
+    menu.speed(0)
+    menu.shape('slike\menu.gif')
+    menu.penup()
+    menu.goto(1000,1000)
+def menu_on():
+    global curent_mode
+    global mode
+    global inventory_on
+    global menu_True
+    if inventory_on == True:
+        if menu_True == False:
+            curent_mode = mode
+            mode = ("menu")
+            menu.setx(0)
+            menu.sety(0)
+            save_and_quit_on()
+            menu_True = True
+        elif menu_True == True:
+            mode = curent_mode
+            menu_True = False
+            menu.setx(1000)
+            menu.sety(1000)
+            save_and_quit.clear()
+        
+
+
+
+def save_and_quit_on():
+    global save_and_quit
+    global save_and_quit_x
+    global save_and_quit_y
+    global save_and_quit_length
+    global save_and_quit_width
+    save_and_quit = turtle.Turtle()
+    save_and_quit.hideturtle()
+    save_and_quit.speed(0)
+    save_and_quit.pencolor("black")
+    save_and_quit.color("black")
+
+    save_and_quit_x = -150
+    save_and_quit_y = -100
+    save_and_quit_length = 300
+    save_and_quit_width = 80
+
     
+    def save_and_quit_press():
+        save_and_quit.penup()
+        save_and_quit.fillcolor("#FEDA41")
+        save_and_quit.begin_fill()
+        save_and_quit.goto(save_and_quit_x, save_and_quit_y)
+        save_and_quit.goto(save_and_quit_x + save_and_quit_length, save_and_quit_y)
+        save_and_quit.goto(save_and_quit_x + save_and_quit_length, save_and_quit_y + save_and_quit_width)
+        save_and_quit.goto(save_and_quit_x, save_and_quit_y + save_and_quit_width)
+        save_and_quit.goto(save_and_quit_x, save_and_quit_y)
+        save_and_quit.end_fill()
+        save_and_quit.goto(save_and_quit_x + 50, save_and_quit_y + 23)
+        save_and_quit.write("SAVE AND QUIT", font=("gameovercre", 20, "normal"))
+    save_and_quit_press()
+
+    def menu_button_click(x,y):
+        global mode
+        if mode == "menu":
+            if save_and_quit_x <= x <= save_and_quit_x + save_and_quit_length:
+                if save_and_quit_y <= y <= save_and_quit_y + save_and_quit_width:
+                    save_game()
+                    quit_game()
+                    
+    wn.onclick(menu_button_click)
+
+# save
+
+def save_game():
+    gs = [ "yes" ]
+    pickle.dump(gs, open("gs.txt" , "wb"))
+
+
+# quit game
+
+def quit_game():
+    global running
+    running = False
 
                 
 # loop igre 
-while True:
+
+running = True
+while running:
     wn.update()
-# vertenje atk kocke
+
+# vrtenje atk kocke
 
     if mode == "delitev_moci" and atk_button_pressed == False:
         atk_kocka_value = turtle.Turtle()
