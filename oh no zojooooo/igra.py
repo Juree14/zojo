@@ -2,13 +2,11 @@
 import turtle
 import random
 import time
-import pickle
+from Model import Game
 
 
 wn = turtle.Screen()
 wn.title("OH NO, Zojoooo!")
-# Gal naredi ozadje
-# wn.bgpic()
 wn.bgcolor("blue")
 wn.setup(width=800, height=600)
 wn.tracer(0)
@@ -33,7 +31,7 @@ wn.addshape('slike\monster_interface.gif')
 wn.addshape('slike\svet1.gif')
 wn.addshape('slike\prozorno_ozadje.gif')
 wn.addshape('slike\menu.gif')
-
+wn.addshape('slike\svet2.gif')
 #Spremenljivke
 
 mode = "zacetek"
@@ -56,7 +54,7 @@ spd_spremenljivka = False
 
 # Zacetna stran
 
-#gal narise title
+
 pen = turtle.Turtle()
 pen.speed(0)
 pen.color("white")
@@ -758,8 +756,8 @@ def move_monster_interface():
 
 # svet desno
 def svet_desno():
-    wn.bgpic('slike\prozorno_ozadje.gif')
-    wn.bgcolor("#57c219")
+    wn.bgpic('slike\svet2.gif')
+    
 
     monster_premik()
 
@@ -767,7 +765,7 @@ def svet_desno():
 
 def fight_screen_monster():
     global mode 
-    
+    wn.bgpic('slike\prozorno_ozadje.gif')
     wn.bgcolor("#c9c9c9")
     monster_premik()
     igralec_premik()
@@ -1252,17 +1250,24 @@ def save_and_quit_on():
 # save
 
 def save_game():
-    gs = [ "yes" ]
-    pickle.dump(gs, open("gs.txt" , "wb"))
+#    gs = [ mode ]
+#    pickle.dump(gs, open("gs.txt" , "wb"))
 
-
+    game.save_game("save.json")
+#   game.save_game(f"game{game.game_n}.json")
 # quit game
 
 def quit_game():
     global running
     running = False
 
-                
+
+#game.set_game_n(1,2,3)
+game = Game()
+
+game.load_game("save.json")
+print(game.atk)
+
 # loop igre 
 
 running = True
@@ -1287,6 +1292,7 @@ while running:
     if mode == "def_kocka" and atk_button_pressed == True:
         atk_kocka_value.write( "{}".format(atk_value), font=("gameovercre", 40, "normal"))
         atk_button_pressed == False
+        game.set_atk(atk_value)
         if atk_value < 4 and atk_spremenljivka == False:
             min += (5 - atk_value)
             atk_spremenljivka = True
