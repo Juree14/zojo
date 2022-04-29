@@ -3,7 +3,8 @@ import turtle
 import random
 import time
 from Model import Game
-
+from Model import Master
+import os.path
 
 wn = turtle.Screen()
 wn.title("OH NO, Zojoooo!")
@@ -49,7 +50,12 @@ atk_spremenljivka = False
 def_spremenljivka = False
 spd_spremenljivka = False
 
+game = Game()
+master = Master()
 
+new_load1 = "NEW GAME"
+new_load2 = "NEW GAME"
+new_load3 = "NEW GAME"
 
 
 # Zacetna stran
@@ -94,18 +100,170 @@ start_button()
 
 def start_click(x,y):
     global mode
+    global new_load1
+    global new_load2
+    global new_load3
     if start_x <= x <= start_x + start_length:
         if start_y <= y <= start_y + start_width:
             if mode == "zacetek":
-                wn.bgcolor("black")
+                file_exists = os.path.exists("mastergame.json")
+                if not file_exists:
+                    master.save_game("mastergame.json")
                 pen.clear()
                 start.clear()
-                mode = "delitev_moci"
-                soba_delitev_moci()    
+                mode = "load_data"
+                master.load_game("mastergame.json")
+                if master.game1 == 1:
+                    new_load1 = "LOAD GAME 1"
+                if master.game2 == 1:
+                    new_load2 = "LOAD GAME 2"
+                if master.game3 == 1:
+                    new_load3 = "LOAD GAME 3"
+                load_data_room()
+                   
 wn.onclick(start_click)
+
+# load data
+
+def load_data_room():
+    global new_load1
+    new_save_1 = turtle.Turtle()
+    new_save_1.hideturtle()
+    new_save_1.speed(0)
+    new_save_1.pencolor("black")
+    new_save_1.color("black")
+
+    new_save_1_x = -150
+    new_save_1_y = 100
+    new_save_1_length = 300
+    new_save_1_width = 100
+
+
+    def new_save_1_press():
+        new_save_1.penup()
+        new_save_1.fillcolor("white")
+        new_save_1.begin_fill()
+        new_save_1.goto(new_save_1_x, new_save_1_y)
+        new_save_1.goto(new_save_1_x + new_save_1_length, new_save_1_y)
+        new_save_1.goto(new_save_1_x + new_save_1_length, new_save_1_y + new_save_1_width)
+        new_save_1.goto(new_save_1_x, new_save_1_y + new_save_1_width)
+        new_save_1.goto(new_save_1_x, new_save_1_y)
+        new_save_1.end_fill()
+        new_save_1.goto(new_save_1_x + 25, new_save_1_y + 25)
+        new_save_1.write(new_load1, font=("gameovercre", 30, "normal"))
+    new_save_1_press()
+
+
+    new_save_2 = turtle.Turtle()
+    new_save_2.hideturtle()
+    new_save_2.speed(0)
+    new_save_2.pencolor("black")
+    new_save_2.color("black")
+
+    new_save_2_x = -150
+    new_save_2_y = -50
+    new_save_2_length = 300
+    new_save_2_width = 100
+
+
+    def new_save_2_press():
+        new_save_2.penup()
+        new_save_2.fillcolor("white")
+        new_save_2.begin_fill()
+        new_save_2.goto(new_save_2_x, new_save_2_y)
+        new_save_2.goto(new_save_2_x + new_save_2_length, new_save_2_y)
+        new_save_2.goto(new_save_2_x + new_save_2_length, new_save_2_y + new_save_2_width)
+        new_save_2.goto(new_save_2_x, new_save_2_y + new_save_2_width)
+        new_save_2.goto(new_save_2_x, new_save_2_y)
+        new_save_2.end_fill()
+        new_save_2.goto(new_save_2_x + 25, new_save_2_y + 25)
+        new_save_2.write(new_load2, font=("gameovercre", 30, "normal"))
+    new_save_2_press()
+
+
+
+    new_save_3 = turtle.Turtle()
+    new_save_3.hideturtle()
+    new_save_3.speed(0)
+    new_save_3.pencolor("black")
+    new_save_3.color("black")
+
+    new_save_3_x = -150
+    new_save_3_y = -200
+    new_save_3_length = 300
+    new_save_3_width = 100
+
+
+    def new_save_3_press():
+        new_save_3.penup()
+        new_save_3.fillcolor("white")
+        new_save_3.begin_fill()
+        new_save_3.goto(new_save_3_x, new_save_3_y)
+        new_save_3.goto(new_save_3_x + new_save_3_length, new_save_3_y)
+        new_save_3.goto(new_save_3_x + new_save_3_length, new_save_3_y + new_save_3_width)
+        new_save_3.goto(new_save_3_x, new_save_3_y + new_save_3_width)
+        new_save_3.goto(new_save_3_x, new_save_3_y)
+        new_save_3.end_fill()
+        new_save_3.goto(new_save_3_x + 25, new_save_3_y + 25)
+        new_save_3.write(new_load3, font=("gameovercre", 30, "normal"))
+    new_save_3_press()
+
+
+
+    def load_click(x,y):
+        global mode
+        if new_save_1_x <= x <= new_save_1_x + new_save_1_length:
+            if new_save_1_y <= y <= new_save_1_y + new_save_1_width:
+                if mode == "load_data":
+                    game.set_game_n(1)
+                    master.set_game_1(1)
+                    new_save_1.clear()
+                    new_save_2.clear()
+                    new_save_3.clear()
+                    mode = "delitev_moci"
+                    soba_delitev_moci() 
+                    game.load_game(f"game{game.game_n}.json")
+                    print(game.game_n)
+                    print(game.atk)
+                
+        if new_save_2_x <= x <= new_save_2_x + new_save_2_length:
+            if new_save_2_y <= y <= new_save_2_y + new_save_2_width:
+                if mode == "load_data":
+                    game.set_game_n(2)
+                    master.set_game_2(1)
+                    new_save_1.clear()
+                    new_save_2.clear()
+                    new_save_3.clear()
+                    mode = "delitev_moci"
+                    soba_delitev_moci() 
+                    game.load_game(f"game{game.game_n}.json")
+                    print(game.game_n)
+                    print(game.atk)
+                    
+        if new_save_3_x <= x <= new_save_3_x + new_save_3_length:
+            if new_save_3_y <= y <= new_save_3_y + new_save_3_width:
+                if mode == "load_data":
+                    game.set_game_n(3)
+                    master.set_game_3(1)
+                    new_save_1.clear()
+                    new_save_2.clear()
+                    new_save_3.clear()
+                    mode = "delitev_moci"
+                    soba_delitev_moci() 
+                    game.load_game(f"game{game.game_n}.json")
+                    print(game.game_n)
+                    print(game.atk)
+                    
+    wn.onclick(load_click)
+
+
+
+
+
 
 # Soba za delitev moci
 def soba_delitev_moci():
+    wn.bgcolor("black")
     roll_stat = turtle.Turtle()
     roll_stat.speed(0)
     roll_stat.color("white")
@@ -1250,11 +1408,9 @@ def save_and_quit_on():
 # save
 
 def save_game():
-#    gs = [ mode ]
-#    pickle.dump(gs, open("gs.txt" , "wb"))
+    game.save_game(f"game{game.game_n}.json")
+    master.save_game("mastergame.json")
 
-    game.save_game("save.json")
-#   game.save_game(f"game{game.game_n}.json")
 # quit game
 
 def quit_game():
@@ -1262,11 +1418,7 @@ def quit_game():
     running = False
 
 
-#game.set_game_n(1,2,3)
-game = Game()
 
-game.load_game("save.json")
-print(game.atk)
 
 # loop igre 
 
@@ -1358,8 +1510,3 @@ while running:
         dge_button_pressed = False
 
     
-
-    
-
-    
-        
