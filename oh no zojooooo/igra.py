@@ -1,4 +1,5 @@
 
+from tkinter import Y
 import turtle
 import random
 import time
@@ -33,6 +34,7 @@ wn.addshape('slike\svet1.gif')
 wn.addshape('slike\prozorno_ozadje.gif')
 wn.addshape('slike\menu.gif')
 wn.addshape('slike\svet2.gif')
+wn.addshape('slike\zacetna_hisa.gif')
 #Spremenljivke
 
 mode = "zacetek"
@@ -220,11 +222,13 @@ def load_data_room():
                     new_save_1.clear()
                     new_save_2.clear()
                     new_save_3.clear()
-                    mode = "delitev_moci"
-                    soba_delitev_moci() 
-                    game.load_game(f"game{game.game_n}.json")
-                    print(game.game_n)
-                    print(game.atk)
+                    file_exists1 = os.path.exists("game1.json")
+                    if not file_exists1:
+                        mode = "delitev_moci"
+                        soba_delitev_moci()
+                    else:
+                        game.load_game(f"game{game.game_n}.json")
+                        load_data()
                 
         if new_save_2_x <= x <= new_save_2_x + new_save_2_length:
             if new_save_2_y <= y <= new_save_2_y + new_save_2_width:
@@ -234,11 +238,14 @@ def load_data_room():
                     new_save_1.clear()
                     new_save_2.clear()
                     new_save_3.clear()
-                    mode = "delitev_moci"
-                    soba_delitev_moci() 
-                    game.load_game(f"game{game.game_n}.json")
-                    print(game.game_n)
-                    print(game.atk)
+                    file_exists2 = os.path.exists("game2.json")
+                    if not file_exists2:
+                        mode = "delitev_moci"
+                        soba_delitev_moci()
+                    else:
+                        game.load_game(f"game{game.game_n}.json")
+                        load_data()
+                    
                     
         if new_save_3_x <= x <= new_save_3_x + new_save_3_length:
             if new_save_3_y <= y <= new_save_3_y + new_save_3_width:
@@ -248,15 +255,50 @@ def load_data_room():
                     new_save_1.clear()
                     new_save_2.clear()
                     new_save_3.clear()
-                    mode = "delitev_moci"
-                    soba_delitev_moci() 
-                    game.load_game(f"game{game.game_n}.json")
-                    print(game.game_n)
-                    print(game.atk)
-                    
+                    file_exists3 = os.path.exists("game3.json")
+                    if not file_exists3:
+                        mode = "delitev_moci"
+                        soba_delitev_moci()
+                    else:
+                        game.load_game(f"game{game.game_n}.json")
+                        load_data()
+                                 
     wn.onclick(load_click)
 
+def load_data():
+    global mode
+    global inventory_on
+    global atk_value
+    global def_value
+    global spd_value
+    global dge_value
 
+    mode = game.mode
+    atk_value = game.atk
+    def_value = game.defense
+    spd_value = game.spd
+    dge_value = game.dge
+    y = game.y
+    x = game.x
+    
+    monster_funkcija()
+    naredi_igralca()
+    make_inventory()
+    inventory_on = True
+    make_wooden_sword()
+    make_heal_potion()
+    user_interface_on()
+    make_monster_interface()
+    make_menu()
+    if mode == "svet":
+        svet()
+    if mode == "svet_desno":
+        svet_desno()
+    if mode == "zacetna_hisa":
+        zacetna_hisa()
+    igralec.setx(x)
+    igralec.sety(y)
+    
 
 
 
@@ -866,6 +908,15 @@ def delete_inventory_buttons():
 
 def svet():
     wn.bgpic("slike\svet1.gif")
+    game.set_mode(mode)
+
+
+# zacetna hisa
+def zacetna_hisa():
+    wn.bgpic('slike\zacetna_hisa.gif')
+    game.set_mode(mode)
+    igralec.setx(0)
+    igralec.sety(-220)
 
 
 
@@ -915,7 +966,7 @@ def move_monster_interface():
 # svet desno
 def svet_desno():
     wn.bgpic('slike\svet2.gif')
-    
+    game.set_mode(mode)
 
     monster_premik()
 
@@ -1231,43 +1282,67 @@ def naredi_igralca():
     igralec.shape('slike\zojo.gif')
     igralec.penup()
     igralec.goto(0,-200)
-
+    
+    
 # hoja igralca
 
 
     def igralec_up():
         global mode
+        global y
         if mode == "svet":
             if not (igralec.ycor() > 50 and igralec.xcor() > 65):
                 y = igralec.ycor()
                 y += 5
                 igralec.sety(y)
                 igralec.shape('slike\zojoback.gif')
+            if (igralec.ycor() > 44 and igralec.ycor() < 50 and igralec.xcor() > 230 and igralec.xcor() < 310):
+                mode = "zacetna_hisa"
+                time.sleep(0.1)
+                zacetna_hisa()
         if mode == "svet_desno":
             y = igralec.ycor()
             y += 5
             igralec.sety(y)
             igralec.shape('slike\zojoback.gif')
+        if mode == "zacetna_hisa":
+            y = igralec.ycor()
+            y += 5
+            igralec.sety(y)
+            igralec.shape('slike\zojoback.gif')
+            
 
 
     def igralec_down():
         global mode
+        global y
         if mode == "svet":
             if not( igralec.ycor() > 60 and igralec.xcor() > 110):
                 y = igralec.ycor()
                 y -= 5
                 igralec.sety(y)
                 igralec.shape('slike\zojo.gif')
+            
         if mode == "svet_desno":
             y = igralec.ycor()
             y -= 5
             igralec.sety(y)
             igralec.shape('slike\zojo.gif')
-            
+        if mode == "zacetna_hisa":
+            y = igralec.ycor()
+            y -= 5
+            igralec.sety(y)
+            igralec.shape('slike\zojo.gif')
+            if (igralec.ycor() < -245 and igralec.xcor() > -50 and igralec.xcor() < 50):
+                igralec.setx(270)
+                igralec.sety(41)
+                mode = "svet"
+                svet()
 
     def igralec_right():
         global mode
         global inventory_on
+        global x
         if mode == "svet":
             if not (igralec.ycor() > 60 and igralec.xcor() > 50):
                 x = igralec.xcor()
@@ -1279,6 +1354,7 @@ def naredi_igralca():
                 svet_desno()
                 monster_premik()
                 igralec.goto(-390,igralec.ycor())
+            
         if mode == "svet_desno":
             x = igralec.xcor()
             x += 5
@@ -1290,9 +1366,15 @@ def naredi_igralca():
                 fight_screen_monster()
                 move_monster_interface()
                 inventory_on = False
-
+        if mode == "zacetna_hisa":
+            x = igralec.xcor()
+            x += 5
+            igralec.setx(x)
+            igralec.shape('slike\Zojoright.gif')
+            
         
     def igralec_left():
+        global x
         global mode
         if mode == "svet":
             if  not (igralec.ycor() > 60 and igralec.xcor() > 110):
@@ -1300,6 +1382,7 @@ def naredi_igralca():
                 x -= 5
                 igralec.setx(x)
                 igralec.shape('slike\leftZojo.gif')
+            
         if mode == "svet_desno":
             x = igralec.xcor()
             x -= 5
@@ -1311,6 +1394,13 @@ def naredi_igralca():
                 monster_premik()
                 igralec.goto(390,igralec.ycor())
 
+        if mode == "zacetna_hisa":
+            x = igralec.xcor()
+            x -= 5
+            igralec.setx(x)
+            igralec.shape('slike\leftZojo.gif')
+
+            
         
 
 
@@ -1408,6 +1498,8 @@ def save_and_quit_on():
 # save
 
 def save_game():
+    game.set_x(x)
+    game.set_y(y)
     game.save_game(f"game{game.game_n}.json")
     master.save_game("mastergame.json")
 
@@ -1467,6 +1559,7 @@ while running:
     if mode == "spd_kocka" and def_button_pressed == True:
         def_kocka_value.write( "{}".format(def_value), font=("gameovercre", 40, "normal"))
         def_button_pressed == False
+        game.set_def(def_value)
         if def_value < 4 and def_spremenljivka == False:
             min += (5 - def_value)
             def_spremenljivka = True
@@ -1488,6 +1581,7 @@ while running:
     if mode == "dge_kocka" and spd_button_pressed == True:
         spd_kocka_value.write( "{}".format(spd_value), font=("gameovercre", 40, "normal"))
         spd_button_pressed == False
+        game.set_spd(spd_value)
         if spd_value < 4 and spd_spremenljivka == False:
             min += (5 - spd_value)
             spd_spremenljivka = True
@@ -1508,5 +1602,6 @@ while running:
     if mode == "begin" and dge_button_pressed == True:
         dge_kocka_value.write( "{}".format(dge_value), font=("gameovercre", 40, "normal"))
         dge_button_pressed = False
+        game.set_dge(dge_value)
 
     

@@ -1,21 +1,52 @@
 import json
+from mailbox import _singlefileMailbox
+from tkinter import Y
 
 class Game():
     def __init__(self):
         self.atk = None
+        self.defense = None
+        self.spd = None
+        self.dge = None
         self.game_n = None
+        self.mode = None
+        self.x = 0
+        self.y = 0
 
     def set_atk(self, atk):
         self.atk = atk
 
+    def set_def(self, defense):
+        self.defense = defense
+
+    def set_spd(self, spd):
+        self.spd = spd
+
+    def set_dge(self, dge):
+        self.dge = dge
+
+    def set_mode(self, mode):
+        self.mode = mode
+
     def set_game_n(self, game_n):
         self.game_n = game_n
 
+    def set_x(self, x):
+        self.x = x
 
+    def set_y(self, y):
+        self.y = y
+    
     def to_json(self):
         return{
             "atk" : self.atk,
-            "game_n": self.game_n
+            "def" : self.defense,
+            "spd" : self.spd,
+            "dge" : self.dge,
+            "game_n": self.game_n,
+            "mode" : self.mode,
+            "x" : self.x,
+            "y" : self.y
             }
 
     def save_game(self, fname):
@@ -28,7 +59,13 @@ class Game():
     
     def from_json(self,state):
         self.atk = state["atk"]
+        self.defense = state["def"]
+        self.spd = state["spd"]
+        self.dge = state["dge"]
         self.game_n = state["game_n"]
+        self.mode = state["mode"]
+        self.x = state["x"]
+        self.y = state["y"]
 
 
 
