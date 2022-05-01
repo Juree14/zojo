@@ -35,6 +35,7 @@ wn.addshape('slike\prozorno_ozadje.gif')
 wn.addshape('slike\menu.gif')
 wn.addshape('slike\svet2.gif')
 wn.addshape('slike\zacetna_hisa.gif')
+wn.addshape('slike\chest.gif')
 #Spremenljivke
 
 mode = "zacetek"
@@ -58,6 +59,9 @@ master = Master()
 new_load1 = "NEW GAME"
 new_load2 = "NEW GAME"
 new_load3 = "NEW GAME"
+
+
+hp_value = 100
 
 
 # Zacetna stran
@@ -282,6 +286,7 @@ def load_data():
     x = game.x
     
     monster_funkcija()
+    make_chest()
     naredi_igralca()
     make_inventory()
     inventory_on = True
@@ -290,12 +295,15 @@ def load_data():
     user_interface_on()
     make_monster_interface()
     make_menu()
+    
     if mode == "svet":
         svet()
     if mode == "svet_desno":
         svet_desno()
     if mode == "zacetna_hisa":
         zacetna_hisa()
+    if mode == "svet_levo":
+        svet_levo()
     igralec.setx(x)
     igralec.sety(y)
     
@@ -650,6 +658,7 @@ def soba_delitev_moci():
                         def_kocka_value.clear()
                         spd_kocka_value.clear()
                         dge_kocka_value.clear()
+                        make_chest()
                         svet()
                         monster_funkcija()
                         naredi_igralca()
@@ -731,6 +740,17 @@ def user_interface_on():
     ui_srcek3.shape('slike\srcek.gif')
     ui_srcek3.penup()
     ui_srcek3.goto(-315, 240)
+
+
+    ui_hp = turtle.Turtle()
+    ui_hp.hideturtle()
+    ui_hp.speed(0)
+    ui_hp.pencolor("black")
+    ui_hp.color("#FEDA41")
+    ui_hp.penup()
+    ui_hp.goto(-149, 273)
+    ui_hp.write( "{}".format(hp_value), font=("gameovercre", 17, "normal"))
+
 
 
 # Inventory
@@ -909,7 +929,7 @@ def delete_inventory_buttons():
 def svet():
     wn.bgpic("slike\svet1.gif")
     game.set_mode(mode)
-
+    move_chest()
 
 # zacetna hisa
 def zacetna_hisa():
@@ -917,6 +937,29 @@ def zacetna_hisa():
     game.set_mode(mode)
     igralec.setx(0)
     igralec.sety(-220)
+    move_chest()
+
+
+# chest
+def make_chest():
+    global chest
+    chest = turtle.Turtle()
+    chest.speed(0)
+    chest.shape('slike\chest.gif')
+    chest.penup()
+    chest.goto(1000, 1000)
+    
+
+
+def move_chest():
+    if mode == "zacetna_hisa":
+        chest.setx(0)
+        chest.sety(100)
+    if mode == "svet":
+        chest.setx(1000)
+        chest.sety(1000)
+        
+
 
 
 
@@ -969,6 +1012,12 @@ def svet_desno():
     game.set_mode(mode)
 
     monster_premik()
+
+#svet levo
+def svet_levo():
+    wn.bgcolor("green")
+    wn.bgpic('slike\prozorno_ozadje.gif')
+    game.set_mode(mode)
 
 # monster fight screen
 
@@ -1292,10 +1341,12 @@ def naredi_igralca():
         global y
         if mode == "svet":
             if not (igralec.ycor() > 50 and igralec.xcor() > 65):
-                y = igralec.ycor()
-                y += 5
-                igralec.sety(y)
-                igralec.shape('slike\zojoback.gif')
+                if not (igralec.ycor() > 25 and igralec.xcor() < -320):
+                    if not (igralec.ycor() > 215 and igralec.xcor() < -80):
+                        y = igralec.ycor()
+                        y += 5
+                        igralec.sety(y)
+                        igralec.shape('slike\zojoback.gif')
             if (igralec.ycor() > 44 and igralec.ycor() < 50 and igralec.xcor() > 230 and igralec.xcor() < 310):
                 mode = "zacetna_hisa"
                 time.sleep(0.1)
@@ -1305,7 +1356,15 @@ def naredi_igralca():
             y += 5
             igralec.sety(y)
             igralec.shape('slike\zojoback.gif')
+
         if mode == "zacetna_hisa":
+            y = igralec.ycor()
+            y += 5
+            igralec.sety(y)
+            igralec.shape('slike\zojoback.gif')
+            if (igralec.ycor() > 80 and igralec.xcor() > -60 and igralec.xcor() < 60):
+                print("hi")
+        if mode == "svet_levo":
             y = igralec.ycor()
             y += 5
             igralec.sety(y)
@@ -1318,26 +1377,37 @@ def naredi_igralca():
         global y
         if mode == "svet":
             if not( igralec.ycor() > 60 and igralec.xcor() > 110):
-                y = igralec.ycor()
-                y -= 5
-                igralec.sety(y)
-                igralec.shape('slike\zojo.gif')
+                if not igralec.ycor() < -200:
+                    if not (igralec.ycor() < -82 and igralec.xcor() >345) :
+                        if not (igralec.ycor() < -82 and igralec.xcor() < -355) :
+                            y = igralec.ycor()
+                            y -= 5
+                            igralec.sety(y)
+                            igralec.shape('slike\zojo.gif')
             
         if mode == "svet_desno":
             y = igralec.ycor()
             y -= 5
             igralec.sety(y)
             igralec.shape('slike\zojo.gif')
+
         if mode == "zacetna_hisa":
             y = igralec.ycor()
             y -= 5
             igralec.sety(y)
             igralec.shape('slike\zojo.gif')
             if (igralec.ycor() < -245 and igralec.xcor() > -50 and igralec.xcor() < 50):
+                time.sleep(0.1)
                 igralec.setx(270)
                 igralec.sety(41)
                 mode = "svet"
                 svet()
+        
+        if mode == "svet_levo":
+            y = igralec.ycor()
+            y -= 5
+            igralec.sety(y)
+            igralec.shape('slike\zojo.gif')
 
     def igralec_right():
         global mode
@@ -1345,10 +1415,11 @@ def naredi_igralca():
         global x
         if mode == "svet":
             if not (igralec.ycor() > 60 and igralec.xcor() > 50):
-                x = igralec.xcor()
-                x += 5
-                igralec.setx(x)
-                igralec.shape('slike\Zojoright.gif')
+                if not (igralec.ycor() < -90 and igralec.xcor() > 340):
+                    x = igralec.xcor()
+                    x += 5
+                    igralec.setx(x)
+                    igralec.shape('slike\Zojoright.gif')
             if igralec.xcor() > 390:
                 mode = "svet_desno"
                 svet_desno()
@@ -1366,11 +1437,23 @@ def naredi_igralca():
                 fight_screen_monster()
                 move_monster_interface()
                 inventory_on = False
+
         if mode == "zacetna_hisa":
             x = igralec.xcor()
             x += 5
             igralec.setx(x)
             igralec.shape('slike\Zojoright.gif')
+
+        if mode == "svet_levo":
+            x = igralec.xcor()
+            x += 5
+            igralec.setx(x)
+            igralec.shape('slike\Zojoright.gif')
+            if igralec.xcor() > 390:
+                igralec.goto(-390,igralec.ycor())
+                mode = "svet"
+                svet()
+
             
         
     def igralec_left():
@@ -1378,10 +1461,17 @@ def naredi_igralca():
         global mode
         if mode == "svet":
             if  not (igralec.ycor() > 60 and igralec.xcor() > 110):
-                x = igralec.xcor()
-                x -= 5
-                igralec.setx(x)
-                igralec.shape('slike\leftZojo.gif')
+                if not (igralec.ycor() < -90 and igralec.xcor() < -345):
+                    if not (igralec.ycor() > 30 and igralec.xcor() < -315):
+                        if not (igralec.ycor() > 230 and igralec.xcor() < -70):
+                            x = igralec.xcor()
+                            x -= 5
+                            igralec.setx(x)
+                            igralec.shape('slike\leftZojo.gif')
+            if igralec.xcor() < -390:
+                mode = "svet_levo"
+                svet_levo()
+                igralec.goto(390,igralec.ycor())
             
         if mode == "svet_desno":
             x = igralec.xcor()
@@ -1395,6 +1485,12 @@ def naredi_igralca():
                 igralec.goto(390,igralec.ycor())
 
         if mode == "zacetna_hisa":
+            x = igralec.xcor()
+            x -= 5
+            igralec.setx(x)
+            igralec.shape('slike\leftZojo.gif')
+
+        if mode == "svet_levo":
             x = igralec.xcor()
             x -= 5
             igralec.setx(x)
