@@ -21,7 +21,7 @@ wn.addshape('slike\zojoback.gif')
 wn.addshape('slike\Zojoright.gif')
 wn.addshape('slike\leftZojo.gif')
 wn.addshape('slike\hisa.gif')
-wn.addshape('slike\gal3.gif')
+wn.addshape('slike\golem.gif')
 wn.addshape('slike\inventory.gif')
 wn.addshape('slike\woodensword.gif')
 wn.addshape('slike\heal_potion.gif')
@@ -969,7 +969,7 @@ def monster_funkcija():
     global monster
     monster = turtle.Turtle()
     monster.speed(0)
-    monster.shape('slike\gal3.gif')
+    monster.shape('slike\golem.gif')
     monster.penup()
     monster.goto(1000, 1000)
 
@@ -1462,7 +1462,7 @@ def naredi_igralca():
         if mode == "svet":
             if  not (igralec.ycor() > 60 and igralec.xcor() > 110):
                 if not (igralec.ycor() < -90 and igralec.xcor() < -345):
-                    if not (igralec.ycor() > 30 and igralec.xcor() < -315):
+                    if not (igralec.ycor() > 30 and igralec.xcor() < -300):
                         if not (igralec.ycor() > 230 and igralec.xcor() < -70):
                             x = igralec.xcor()
                             x -= 5
