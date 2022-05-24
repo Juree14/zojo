@@ -5,10 +5,12 @@ import random
 import time
 from Model import Game
 from Model import Master
+from Model import Monster
 import os.path
 
 wn = turtle.Screen()
 wn.title("OH NO, Zojoooo!")
+#wn.bgpic('slike\svet2.gif')
 wn.bgcolor("blue")
 wn.setup(width=800, height=600)
 wn.tracer(0)
@@ -36,6 +38,7 @@ wn.addshape('slike\menu.gif')
 wn.addshape('slike\svet2.gif')
 wn.addshape('slike\zacetna_hisa.gif')
 wn.addshape('slike\chest.gif')
+wn.addshape('slike\chest_inventory.gif')
 #Spremenljivke
 
 mode = "zacetek"
@@ -56,14 +59,18 @@ spd_spremenljivka = False
 game = Game()
 master = Master()
 
+
 new_load1 = "NEW GAME"
 new_load2 = "NEW GAME"
 new_load3 = "NEW GAME"
 
 
 hp_value = 100
+number_of_hearts = 3
 
 wooden_sword_value = False
+
+have_wooden_sword = True
 # Zacetna stran
 
 
@@ -276,6 +283,7 @@ def load_data():
     global def_value
     global spd_value
     global dge_value
+    global hp_value
 
     mode = game.mode
     atk_value = game.atk
@@ -284,11 +292,16 @@ def load_data():
     dge_value = game.dge
     y = game.y
     x = game.x
+    hp_value = game.hp
     
+
+    
+    
+
     make_fight_weapons()
     make_fight_items()
-    monster_funkcija()
     make_chest()
+    make_chest_inventory()
     naredi_igralca()
     make_inventory()
     inventory_on = True
@@ -662,8 +675,8 @@ def soba_delitev_moci():
                         make_fight_weapons()
                         make_fight_items()
                         make_chest()
+                        make_chest_inventory()
                         svet()
-                        monster_funkcija()
                         naredi_igralca()
                         make_inventory()
                         inventory_on = True
@@ -940,6 +953,7 @@ def svet():
     wn.bgpic("slike\svet1.gif")
     game.set_mode(mode)
     move_chest()
+    draw_monsters()
 
 # zacetna hisa
 def zacetna_hisa():
@@ -970,23 +984,39 @@ def move_chest():
         chest.sety(1000)
         
 
+def make_chest_inventory():
+    global chest_inventory
+    chest_inventory = turtle.Turtle()
+    chest_inventory.speed(0)
+    chest_inventory.shape('slike\chest_inventory.gif')
+    chest_inventory.penup()
+    chest_inventory.goto(1000, 1000)
 
+def move_chest_inventory():
+    if mode == "zacetna_hisa":
+        chest_inventory.setx(0)
+        chest_inventory.sety(200)
+    if mode == "chest_inventory":
+        chest_inventory.setx(1000)
+        chest_inventory.sety(1000)
 
 
 
 #monster
-def monster_funkcija():
+"""def monster_funkcija():
     global monster
     monster = turtle.Turtle()
     monster.speed(0)
     monster.shape('slike\golem.gif')
     monster.penup()
-    monster.goto(1000, 1000)
+    monster.goto(250, 0)
+    monster.hideturtle()
 
 def monster_premik():
     if mode == "svet_desno":
         monster.setx(250)
         monster.sety(0)
+        monster.showturtle()
     if mode == "svet":
         monster.setx(1000)
         monster.sety(1000)
@@ -995,7 +1025,7 @@ def monster_premik():
         monster.sety(1000)
     if golem_hp_value <= 0:
         monster.setx(1000)
-        monster.sety(1000)
+        monster.sety(1000)"""
 
 
 
@@ -1010,11 +1040,6 @@ def move_monster_interface():
         golem_dge.clear()
         golem_hp.clear()
 
-golem_atk_value = 5
-golem_def_value = 5
-golem_spd_value = 5
-golem_dge_value = 5
-golem_hp_value = 50
 
 def make_monster_interface():
     global monster_interface
@@ -1038,7 +1063,7 @@ def make_monster_interface():
     golem_atk.color("#BC1212")
     golem_atk.penup()
     golem_atk.goto(212, 256)
-    golem_atk.write( golem_atk_value , font=("gameovercre", 16, "normal"))
+    golem_atk.write( m.monster_atk , font=("gameovercre", 16, "normal"))
 
     golem_def = turtle.Turtle()
     golem_def.hideturtle()
@@ -1047,7 +1072,7 @@ def make_monster_interface():
     golem_def.color("#BC1212")
     golem_def.penup()
     golem_def.goto(262, 256)
-    golem_def.write( golem_def_value , font=("gameovercre", 16, "normal"))
+    golem_def.write( m.monster_def , font=("gameovercre", 16, "normal"))
 
     golem_spd = turtle.Turtle()
     golem_spd.hideturtle()
@@ -1056,7 +1081,7 @@ def make_monster_interface():
     golem_spd.color("#BC1212")
     golem_spd.penup()
     golem_spd.goto(312, 256)
-    golem_spd.write( golem_spd_value, font=("gameovercre", 16, "normal"))
+    golem_spd.write( m.monster_spd, font=("gameovercre", 16, "normal"))
 
     golem_dge = turtle.Turtle()
     golem_dge.hideturtle()
@@ -1065,7 +1090,7 @@ def make_monster_interface():
     golem_dge.color("#BC1212")
     golem_dge.penup()
     golem_dge.goto(362, 256)
-    golem_dge.write( golem_dge_value , font=("gameovercre", 16, "normal"))
+    golem_dge.write( m.monster_dge , font=("gameovercre", 16, "normal"))
 
 
     golem_hp = turtle.Turtle()
@@ -1075,7 +1100,7 @@ def make_monster_interface():
     golem_hp.color("#BC1212")
     golem_hp.penup()
     golem_hp.goto(149, 273)
-    golem_hp.write( "{}".format(golem_hp_value), font=("gameovercre", 17, "normal"))
+    golem_hp.write( "{}".format(m.monster_hp), font=("gameovercre", 17, "normal"))
     
 
 
@@ -1083,8 +1108,17 @@ def make_monster_interface():
 def svet_desno():
     wn.bgpic('slike\svet2.gif')
     game.set_mode(mode)
+    draw_monsters()
 
-    monster_premik()
+
+def draw_monsters():
+    for m in game.monsters:
+        if m.svet == mode:
+            m.monster.showturtle()
+        else:
+            m.monster.hideturtle()
+        if m.alive == False:
+                m.monster.hideturtle()
 
 #svet levo
 def svet_levo():
@@ -1098,7 +1132,6 @@ def fight_screen_monster():
     global mode 
     wn.bgpic('slike\prozorno_ozadje.gif')
     wn.bgcolor("#c9c9c9")
-    monster_premik()
     igralec_premik()
     fight_button_on()
     mode = "start_fight"
@@ -1309,6 +1342,9 @@ def move_fight_weapons():
     if mode == "fight_weapons":
         fight_weapons.setx(1000)
         fight_weapons.sety(1000)
+    if mode == "svet_desno":
+        fight_weapons.setx(1000)
+        fight_weapons.sety(1000)
 
 def make_fight_items():
     global fight_items
@@ -1373,10 +1409,11 @@ def fight_back_button_on():
                     mode = "start_fight"
                     fight_button_on()
                     move_wooden_sword()
-            if -390 < x < -320:
-                if -180 < y < -100:
-                    wooden_sword_value = True
-                    fight()
+            if have_wooden_sword == True:
+                if -390 < x < -320:
+                    if -180 < y < -100:
+                        wooden_sword_value = True
+                        fight()
         if mode == "fight_items":
             if fight_back_button_x <= x <= fight_back_button_x + fight_back_button_length:
                 if fight_back_button_y <= y <= fight_back_button_y + fight_back_button_width:
@@ -1400,42 +1437,41 @@ def roll_d4(times_rolled):
 # fight
 
 def fight():
-    global golem_attacked
+    global monster_attacked
     global player_attacked
-    if spd_value >= golem_spd_value:
+    if spd_value >= m.monster_spd:
         player_attacked = True
         player_attack()
     else:
-        golem_attacked = True
-        golem_attack()
+        monster_attacked = True
+        monster_attack()
         
-golem_attacked = False
+monster_attacked = False
 player_attacked = False
 
 def player_attack():
     global wooden_sword_value
-    global golem_hp_value
-    global golem_attacked
+    global monster_attacked
     if wooden_sword_value == True:
-        damage =  roll_d4(2) + atk_value
+        damage =  roll_d4(3) + (atk_value // 2)
         print(damage)
-    if int(random.uniform(1,101)) < golem_dge_value :
+    if int(random.uniform(1,101)) < m.monster_dge :
         print("u missed")
     else:
-        golem_hp_value = golem_hp_value -(damage - golem_def_value // 2)
+        m.monster_hp = m.monster_hp -(damage - m.monster_def // 2)
         golem_hp.clear()
-        golem_hp.write( "{}".format(golem_hp_value), font=("gameovercre", 17, "normal"))
-    if golem_attacked == True:
+        golem_hp.write( "{}".format(m.monster_hp), font=("gameovercre", 17, "normal"))
+    if monster_attacked == True:
         check_hp()
     else:
-        golem_attack()
+        monster_attack()
 
 
-def golem_attack():
+def monster_attack():
     global hp_value
-    damage =  roll_d4(2) + golem_atk_value
+    damage =  roll_d4(1) + (m.monster_atk)
     print(damage)
-    if int(random.uniform(1,101)) < golem_dge_value :
+    if int(random.uniform(1,101)) < m.monster_dge :
         print("it missed")
     else:
         hp_value = hp_value -(damage - def_value // 2)
@@ -1444,7 +1480,7 @@ def golem_attack():
     if player_attacked == True:
         check_hp()
     else:
-        golem_attack()
+        player_attack()
 
 
 
@@ -1453,29 +1489,47 @@ def golem_attack():
 def check_hp():
     global mode
     global inventory_on
+    global hp_value
+    global number_of_hearts
     if hp_value <= 0:
         print("you lost")
-        move_fight_weapons() 
         fight_back_button.clear()
-        fight_button_on()
         mode = "svet_desno"
+        delete_button()
+        move_fight_weapons()
         move_wooden_sword()
         move_monster_interface()
         svet_desno()
-        delete_button()
         igralec_premik()
         inventory_on = True
-    if golem_hp_value <= 0:
+        ui_hp.clear()
+        hp_value = 100
+        ui_hp.write( "{}".format(hp_value), font=("gameovercre", 17, "normal"))
+        if number_of_hearts == 3:
+            ui_srcek3.setx(1000)
+            number_of_hearts = 2
+        elif number_of_hearts == 2:
+            ui_srcek2.setx(1000)
+            number_of_hearts = 1
+        elif number_of_hearts == 1:
+            ui_srcek1.setx(1000)
+            number_of_hearts = 0
+        elif number_of_hearts == 0:
+            print("game over")
+
+    elif m.monster_hp <= 0:
         print("you win")
-        move_fight_weapons() 
         fight_back_button.clear()
         fight_button_on()
+        m.set_alive(False)
         mode = "svet_desno"
+        move_fight_weapons() 
         move_wooden_sword()
         move_monster_interface()
         svet_desno()
         delete_button()
         igralec_premik()
+        draw_monsters()
         inventory_on = True
     else:
         move_fight_weapons()
@@ -1514,9 +1568,9 @@ def naredi_igralca():
     
 # hoja igralca
     collisions = {
-        "svet" : [(65, 300, 400, 50),(-400, -150, 400, -300)],
+        "svet" : [(65, 300, 400, 50),(-400,-80,-364, -237),(-392, -219,391, -291),(362, -80, 400, -300),(-396, 297,-311, 20),(-330, 295,-100, 201)],
         "zacetna_hisa" : [(1000,1000,1000,1000)],
-        "svet_desno" : [(1000,1000,1000,1000)],
+        "svet_desno" : [(-395, 293,-378, 5),(-394, 294,-136, 103),(-169, 290,44, 169),(55, 176,389, 93),(-397, -83,-385, -286),(-383, -209,-199, -290),(-227, -133,-167, -289),(-163, -55,23, -169),(29, -131,389, -287),(379, -50,400, -300)],
         "svet_levo" : [(1000,1000,1000,1000)],
         'start_fight' : [(-400,300,400,-300)],
         'fight_screen_monster' : [(-400,300,400,-300)]
@@ -1525,25 +1579,15 @@ def naredi_igralca():
 
     def can_move(mode, x, y):
         ovire = collisions[mode]
-        hit = False
         for xmin , ymax , xmax, ymin in ovire:
-            if  not (xmin < x < xmax and ymin < y < ymax):
-                hit = True
-        return hit
+            if (xmin < x < xmax and ymin < y < ymax):
+                return False
+        return True
         
         
-    objects = {
-        "svet" : [(230, 50, 310, 44, "zacetna_hisa"), (390, 100, 400, -100,"svet_desno"),(-400, 100, -390, -100,"svet_levo")],
-        "zacetna_hisa" : [(-50, -245, 50, -1000,"svet")],
-        "svet_desno" : [(-400, 100, -390, -100,"svet"),(180, 100, 400, -50, "fight")],
-        "svet_levo" : [(390, 100, 400, -100,"svet")],
-        'start_fight' : [(1000,1000,1000,1000,"neki")],
-        'fight_screen_monster' : [(1000,1000,1000,1000,"neki")]
-    }
-
     def detection(mode, x, y):
         global object_detection
-        ovire = objects[mode]
+        ovire = game.objects[mode]
         hit = False
         object_detection = ""
         for xmin , ymax , xmax, ymin, object_name in ovire:
@@ -1551,6 +1595,14 @@ def naredi_igralca():
                 hit = True
                 object_detection = object_name
         return object_detection and hit
+    
+    def fight_detection(x,y):
+        global m
+        for m in game.monsters:
+            if m.fight_monster(x,y, mode):
+                return m
+        return None
+        
         
 
     
@@ -1572,14 +1624,17 @@ def naredi_igralca():
                 mode = "zacetna_hisa"
                 time.sleep(0.1)
                 zacetna_hisa()
-            if object_detection == "fight":
-                mode = "fight_screen_monster"
-                time.sleep(0.1)
-                fight_screen_monster()
-                make_monster_interface()
-                inventory_on = False
-
-    
+            if object_detection == "chest":
+                print("hi")
+                move_chest_inventory()
+                open_inventory()
+        if fight_detection(x,y+5):
+            mode = "fight_screen_monster"
+            fight_screen_monster()
+            make_monster_interface()
+            inventory_on = False
+            
+            
     def igralec_down():
         global x
         global y
@@ -1600,13 +1655,11 @@ def naredi_igralca():
                 igralec.sety(41)
                 mode = "svet"
                 svet()
-            if object_detection == "fight":
-                mode = "fight_screen_monster"
-                time.sleep(0.1)
-                fight_screen_monster()
-                make_monster_interface()
-                inventory_on = False
-
+        if fight_detection(x,y-5):
+            mode = "fight_screen_monster"
+            fight_screen_monster()
+            make_monster_interface()
+            inventory_on = False
 
     
     def igralec_right():
@@ -1626,25 +1679,23 @@ def naredi_igralca():
             if object_detection == "svet_desno":
                 mode = "svet_desno"
                 svet_desno()
-                monster_premik()
                 igralec.goto(-390,igralec.ycor()) 
             if object_detection == "svet":
                 igralec.goto(-390,igralec.ycor())
                 mode = "svet"
                 svet()  
-        if object_detection == "fight":
+        if fight_detection(x+5,y):
             mode = "fight_screen_monster"
-            time.sleep(0.1)
             fight_screen_monster()
             make_monster_interface()
             inventory_on = False
-        
 
     
     def igralec_left():
         global x
         global y
         global mode
+        global inventory_on
         x = igralec.xcor()
         y = igralec.ycor()
         if can_move(mode, x-5, y):
@@ -1662,7 +1713,11 @@ def naredi_igralca():
                 mode = "svet"
                 svet()
                 igralec.goto(390,igralec.ycor())
-                monster_premik()
+        if fight_detection(x-5,y):
+            mode = "fight_screen_monster"
+            fight_screen_monster()
+            make_monster_interface()
+            inventory_on = False
             
         
 
@@ -1765,8 +1820,10 @@ def save_and_quit_on():
 def save_game():
     game.set_x(x)
     game.set_y(y)
+    game.set_hp(hp_value)
     game.save_game(f"game{game.game_n}.json")
     master.save_game("mastergame.json")
+    
 
 # quit game
 
@@ -1774,7 +1831,15 @@ def quit_game():
     global running
     running = False
 
+# from turtle import *
+# import turtle as tur
+# def position(event):
+#     a, b = (event.x - 400), 0-(event.y - 300)
+#     print('{}, {}'.format(a, b))
 
+# ws = tur.getcanvas()
+# ws.bind('<Motion>', position)
+# tur.done()
 
 
 # loop igre 
@@ -1783,6 +1848,7 @@ running = True
 while running:
     wn.update()
 
+    
 # vrtenje atk kocke
 
     if mode == "delitev_moci" and atk_button_pressed == False:

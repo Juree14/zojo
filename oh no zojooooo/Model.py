@@ -1,6 +1,7 @@
 import json
 from mailbox import _singlefileMailbox
 from tkinter import Y
+import turtle
 
 class Game():
     def __init__(self):
@@ -12,6 +13,19 @@ class Game():
         self.mode = None
         self.x = 0
         self.y = 0
+        self.hp = 0
+        self.golem_alive = True
+        self.objects = {
+        "svet" : [(230, 50, 310, 44, "zacetna_hisa"), (390, 100, 400, -100,"svet_desno"),(-400, 100, -390, -100,"svet_levo")],
+        "zacetna_hisa" : [(-50, -245, 50, -1000,"svet"),(-60, 300, 60, 90, "chest")],
+        "svet_desno" : [(-400, 100, -390, -100,"svet")],
+        "svet_levo" : [(390, 100, 400, -100,"svet")],
+        'start_fight' : [(1000,1000,1000,1000,"neki")],
+        'fight_screen_monster' : [(1000,1000,1000,1000,"neki")]
+        }
+        self.monsters = [Monster(50, 5, 5, 5, 5, 250, 0, "svet_desno", 'slike\golem.gif', "true")]
+        
+
 
     def set_atk(self, atk):
         self.atk = atk
@@ -25,6 +39,9 @@ class Game():
     def set_dge(self, dge):
         self.dge = dge
 
+    def set_hp(self, hp):
+        self.hp = hp
+
     def set_mode(self, mode):
         self.mode = mode
 
@@ -36,7 +53,11 @@ class Game():
 
     def set_y(self, y):
         self.y = y
-    
+
+    def set_golem_alive(self,alive):
+        self.golem_alive = alive
+
+
     def to_json(self):
         return{
             "atk" : self.atk,
@@ -46,7 +67,10 @@ class Game():
             "game_n": self.game_n,
             "mode" : self.mode,
             "x" : self.x,
-            "y" : self.y
+            "y" : self.y,
+            "hp": self.hp,
+            "objects": self.objects,
+            "monsters": self.monsters
             }
 
     def save_game(self, fname):
@@ -66,6 +90,8 @@ class Game():
         self.mode = state["mode"]
         self.x = state["x"]
         self.y = state["y"]
+        self.hp = state["hp"]
+        self.monsters = state["monsters"]
 
 
 
@@ -103,4 +129,35 @@ class Master():
         self.game1 = state["game1"]
         self.game2 = state["game2"]
         self.game3 = state["game3"]
+
+
+class Monster():
+    def __init__(self, hp, atk, defense, spd, dge, x, y, svet, slika, alive):
+        self.monster_hp = hp
+        self.monster_atk = atk
+        self.monster_def = defense
+        self.monster_spd = spd
+        self.monster_dge = dge
+        self.monster_x = x
+        self.monster_y = y
+        self.alive = alive
+        self.img = slika
+        self.svet = svet
+
+        self.monster = turtle.Turtle()
+        self.monster.speed(0)
+        self.monster.shape(self.img)
+        self.monster.penup()
+        self.monster.goto(self.monster_x,self.monster_y)
+        self.monster.hideturtle()
+
+    def set_alive(self, alive):
+        self.alive = alive
+
+    def fight_monster(self, x, y, mode):
+        if self.alive and (self.svet == mode):
+            return self.monster_x - 70 < x < self.monster_x + 70 and self.monster_y - 50 < y < self.monster_y + 90
+        else:
+            pass
+
 
