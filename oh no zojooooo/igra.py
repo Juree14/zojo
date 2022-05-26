@@ -293,6 +293,7 @@ def load_data():
     y = game.y
     x = game.x
     hp_value = game.hp
+    #monsters = game.monsters
     
 
     

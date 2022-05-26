@@ -70,7 +70,7 @@ class Game():
             "y" : self.y,
             "hp": self.hp,
             "objects": self.objects,
-            "monsters": self.monsters
+            "monsters": [monster.to_json() for monster in self.monsters]
             }
 
     def save_game(self, fname):
@@ -91,7 +91,10 @@ class Game():
         self.x = state["x"]
         self.y = state["y"]
         self.hp = state["hp"]
-        self.monsters = state["monsters"]
+
+        self.monsters = [Monster.from_json(monster) for monster in state["monsters"]]
+        
+
 
 
 
@@ -159,5 +162,25 @@ class Monster():
             return self.monster_x - 70 < x < self.monster_x + 70 and self.monster_y - 50 < y < self.monster_y + 90
         else:
             pass
+
+
+    def to_json(self):
+        return{
+            "atk" : self.monster_atk,
+            "def" : self.monster_def,
+            "spd" : self.monster_spd,
+            "dge" : self.monster_dge,
+            "slika": self.img,
+            "svet" : self.svet,
+            "x" : self.monster_x,
+            "y" : self.monster_y,
+            "hp": self.monster_hp,
+            "alive" : self.alive,
+            }
+    @classmethod
+    def from_json(cls,state):
+        return cls(state["hp"],state["atk"],state["def"],state["spd"],state["dge"],state["x"],state["y"],state["svet"],state["slika"],state["alive"])
+
+        
 
 
