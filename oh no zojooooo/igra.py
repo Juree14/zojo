@@ -7,10 +7,12 @@ from Model import Game
 from Model import Master
 from Model import Monster
 import os.path
+import os
+
 
 wn = turtle.Screen()
 wn.title("OH NO, Zojoooo!")
-#wn.bgpic('slike\svet2.gif')
+#wn.bgpic('oh no zojooooo\slike\svet2.gif')
 wn.bgcolor("blue")
 wn.setup(width=800, height=600)
 wn.tracer(0)
@@ -18,27 +20,27 @@ wn.tracer(0)
 wn.cv._rootwindow.resizable(False, False)
 
 # dodajanje slik
-wn.addshape('slike\zojo.gif')
-wn.addshape('slike\zojoback.gif')
-wn.addshape('slike\Zojoright.gif')
-wn.addshape('slike\leftZojo.gif')
-wn.addshape('slike\hisa.gif')
-wn.addshape('slike\golem.gif')
-wn.addshape('slike\inventory.gif')
-wn.addshape('slike\woodensword.gif')
-wn.addshape('slike\heal_potion.gif')
-wn.addshape('slike\stats.gif')
-wn.addshape('slike\srcek.gif')
-wn.addshape('slike\WEAPONS.gif')
-wn.addshape('slike\ITEMS.gif')
-wn.addshape('slike\monster_interface.gif')
-wn.addshape('slike\svet1.gif')
-wn.addshape('slike\prozorno_ozadje.gif')
-wn.addshape('slike\menu.gif')
-wn.addshape('slike\svet2.gif')
-wn.addshape('slike\zacetna_hisa.gif')
-wn.addshape('slike\chest.gif')
-wn.addshape('slike\chest_inventory.gif')
+wn.addshape('oh no zojooooo\slike\zojo.gif')
+wn.addshape('oh no zojooooo\slike\zojoback.gif')
+wn.addshape('oh no zojooooo\slike\Zojoright.gif')
+wn.addshape('oh no zojooooo\slike\leftZojo.gif')
+wn.addshape('oh no zojooooo\slike\hisa.gif')
+wn.addshape('oh no zojooooo\slike\golem.gif')
+wn.addshape('oh no zojooooo\slike\inventory.gif')
+wn.addshape('oh no zojooooo\slike\woodensword.gif')
+wn.addshape('oh no zojooooo\slike\heal_potion.gif')
+wn.addshape('oh no zojooooo\slike\stats.gif')
+wn.addshape('oh no zojooooo\slike\srcek.gif')
+wn.addshape('oh no zojooooo\slike\WEAPONS.gif')
+wn.addshape('oh no zojooooo\slike\ITEMS.gif')
+wn.addshape('oh no zojooooo\slike\monster_interface.gif')
+wn.addshape('oh no zojooooo\slike\svet1.gif')
+wn.addshape('oh no zojooooo\slike\prozorno_ozadje.gif')
+wn.addshape('oh no zojooooo\slike\menu.gif')
+wn.addshape('oh no zojooooo\slike\svet2.gif')
+wn.addshape('oh no zojooooo\slike\zacetna_hisa.gif')
+wn.addshape('oh no zojooooo\slike\chest.gif')
+wn.addshape('oh no zojooooo\slike\chest_inventory.gif')
 #Spremenljivke
 
 mode = "zacetek"
@@ -697,7 +699,7 @@ def user_interface_on():
 
     user_interface = turtle.Turtle()
     user_interface.speed(0)
-    user_interface.shape('slike\stats.gif')
+    user_interface.shape('oh no zojooooo\slike\stats.gif')
     user_interface.penup()
     user_interface.goto(-245,258)
 
@@ -741,21 +743,21 @@ def user_interface_on():
     global ui_srcek1
     ui_srcek1 = turtle.Turtle()
     ui_srcek1.speed(0)
-    ui_srcek1.shape('slike\srcek.gif')
+    ui_srcek1.shape('oh no zojooooo\slike\srcek.gif')
     ui_srcek1.penup()
     ui_srcek1.goto(-375, 240)
 
     global ui_srcek2
     ui_srcek2 = turtle.Turtle()
     ui_srcek2.speed(0)
-    ui_srcek2.shape('slike\srcek.gif')
+    ui_srcek2.shape('oh no zojooooo\slike\srcek.gif')
     ui_srcek2.penup()
     ui_srcek2.goto(-345, 240)
 
     global ui_srcek3
     ui_srcek3 = turtle.Turtle()
     ui_srcek3.speed(0)
-    ui_srcek3.shape('slike\srcek.gif')
+    ui_srcek3.shape('oh no zojooooo\slike\srcek.gif')
     ui_srcek3.penup()
     ui_srcek3.goto(-315, 240)
 
@@ -777,7 +779,7 @@ def make_inventory():
     global inventory
     inventory = turtle.Turtle()
     inventory.speed(0)
-    inventory.shape('slike\inventory.gif')
+    inventory.shape('oh no zojooooo\slike\inventory.gif')
     inventory.penup()
     inventory.goto(1000, 1000)
 
@@ -810,7 +812,7 @@ def make_wooden_sword():
     global wooden_sword
     wooden_sword = turtle.Turtle()
     wooden_sword.speed(0)
-    wooden_sword.shape('slike\woodensword.gif')
+    wooden_sword.shape('oh no zojooooo\slike\woodensword.gif')
     wooden_sword.penup()
     wooden_sword.goto(1000,1000)
 
@@ -836,7 +838,7 @@ def make_heal_potion():
     global heal_potion
     heal_potion = turtle.Turtle()
     heal_potion.speed(0)
-    heal_potion.shape('slike\heal_potion.gif')
+    heal_potion.shape('oh no zojooooo\slike\heal_potion.gif')
     heal_potion.penup()
     heal_potion.goto(1000,1000)
 
@@ -951,14 +953,14 @@ def delete_inventory_buttons():
 # svet
 
 def svet():
-    wn.bgpic("slike\svet1.gif")
+    wn.bgpic("oh no zojooooo\slike\svet1.gif")
     game.set_mode(mode)
     move_chest()
     draw_monsters()
 
 # zacetna hisa
 def zacetna_hisa():
-    wn.bgpic('slike\zacetna_hisa.gif')
+    wn.bgpic('oh no zojooooo\slike\zacetna_hisa.gif')
     game.set_mode(mode)
     igralec.setx(0)
     igralec.sety(-220)
@@ -970,7 +972,7 @@ def make_chest():
     global chest
     chest = turtle.Turtle()
     chest.speed(0)
-    chest.shape('slike\chest.gif')
+    chest.shape('oh no zojooooo\slike\chest.gif')
     chest.penup()
     chest.goto(1000, 1000)
     
@@ -989,7 +991,7 @@ def make_chest_inventory():
     global chest_inventory
     chest_inventory = turtle.Turtle()
     chest_inventory.speed(0)
-    chest_inventory.shape('slike\chest_inventory.gif')
+    chest_inventory.shape('oh no zojooooo\slike\chest_inventory.gif')
     chest_inventory.penup()
     chest_inventory.goto(1000, 1000)
 
@@ -1008,7 +1010,7 @@ def move_chest_inventory():
     global monster
     monster = turtle.Turtle()
     monster.speed(0)
-    monster.shape('slike\golem.gif')
+    monster.shape('oh no zojooooo\slike\golem.gif')
     monster.penup()
     monster.goto(250, 0)
     monster.hideturtle()
@@ -1052,7 +1054,7 @@ def make_monster_interface():
 
     monster_interface = turtle.Turtle()
     monster_interface.speed(0)
-    monster_interface.shape('slike\monster_interface.gif')
+    monster_interface.shape('oh no zojooooo\slike\monster_interface.gif')
     monster_interface.penup()
     monster_interface.goto(242, 270)
 
@@ -1107,7 +1109,7 @@ def make_monster_interface():
 
 # svet desno
 def svet_desno():
-    wn.bgpic('slike\svet2.gif')
+    wn.bgpic('oh no zojooooo\slike\svet2.gif')
     game.set_mode(mode)
     draw_monsters()
 
@@ -1124,14 +1126,14 @@ def draw_monsters():
 #svet levo
 def svet_levo():
     wn.bgcolor("green")
-    wn.bgpic('slike\prozorno_ozadje.gif')
+    wn.bgpic('oh no zojooooo\slike\prozorno_ozadje.gif')
     game.set_mode(mode)
 
 # monster fight screen
 
 def fight_screen_monster():
     global mode 
-    wn.bgpic('slike\prozorno_ozadje.gif')
+    wn.bgpic('oh no zojooooo\slike\prozorno_ozadje.gif')
     wn.bgcolor("#c9c9c9")
     igralec_premik()
     fight_button_on()
@@ -1331,7 +1333,7 @@ def make_fight_weapons():
     global fight_weapons
     fight_weapons = turtle.Turtle()
     fight_weapons.speed(0)
-    fight_weapons.shape('slike\WEAPONS.gif')
+    fight_weapons.shape('oh no zojooooo\slike\WEAPONS.gif')
     fight_weapons.penup()
     fight_weapons.goto(1000,1000)
 
@@ -1351,7 +1353,7 @@ def make_fight_items():
     global fight_items
     fight_items = turtle.Turtle()
     fight_items.speed(0)
-    fight_items.shape('slike\ITEMS.gif')
+    fight_items.shape('oh no zojooooo\slike\ITEMS.gif')
     fight_items.penup()
     fight_items.goto(1000,-1803)
 
@@ -1562,7 +1564,7 @@ def naredi_igralca():
     global igralec
     igralec = turtle.Turtle()
     igralec.speed(0)
-    igralec.shape('slike\zojo.gif')
+    igralec.shape('oh no zojooooo\slike\zojo.gif')
     igralec.penup()
     igralec.goto(0,-200)
     
@@ -1619,7 +1621,7 @@ def naredi_igralca():
             x += 0
             igralec.sety(y)
             igralec.setx(x)
-            igralec.shape('slike\zojoback.gif')
+            igralec.shape('oh no zojooooo\slike\zojoback.gif')
         if detection(mode, x, y+5):
             if object_detection == "zacetna_hisa":
                 mode = "zacetna_hisa"
@@ -1648,7 +1650,7 @@ def naredi_igralca():
             x += 0
             igralec.sety(y)
             igralec.setx(x)
-            igralec.shape('slike\zojo.gif')
+            igralec.shape('oh no zojooooo\slike\zojo.gif')
         if detection(mode, x, y-5):
             if object_detection == "svet":
                 time.sleep(0.1)
@@ -1675,7 +1677,7 @@ def naredi_igralca():
             x += 5
             igralec.sety(y)
             igralec.setx(x)
-            igralec.shape('slike\Zojoright.gif')
+            igralec.shape('oh no zojooooo\slike\Zojoright.gif')
         if detection(mode, x+5, y):
             if object_detection == "svet_desno":
                 mode = "svet_desno"
@@ -1704,7 +1706,7 @@ def naredi_igralca():
             x -= 5
             igralec.sety(y)
             igralec.setx(x)
-            igralec.shape('slike\leftZojo.gif')
+            igralec.shape('oh no zojooooo\slike\leftZojo.gif')
         if detection(mode, x-5, y):
             if object_detection == "svet_levo":
                 mode = "svet_levo"
@@ -1746,7 +1748,7 @@ def make_menu():
     global menu
     menu = turtle.Turtle()
     menu.speed(0)
-    menu.shape('slike\menu.gif')
+    menu.shape('oh no zojooooo\slike\menu.gif')
     menu.penup()
     menu.goto(1000,1000)
 def menu_on():

@@ -23,7 +23,7 @@ class Game():
         'start_fight' : [(1000,1000,1000,1000,"neki")],
         'fight_screen_monster' : [(1000,1000,1000,1000,"neki")]
         }
-        self.monsters = [Monster(50, 5, 5, 5, 5, 250, 0, "svet_desno", 'slike\golem.gif', "true")]
+        self.monsters = [Monster(50, 5, 5, 5, 5, 250, 0, "svet_desno", 'oh no zojooooo\slike\golem.gif', "true")]
         
 
 
