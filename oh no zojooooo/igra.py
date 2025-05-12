@@ -6,6 +6,7 @@ import time
 from Model import Game
 from Model import Master
 from Model import Monster
+from Model import Button
 import os.path
 import os
 
@@ -73,6 +74,8 @@ number_of_hearts = 3
 wooden_sword_value = False
 
 have_wooden_sword = True
+global atk_button_ui, def_button_ui, spd_button_ui, dge_button_ui
+
 # Zacetna stran
 
 
@@ -85,32 +88,9 @@ pen.goto(0, 150)
 pen.write("OH NO, Zojoooo!", align="center", font=("gameovercre", 35, "normal"))
 
 # Start gumb
-start = turtle.Turtle()
-start.hideturtle()
-start.speed(0)
-start.pencolor("black")
-start.color("black")
+start_button = Button(x=-100, y=-50, width=200, height=100, text="START")
+start_button.draw()
 
-start_x = -100
-start_y = -50
-start_length = 200
-start_width = 100
-
-
-
-def start_button():
-    start.penup()
-    start.fillcolor("white")
-    start.begin_fill()
-    start.goto(start_x, start_y)
-    start.goto(start_x + start_length, start_y)
-    start.goto(start_x + start_length, start_y + start_width)
-    start.goto(start_x, start_y + start_width)
-    start.goto(start_x, start_y)
-    start.end_fill()
-    start.goto(start_x + 35, start_y + 25)
-    start.write("START", font=("gameovercre", 30, "normal"))
-start_button()
 
 
 def start_click(x,y):
@@ -118,14 +98,13 @@ def start_click(x,y):
     global new_load1
     global new_load2
     global new_load3
-    if start_x <= x <= start_x + start_length:
-        if start_y <= y <= start_y + start_width:
+    if start_button.is_clicked(x, y):
             if mode == "zacetek":
                 file_exists = os.path.exists("mastergame.json")
                 if not file_exists:
                     master.save_game("mastergame.json")
                 pen.clear()
-                start.clear()
+                start_button.clear()
                 mode = "load_data"
                 master.load_game("mastergame.json")
                 if master.game1 == 1:
@@ -139,144 +118,66 @@ def start_click(x,y):
 wn.onclick(start_click)
 
 # load data
-
 def load_data_room():
-    global new_load1
-    new_save_1 = turtle.Turtle()
-    new_save_1.hideturtle()
-    new_save_1.speed(0)
-    new_save_1.pencolor("black")
-    new_save_1.color("black")
+    global save_button1, save_button2, save_button3, new_load1, new_load2, new_load3
 
-    new_save_1_x = -150
-    new_save_1_y = 100
-    new_save_1_length = 300
-    new_save_1_width = 100
+    save_button1 = Button(
+        x=-150, y=100, width=300, height=100,
+        text=new_load1, font=("gameovercre", 30, "normal"),
+        text_offset=(25, 25)
+    )
+    save_button1.draw()
 
+    save_button2 = Button(
+        x=-150, y=-50, width=300, height=100,
+        text=new_load2, font=("gameovercre", 30, "normal"),
+        text_offset=(25, 25)
+    )
+    save_button2.draw()
 
-    def new_save_1_press():
-        new_save_1.penup()
-        new_save_1.fillcolor("white")
-        new_save_1.begin_fill()
-        new_save_1.goto(new_save_1_x, new_save_1_y)
-        new_save_1.goto(new_save_1_x + new_save_1_length, new_save_1_y)
-        new_save_1.goto(new_save_1_x + new_save_1_length, new_save_1_y + new_save_1_width)
-        new_save_1.goto(new_save_1_x, new_save_1_y + new_save_1_width)
-        new_save_1.goto(new_save_1_x, new_save_1_y)
-        new_save_1.end_fill()
-        new_save_1.goto(new_save_1_x + 25, new_save_1_y + 25)
-        new_save_1.write(new_load1, font=("gameovercre", 30, "normal"))
-    new_save_1_press()
+    save_button3 = Button(
+        x=-150, y=-200, width=300, height=100,
+        text=new_load3, font=("gameovercre", 30, "normal"),
+        text_offset=(25, 25)
+    )
+    save_button3.draw()
 
-
-    new_save_2 = turtle.Turtle()
-    new_save_2.hideturtle()
-    new_save_2.speed(0)
-    new_save_2.pencolor("black")
-    new_save_2.color("black")
-
-    new_save_2_x = -150
-    new_save_2_y = -50
-    new_save_2_length = 300
-    new_save_2_width = 100
-
-
-    def new_save_2_press():
-        new_save_2.penup()
-        new_save_2.fillcolor("white")
-        new_save_2.begin_fill()
-        new_save_2.goto(new_save_2_x, new_save_2_y)
-        new_save_2.goto(new_save_2_x + new_save_2_length, new_save_2_y)
-        new_save_2.goto(new_save_2_x + new_save_2_length, new_save_2_y + new_save_2_width)
-        new_save_2.goto(new_save_2_x, new_save_2_y + new_save_2_width)
-        new_save_2.goto(new_save_2_x, new_save_2_y)
-        new_save_2.end_fill()
-        new_save_2.goto(new_save_2_x + 25, new_save_2_y + 25)
-        new_save_2.write(new_load2, font=("gameovercre", 30, "normal"))
-    new_save_2_press()
-
-
-
-    new_save_3 = turtle.Turtle()
-    new_save_3.hideturtle()
-    new_save_3.speed(0)
-    new_save_3.pencolor("black")
-    new_save_3.color("black")
-
-    new_save_3_x = -150
-    new_save_3_y = -200
-    new_save_3_length = 300
-    new_save_3_width = 100
-
-
-    def new_save_3_press():
-        new_save_3.penup()
-        new_save_3.fillcolor("white")
-        new_save_3.begin_fill()
-        new_save_3.goto(new_save_3_x, new_save_3_y)
-        new_save_3.goto(new_save_3_x + new_save_3_length, new_save_3_y)
-        new_save_3.goto(new_save_3_x + new_save_3_length, new_save_3_y + new_save_3_width)
-        new_save_3.goto(new_save_3_x, new_save_3_y + new_save_3_width)
-        new_save_3.goto(new_save_3_x, new_save_3_y)
-        new_save_3.end_fill()
-        new_save_3.goto(new_save_3_x + 25, new_save_3_y + 25)
-        new_save_3.write(new_load3, font=("gameovercre", 30, "normal"))
-    new_save_3_press()
-
-
-
-    def load_click(x,y):
-        global mode
-        if new_save_1_x <= x <= new_save_1_x + new_save_1_length:
-            if new_save_1_y <= y <= new_save_1_y + new_save_1_width:
-                if mode == "load_data":
-                    game.set_game_n(1)
-                    master.set_game_1(1)
-                    new_save_1.clear()
-                    new_save_2.clear()
-                    new_save_3.clear()
-                    file_exists1 = os.path.exists("game1.json")
-                    if not file_exists1:
-                        mode = "delitev_moci"
-                        soba_delitev_moci()
-                    else:
-                        game.load_game(f"game{game.game_n}.json")
-                        load_data()
-                
-        if new_save_2_x <= x <= new_save_2_x + new_save_2_length:
-            if new_save_2_y <= y <= new_save_2_y + new_save_2_width:
-                if mode == "load_data":
-                    game.set_game_n(2)
-                    master.set_game_2(1)
-                    new_save_1.clear()
-                    new_save_2.clear()
-                    new_save_3.clear()
-                    file_exists2 = os.path.exists("game2.json")
-                    if not file_exists2:
-                        mode = "delitev_moci"
-                        soba_delitev_moci()
-                    else:
-                        game.load_game(f"game{game.game_n}.json")
-                        load_data()
-                    
-                    
-        if new_save_3_x <= x <= new_save_3_x + new_save_3_length:
-            if new_save_3_y <= y <= new_save_3_y + new_save_3_width:
-                if mode == "load_data":
-                    game.set_game_n(3)
-                    master.set_game_3(1)
-                    new_save_1.clear()
-                    new_save_2.clear()
-                    new_save_3.clear()
-                    file_exists3 = os.path.exists("game3.json")
-                    if not file_exists3:
-                        mode = "delitev_moci"
-                        soba_delitev_moci()
-                    else:
-                        game.load_game(f"game{game.game_n}.json")
-                        load_data()
-                                 
     wn.onclick(load_click)
+
+def load_click(x, y):
+    global mode
+
+    if save_button1.is_clicked(x, y) and mode == "load_data":
+        game.set_game_n(1)
+        master.set_game_1(1)
+        clear_save_buttons()
+        process_game_slot("game1.json")
+
+    elif save_button2.is_clicked(x, y) and mode == "load_data":
+        game.set_game_n(2)
+        master.set_game_2(1)
+        clear_save_buttons()
+        process_game_slot("game2.json")
+
+    elif save_button3.is_clicked(x, y) and mode == "load_data":
+        game.set_game_n(3)
+        master.set_game_3(1)
+        clear_save_buttons()
+        process_game_slot("game3.json")
+
+def clear_save_buttons():
+    save_button1.clear()
+    save_button2.clear()
+    save_button3.clear()
+
+def process_game_slot(filename):
+    global mode
+    if not os.path.exists(filename):
+        mode = "delitev_moci"
+        soba_delitev_moci()
+    else:
+        game.load_game(filename)
+        load_data()
 
 def load_data():
     global mode
@@ -339,292 +240,70 @@ def soba_delitev_moci():
     roll_stat.goto(0, 190)
     roll_stat.write("Roll for stats", align="center", font=("gameovercre", 35, "normal"))
 
-    atk = turtle.Turtle()
-    atk.speed(0)
-    atk.color("white")
-    atk.penup()
-    atk.hideturtle()
-    atk.goto(-230, 100)
-    atk.write("ATK", align="center", font=("gameovercre", 30, "normal"))
+    atk_button_ui = Button(
+        x=-280, y=-200, width=100, height=100,
+        text="ROLL", font=("gameovercre", 20, "normal"),
+        text_offset=(17, 32)
+    )
+    atk_button_ui.draw()
 
-    defense = turtle.Turtle()
-    defense.speed(0)
-    defense.color("white")
-    defense.penup()
-    defense.hideturtle()
-    defense.goto(-75, 100)
-    defense.write("DEF", align="center", font=("gameovercre", 30, "normal"))
+    def_button_ui = Button(
+        x=-125, y=-200, width=100, height=100,
+        text="ROLL", font=("gameovercre", 20, "normal"),
+        text_offset=(17, 32)
+    )
+    def_button_ui.draw()
 
-    spd = turtle.Turtle()
-    spd.speed(0)
-    spd.color("white")
-    spd.penup()
-    spd.hideturtle()
-    spd.goto(75, 100)
-    spd.write("SPD", align="center", font=("gameovercre", 30, "normal"))
+    spd_button_ui = Button(
+        x=25, y=-200, width=100, height=100,
+        text="ROLL", font=("gameovercre", 20, "normal"),
+        text_offset=(17, 32)
+    )
+    spd_button_ui.draw()
 
-    dge = turtle.Turtle()
-    dge.speed(0)
-    dge.color("white")
-    dge.penup()
-    dge.hideturtle()
-    dge.goto(230, 100)
-    dge.write("DGE", align="center", font=("gameovercre", 30, "normal"))
+    dge_button_ui = Button(
+        x=180, y=-200, width=100, height=100,
+        text="ROLL", font=("gameovercre", 20, "normal"),
+        text_offset=(17, 32)
+    )
+    dge_button_ui.draw()
 
-# atk-kocka
-    atk_kocka = turtle.Turtle()
-    atk_kocka.hideturtle()
-    atk_kocka.speed(0)
-    atk_kocka.pencolor("black")
-    atk_kocka.color("black")
-
-    atk_kocka_x = -280
-    atk_kocka_y = -50
-    atk_kocka_length = 100
-    atk_kocka_width = 100
-
-    
-    atk_kocka.penup()
-    atk_kocka.fillcolor("white")
-    atk_kocka.begin_fill()
-    atk_kocka.goto(atk_kocka_x, atk_kocka_y)
-    atk_kocka.goto(atk_kocka_x + atk_kocka_length, atk_kocka_y)
-    atk_kocka.goto(atk_kocka_x + atk_kocka_length, atk_kocka_y + atk_kocka_width)
-    atk_kocka.goto(atk_kocka_x, atk_kocka_y + atk_kocka_width)
-    atk_kocka.goto(atk_kocka_x, atk_kocka_y)
-    atk_kocka.end_fill()
-    atk_kocka.goto(atk_kocka_x + 35, atk_kocka_y + 22)
+   
     
 
         
-# atk-gumb za metanje kocke
-    atk_button = turtle.Turtle()
-    atk_button.hideturtle()
-    atk_button.speed(0)
-    atk_button.pencolor("black")
-    atk_button.color("black")
-
-    atk_button_x = -280
-    atk_button_y = -200
-    atk_button_length = 100
-    atk_button_width = 100
-
-
-    def atk_button_press():
-        atk_button.penup()
-        atk_button.fillcolor("white")
-        atk_button.begin_fill()
-        atk_button.goto(atk_button_x, atk_button_y)
-        atk_button.goto(atk_button_x + atk_button_length, atk_button_y)
-        atk_button.goto(atk_button_x + atk_button_length, atk_button_y + atk_button_width)
-        atk_button.goto(atk_button_x, atk_button_y + atk_button_width)
-        atk_button.goto(atk_button_x, atk_button_y)
-        atk_button.end_fill()
-        atk_button.goto(atk_button_x + 17, atk_button_y + 32)
-        atk_button.write("ROLL", font=("gameovercre", 20, "normal"))
-    atk_button_press()
 
     
-    def atk_click(x,y):
+
+    
+    def stat_roll_click(x, y):
         global mode
-        global atk_button_pressed
-        global def_button_pressed
-        global spd_button_pressed
-        global dge_button_pressed
-        if atk_button_x <= x <= atk_button_x + atk_button_length:
-            if atk_button_y <= y <= atk_button_y + atk_button_width:
-                if mode == "delitev_moci":
-                    atk_button.clear()
-                    mode = "def_kocka"
-                    atk_button_pressed = True
-        if def_button_x <= x <= def_button_x + def_button_length:
-            if def_button_y <= y <= def_button_y + def_button_width:
-                if mode == "def_kocka":
-                    def_button.clear()
-                    mode = "spd_kocka"
-                    def_button_pressed = True
-        if spd_button_x <= x <= spd_button_x + spd_button_length:
-            if spd_button_y <= y <= spd_button_y + spd_button_width:
-                if mode == "spd_kocka":
-                    spd_button.clear()
-                    mode = "dge_kocka"
-                    spd_button_pressed = True
-        if dge_button_x <= x <= dge_button_x + dge_button_length:
-            if dge_button_y <= y <= dge_button_y + dge_button_width:
-                if mode == "dge_kocka":
-                    dge_button.clear()
-                    mode = "begin"
-                    dge_button_pressed = True
-                    begin_button_on()
-        
-                
-    wn.onclick(atk_click)
-# def-kocka
+        global atk_button_pressed, def_button_pressed, spd_button_pressed, dge_button_pressed
 
-    
-    def_kocka = turtle.Turtle()
-    def_kocka.hideturtle()
-    def_kocka.speed(0)
-    def_kocka.pencolor("black")
-    def_kocka.color("black")
+        if atk_button_ui.is_clicked(x, y) and mode == "delitev_moci":
+            atk_button_ui.clear()
+            mode = "def_kocka"
+            atk_button_pressed = True
 
-    def_kocka_x = -125
-    def_kocka_y = -50
-    def_kocka_length = 100
-    def_kocka_width = 100
+        elif def_button_ui.is_clicked(x, y) and mode == "def_kocka":
+            def_button_ui.clear()
+            mode = "spd_kocka"
+            def_button_pressed = True
 
-    
-    def_kocka.penup()
-    def_kocka.fillcolor("white")
-    def_kocka.begin_fill()
-    def_kocka.goto(def_kocka_x, def_kocka_y)
-    def_kocka.goto(def_kocka_x + def_kocka_length, def_kocka_y)
-    def_kocka.goto(def_kocka_x + def_kocka_length, def_kocka_y + def_kocka_width)
-    def_kocka.goto(def_kocka_x, def_kocka_y + def_kocka_width)
-    def_kocka.goto(def_kocka_x, def_kocka_y)
-    def_kocka.end_fill()
-    def_kocka.goto(def_kocka_x + 35, def_kocka_y + 22)
-    
+        elif spd_button_ui.is_clicked(x, y) and mode == "spd_kocka":
+            spd_button_ui.clear()
+            mode = "dge_kocka"
+            spd_button_pressed = True
 
-# def-gumb za metanje kocke
+        elif dge_button_ui.is_clicked(x, y) and mode == "dge_kocka":
+            dge_button_ui.clear()
+            mode = "begin"
+            dge_button_pressed = True
+            begin_button_on()
 
-    def_button = turtle.Turtle()
-    def_button.hideturtle()
-    def_button.speed(0)
-    def_button.pencolor("black")
-    def_button.color("black")
-
-    def_button_x = -125
-    def_button_y = -200
-    def_button_length = 100
-    def_button_width = 100
-    
-
-    def def_button_press():
-        def_button.penup()
-        def_button.fillcolor("white")
-        def_button.begin_fill()
-        def_button.goto(def_button_x, def_button_y)
-        def_button.goto(def_button_x + def_button_length, def_button_y)
-        def_button.goto(def_button_x + def_button_length, def_button_y + def_button_width)
-        def_button.goto(def_button_x, def_button_y + def_button_width)
-        def_button.goto(def_button_x, def_button_y)
-        def_button.end_fill()
-        def_button.goto(def_button_x + 17, def_button_y + 32)
-        def_button.write("ROLL", font=("gameovercre", 20, "normal"))
-    def_button_press()
+    wn.onclick(stat_roll_click)
 
 
-
-# spd-kocka
-
-
-    spd_kocka = turtle.Turtle()
-    spd_kocka.hideturtle()
-    spd_kocka.speed(0)
-    spd_kocka.pencolor("black")
-    spd_kocka.color("black")
-
-    spd_kocka_x = 25
-    spd_kocka_y = -50
-    spd_kocka_length = 100
-    spd_kocka_width = 100
-
-    
-    spd_kocka.penup()
-    spd_kocka.fillcolor("white")
-    spd_kocka.begin_fill()
-    spd_kocka.goto(spd_kocka_x, spd_kocka_y)
-    spd_kocka.goto(spd_kocka_x + spd_kocka_length, spd_kocka_y)
-    spd_kocka.goto(spd_kocka_x + spd_kocka_length, spd_kocka_y + spd_kocka_width)
-    spd_kocka.goto(spd_kocka_x, spd_kocka_y + spd_kocka_width)
-    spd_kocka.goto(spd_kocka_x, spd_kocka_y)
-    spd_kocka.end_fill()
-    spd_kocka.goto(spd_kocka_x + 35, spd_kocka_y + 22)
-
-
-# spd-gumb za metanje kocke
-
-
-    spd_button = turtle.Turtle()
-    spd_button.hideturtle()
-    spd_button.speed(0)
-    spd_button.pencolor("black")
-    spd_button.color("black")
-
-    spd_button_x = 25
-    spd_button_y = -200
-    spd_button_length = 100
-    spd_button_width = 100
-
-
-    def spd_button_press():
-        spd_button.penup()
-        spd_button.fillcolor("white")
-        spd_button.begin_fill()
-        spd_button.goto(spd_button_x, spd_button_y)
-        spd_button.goto(spd_button_x + spd_button_length, spd_button_y)
-        spd_button.goto(spd_button_x + spd_button_length, spd_button_y + spd_button_width)
-        spd_button.goto(spd_button_x, spd_button_y + spd_button_width)
-        spd_button.goto(spd_button_x, spd_button_y)
-        spd_button.end_fill()
-        spd_button.goto(spd_button_x + 17, spd_button_y + 32)
-        spd_button.write("ROLL", font=("gameovercre", 20, "normal"))
-    spd_button_press()
-
-
-# dge kocka
-    dge_kocka = turtle.Turtle()
-    dge_kocka.hideturtle()
-    dge_kocka.speed(0)
-    dge_kocka.pencolor("black")
-    dge_kocka.color("black")
-
-    dge_kocka_x = 180
-    dge_kocka_y = -50
-    dge_kocka_length = 100
-    dge_kocka_width = 100
-
-    
-    dge_kocka.penup()
-    dge_kocka.fillcolor("white")
-    dge_kocka.begin_fill()
-    dge_kocka.goto(dge_kocka_x, dge_kocka_y)
-    dge_kocka.goto(dge_kocka_x + dge_kocka_length, dge_kocka_y)
-    dge_kocka.goto(dge_kocka_x + dge_kocka_length, dge_kocka_y + dge_kocka_width)
-    dge_kocka.goto(dge_kocka_x, dge_kocka_y + dge_kocka_width)
-    dge_kocka.goto(dge_kocka_x, dge_kocka_y)
-    dge_kocka.end_fill()
-    dge_kocka.goto(dge_kocka_x + 35, dge_kocka_y + 22)
-
-# dge-gumb za metanje kocke
-
-
-    dge_button = turtle.Turtle()
-    dge_button.hideturtle()
-    dge_button.speed(0)
-    dge_button.pencolor("black")
-    dge_button.color("black")
-
-    dge_button_x = 180
-    dge_button_y = -200
-    dge_button_length = 100
-    dge_button_width = 100
-
-
-    def dge_button_press():
-        dge_button.penup()
-        dge_button.fillcolor("white")
-        dge_button.begin_fill()
-        dge_button.goto(dge_button_x, dge_button_y)
-        dge_button.goto(dge_button_x + dge_button_length, dge_button_y)
-        dge_button.goto(dge_button_x + dge_button_length, dge_button_y + dge_button_width)
-        dge_button.goto(dge_button_x, dge_button_y + dge_button_width)
-        dge_button.goto(dge_button_x, dge_button_y)
-        dge_button.end_fill()
-        dge_button.goto(dge_button_x + 17, dge_button_y + 32)
-        dge_button.write("ROLL", font=("gameovercre", 20, "normal"))
-    dge_button_press()
     
 # begin
     def begin_button_on():
@@ -662,15 +341,7 @@ def soba_delitev_moci():
                     if mode == "begin":
                         begin_button.clear()
                         mode = "svet"
-                        atk_kocka.clear()
-                        def_kocka.clear()
-                        dge_kocka.clear()
-                        spd_kocka.clear()
                         roll_stat.clear()
-                        atk.clear()
-                        defense.clear()
-                        spd.clear()
-                        dge.clear()
                         atk_kocka_value.clear()
                         def_kocka_value.clear()
                         spd_kocka_value.clear()

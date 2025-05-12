@@ -183,4 +183,64 @@ class Monster():
 
         
 
+class Button:
+    def __init__(self, x, y, width, height, text, font=("gameovercre", 30, "normal"), color="white", text_offset=(35, 25)):
+        self.x, self.y = x, y
+        self.width, self.height = width, height
+        self.text = text
+        self.font = font
+        self.text_offset = text_offset
+        self.turtle = turtle.Turtle()
+        self.turtle.hideturtle()
+        self.turtle.penup()
+        self.turtle.speed(0)
+        self.color = color
+
+    def draw(self):
+        self.turtle.fillcolor(self.color)
+        self.turtle.begin_fill()
+        self.turtle.goto(self.x, self.y)
+        self.turtle.goto(self.x + self.width, self.y)
+        self.turtle.goto(self.x + self.width, self.y + self.height)
+        self.turtle.goto(self.x, self.y + self.height)
+        self.turtle.goto(self.x, self.y)
+        self.turtle.end_fill()
+        self.turtle.goto(self.x + self.text_offset[0], self.y + self.text_offset[1])
+        self.turtle.write(self.text, font=self.font)
+
+    def is_clicked(self, click_x, click_y):
+        return self.x <= click_x <= self.x + self.width and self.y <= click_y <= self.y + self.height
+
+    def clear(self):
+        self.turtle.clear()
+
+
+class InventoryItem:
+    def __init__(self, image, position_hidden=(1000, 1000)):
+        self.turtle = turtle.Turtle()
+        self.turtle.shape(image)
+        self.turtle.penup()
+        self.turtle.speed(0)
+        self.hide(position_hidden)
+
+    def move_to(self, x, y):
+        self.turtle.goto(x, y)
+
+    def hide(self, position=(1000, 1000)):
+        self.move_to(*position)
+
+class UIStat:
+    def __init__(self, x, y, value, color="#FEDA41"):
+        self.value = value
+        self.turtle = turtle.Turtle()
+        self.turtle.hideturtle()
+        self.turtle.penup()
+        self.turtle.speed(0)
+        self.turtle.color(color)
+        self.turtle.goto(x, y)
+        self.update(value)
+
+    def update(self, new_value):
+        self.turtle.clear()
+        self.turtle.write(str(new_value), font=("gameovercre", 16, "normal"))
 
