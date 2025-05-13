@@ -10,7 +10,8 @@ class Game():
         self.spd = None
         self.dge = None
         self.game_n = None
-        self.mode = None
+        self.mode = "zacetek"
+        self.curent_mode = None
         self.x = 0
         self.y = 0
         self.hp = 0
@@ -24,7 +25,28 @@ class Game():
         'fight_screen_monster' : [(1000,1000,1000,1000,"neki")]
         }
         self.monsters = [Monster(50, 5, 5, 5, 5, 250, 0, "svet_desno", 'oh no zojooooo\slike\golem.gif', "true")]
-        
+        self.inventory_on = False
+        self.menu_True = False
+        self.number_of_hearts = 3
+        self.have_wooden_sword = True
+        self.wooden_sword_value = False
+        self.atk_value = 1
+        self.def_value = 1
+        self.spd_value = 1
+        self.dge_value = 1
+        self.new_load1 = "NEW GAME"
+        self.new_load2 = "NEW GAME"
+        self.new_load3 = "NEW GAME"
+        self.ui_hp = None
+        self.inventory_items = {}
+        self.inventory_buttons = {}
+        self.ozadja = {
+    "svet": Ozadje("oh no zojooooo\\slike\\svet1.gif"),
+    "zacetna_hisa": Ozadje("oh no zojooooo\\slike\\zacetna_hisa.gif"),
+    "svet_desno": Ozadje("oh no zojooooo\\slike\\svet2.gif"),
+    "svet_levo": Ozadje("oh no zojooooo\\slike\\prozorno_ozadje.gif"),
+    "fight_screen_monster": Ozadje("oh no zojooooo\\slike\\prozorno_ozadje.gif"),
+}
 
 
     def set_atk(self, atk):
@@ -244,3 +266,19 @@ class UIStat:
         self.turtle.clear()
         self.turtle.write(str(new_value), font=("gameovercre", 16, "normal"))
 
+class Ozadje:
+    def __init__(self, image, position_hidden=(1000, 1000)):
+        self.turtle = turtle.Turtle()
+        self.turtle.shape(image)
+        self.turtle.penup()
+        self.turtle.speed(0)
+        self.hide(position_hidden)
+
+    def show(self, x=0, y=0):
+        self.turtle.goto(x, y)
+
+    def hide(self, position=(1000, 1000)):
+        self.turtle.goto(*position)
+
+    def set_position(self, x, y):
+        self.turtle.goto(x, y)
