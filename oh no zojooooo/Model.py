@@ -5,6 +5,7 @@ import turtle
 
 class Game():
     def __init__(self):
+        self.running = True
         self.atk = None
         self.defense = None
         self.spd = None
@@ -14,8 +15,9 @@ class Game():
         self.curent_mode = None
         self.x = 0
         self.y = 0
-        self.hp = 0
+        self.hp = 100
         self.golem_alive = True
+        self.igralec = None
         self.objects = {
         "svet" : [(230, 50, 310, 44, "zacetna_hisa"), (390, 100, 400, -100,"svet_desno"),(-400, 100, -390, -100,"svet_levo")],
         "zacetna_hisa" : [(-50, -245, 50, -1000,"svet"),(-60, 300, 60, 90, "chest")],
@@ -25,9 +27,12 @@ class Game():
         'fight_screen_monster' : [(1000,1000,1000,1000,"neki")]
         }
         self.monsters = [Monster(50, 5, 5, 5, 5, 250, 0, "svet_desno", 'oh no zojooooo\slike\golem.gif', "true")]
+        self.player_attacked = False
+        self.monster_attacked = False
         self.inventory_on = False
         self.menu_True = False
         self.number_of_hearts = 3
+        self.ui_srcka = []
         self.have_wooden_sword = True
         self.wooden_sword_value = False
         self.atk_value = 1
@@ -37,6 +42,11 @@ class Game():
         self.new_load1 = "NEW GAME"
         self.new_load2 = "NEW GAME"
         self.new_load3 = "NEW GAME"
+        self.menu = None
+        self.current_monster = None
+        self.menu_open = False
+        self.curent_mode = None
+
         self.ui_hp = None
         self.inventory_items = {}
         self.inventory_buttons = {}
@@ -47,6 +57,27 @@ class Game():
     "svet_levo": Ozadje("oh no zojooooo\\slike\\prozorno_ozadje.gif"),
     "fight_screen_monster": Ozadje("oh no zojooooo\\slike\\prozorno_ozadje.gif"),
 }
+        self.stat_roll = {
+    "atk_pressed": False,
+    "def_pressed": False,
+    "spd_pressed": False,
+    "dge_pressed": False,
+    "atk_value": None,
+    "def_value": None,
+    "spd_value": None,
+    "dge_value": None,
+    "atk_turtle": None,
+    "def_turtle": None,
+    "spd_turtle": None,
+    "dge_turtle": None,
+    "min": 1,
+    "atk_adjusted": False,
+    "def_adjusted": False,
+    "spd_adjusted": False,
+    "turtles": [],     
+    "kvadrati": []     
+}
+
 
 
     def set_atk(self, atk):
@@ -116,6 +147,11 @@ class Game():
 
         self.monsters = [Monster.from_json(monster) for monster in state["monsters"]]
         
+    def is_menu_open(self):
+        return self.menu_open
+
+    def toggle_inventory(self):
+        self.inventory_on = not self.inventory_on
 
 
 

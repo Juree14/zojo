@@ -22,64 +22,33 @@ wn.tracer(0)
 wn.cv._rootwindow.resizable(False, False)
 
 # dodajanje slik
-wn.addshape('oh no zojooooo\slike\zojo.gif')
-wn.addshape('oh no zojooooo\slike\zojoback.gif')
-wn.addshape('oh no zojooooo\slike\Zojoright.gif')
-wn.addshape('oh no zojooooo\slike\leftZojo.gif')
-wn.addshape('oh no zojooooo\slike\hisa.gif')
-wn.addshape('oh no zojooooo\slike\golem.gif')
-wn.addshape('oh no zojooooo\slike\inventory.gif')
-wn.addshape('oh no zojooooo\slike\woodensword.gif')
-wn.addshape('oh no zojooooo\slike\heal_potion.gif')
-wn.addshape('oh no zojooooo\slike\stats.gif')
-wn.addshape('oh no zojooooo\slike\srcek.gif')
-wn.addshape('oh no zojooooo\slike\WEAPONS.gif')
-wn.addshape('oh no zojooooo\slike\ITEMS.gif')
-wn.addshape('oh no zojooooo\slike\monster_interface.gif')
-wn.addshape('oh no zojooooo\slike\svet1.gif')
-wn.addshape('oh no zojooooo\slike\prozorno_ozadje.gif')
-wn.addshape('oh no zojooooo\slike\menu.gif')
-wn.addshape('oh no zojooooo\slike\svet2.gif')
-wn.addshape('oh no zojooooo\slike\zacetna_hisa.gif')
-wn.addshape('oh no zojooooo\slike\chest.gif')
-wn.addshape('oh no zojooooo\slike\chest_inventory.gif')
+wn.addshape(r'oh no zojooooo\slike\zojo.gif')
+wn.addshape(r'oh no zojooooo\slike\zojoback.gif')
+wn.addshape(r'oh no zojooooo\slike\Zojoright.gif')
+wn.addshape(r'oh no zojooooo\slike\leftZojo.gif')
+wn.addshape(r'oh no zojooooo\slike\hisa.gif')
+wn.addshape(r'oh no zojooooo\slike\golem.gif')
+wn.addshape(r'oh no zojooooo\slike\inventory.gif')
+wn.addshape(r'oh no zojooooo\slike\woodensword.gif')
+wn.addshape(r'oh no zojooooo\slike\heal_potion.gif')
+wn.addshape(r'oh no zojooooo\slike\stats.gif')
+wn.addshape(r'oh no zojooooo\slike\srcek.gif')
+wn.addshape(r'oh no zojooooo\slike\WEAPONS.gif')
+wn.addshape(r'oh no zojooooo\slike\ITEMS.gif')
+wn.addshape(r'oh no zojooooo\slike\monster_interface.gif')
+wn.addshape(r'oh no zojooooo\slike\svet1.gif')
+wn.addshape(r'oh no zojooooo\slike\prozorno_ozadje.gif')
+wn.addshape(r'oh no zojooooo\slike\menu.gif')
+wn.addshape(r'oh no zojooooo\slike\svet2.gif')
+wn.addshape(r'oh no zojooooo\slike\zacetna_hisa.gif')
+wn.addshape(r'oh no zojooooo\slike\chest.gif')
+wn.addshape(r'oh no zojooooo\slike\chest_inventory.gif')
+
 #Spremenljivke
-
-
-curent_mode = ""
-inventory_on = False
-menu_True = False
-
-atk_button_pressed = False
-def_button_pressed = False
-spd_button_pressed = False
-dge_button_pressed = False
-
-min = 1
-atk_spremenljivka = False
-def_spremenljivka = False
-spd_spremenljivka = False
 
 game = Game()
 master = Master()
 
-
-
-mode = None
-
-hp_value = 100
-number_of_hearts = 3
-
-wooden_sword_value = False
-
-have_wooden_sword = True
-global atk_button_ui, def_button_ui, spd_button_ui, dge_button_ui
-global fight_button_ui, items_button_ui, dont_fight_button_ui, run_button_ui, fight_back_button_ui
-
-atk_kocka_value = None
-def_kocka_value = None
-spd_kocka_value = None
-dge_kocka_value = None
 
 # Zacetna stran
 
@@ -191,11 +160,11 @@ def load_data():
     make_chest_inventory()
     naredi_igralca()
     make_inventory()
-    game.inventory_on = True
-    make_wooden_sword()
-    make_heal_potion()
+    game.inventory_on = True 
+    make_inventory_items()
     user_interface_on()
     make_menu()
+    povezi_tipke()
 
     if game.mode == "svet":
         svet()
@@ -206,18 +175,28 @@ def load_data():
     elif game.mode == "svet_levo":
         svet_levo()
 
-    igralec.setx(x)
-    igralec.sety(y)
+    game.igralec.setx(x)
+    game.igralec.sety(y)
 
     
+def narisi_kvadrat(x, y=0, velikost=100):
+    kvadrat = turtle.Turtle()
+    kvadrat.hideturtle()
+    kvadrat.speed(0)
+    kvadrat.penup()
+    kvadrat.goto(x - velikost // 2, y - velikost // 2)
+    kvadrat.pendown()
+    kvadrat.fillcolor("white")
+    kvadrat.begin_fill()
+    for _ in range(4):
+        kvadrat.forward(velikost)
+        kvadrat.left(90)
+    kvadrat.end_fill()
+    game.stat_roll["kvadrati"].append(kvadrat)
 
 
-
-
-# Soba za delitev moci
 def soba_delitev_moci():
     wn.bgcolor("black")
-
     roll_stat = turtle.Turtle()
     roll_stat.speed(0)
     roll_stat.color("white")
@@ -226,15 +205,20 @@ def soba_delitev_moci():
     roll_stat.goto(0, 190)
     roll_stat.write("Roll for stats", align="center", font=("gameovercre", 35, "normal"))
 
+    # Nariši kvadrate nad vsakim gumbom (y = 0)
+    narisi_kvadrat(-230, y=0)  # ATK
+    narisi_kvadrat(-75, y=0)   # DEF
+    narisi_kvadrat(75, y=0)    # SPD
+    narisi_kvadrat(230, y=0)   # DGE
+
+    # Gumbi
+    global atk_button_ui, def_button_ui, spd_button_ui, dge_button_ui
     atk_button_ui = Button(x=-280, y=-200, width=100, height=100, text="ROLL", font=("gameovercre", 20, "normal"), text_offset=(17, 32))
     atk_button_ui.draw()
-
     def_button_ui = Button(x=-125, y=-200, width=100, height=100, text="ROLL", font=("gameovercre", 20, "normal"), text_offset=(17, 32))
     def_button_ui.draw()
-
     spd_button_ui = Button(x=25, y=-200, width=100, height=100, text="ROLL", font=("gameovercre", 20, "normal"), text_offset=(17, 32))
     spd_button_ui.draw()
-
     dge_button_ui = Button(x=180, y=-200, width=100, height=100, text="ROLL", font=("gameovercre", 20, "normal"), text_offset=(17, 32))
     dge_button_ui.draw()
 
@@ -242,22 +226,23 @@ def soba_delitev_moci():
         if atk_button_ui.is_clicked(x, y) and game.mode == "delitev_moci":
             atk_button_ui.clear()
             game.mode = "def_kocka"
-            game.atk_button_pressed = True
+            game.stat_roll["atk_pressed"] = True
         elif def_button_ui.is_clicked(x, y) and game.mode == "def_kocka":
             def_button_ui.clear()
             game.mode = "spd_kocka"
-            game.def_button_pressed = True
+            game.stat_roll["def_pressed"] = True
         elif spd_button_ui.is_clicked(x, y) and game.mode == "spd_kocka":
             spd_button_ui.clear()
             game.mode = "dge_kocka"
-            game.spd_button_pressed = True
+            game.stat_roll["spd_pressed"] = True
         elif dge_button_ui.is_clicked(x, y) and game.mode == "dge_kocka":
             dge_button_ui.clear()
             game.mode = "begin"
-            game.dge_button_pressed = True
+            game.stat_roll["dge_pressed"] = True
             begin_button_on(roll_stat, atk_button_ui, def_button_ui, spd_button_ui, dge_button_ui)
 
     wn.onclick(stat_roll_click)
+
 
 
 
@@ -274,17 +259,28 @@ def begin_button_on(roll_stat, atk_button_ui, def_button_ui, spd_button_ui, dge_
 
     def begin_click(x, y):
         if begin_button_ui.is_clicked(x, y) and game.mode == "begin":
-            begin_button_ui.clear()
-            game.mode = "svet"
+            # Počisti vse kvadrate
+            for kv in game.stat_roll.get("kvadrati", []):
+                kv.clear()
+            game.stat_roll["kvadrati"].clear()
 
+            # Počisti vse številke
+            for t in game.stat_roll.get("turtles", []):
+                t.clear()
+            game.stat_roll["turtles"].clear()
+
+            # Počisti naslov
+            roll_stat.clear()
+
+            # Počisti gumbe
+            begin_button_ui.clear()
             atk_button_ui.clear()
             def_button_ui.clear()
             spd_button_ui.clear()
             dge_button_ui.clear()
-            roll_stat.clear()
 
-            
-
+            # Nadaljuj igro
+            game.mode = "svet"
             make_fight_weapons()
             make_fight_items()
             make_chest()
@@ -296,8 +292,10 @@ def begin_button_on(roll_stat, atk_button_ui, def_button_ui, spd_button_ui, dge_
             make_inventory_items()
             user_interface_on()
             make_menu()
+            povezi_tipke()
 
     wn.onclick(begin_click)
+
 
 
 
@@ -326,6 +324,8 @@ def user_interface_on():
     make_stat_turtle(-282, game.spd)
     make_stat_turtle(-232, game.dge)
 
+    # Shrani srca v game.ui_srcka
+    game.ui_srcka = []
     for i, x in enumerate([-375, -345, -315]):
         if i < game.number_of_hearts:
             heart = turtle.Turtle()
@@ -333,7 +333,9 @@ def user_interface_on():
             heart.shape('oh no zojooooo\\slike\\srcek.gif')
             heart.penup()
             heart.goto(x, 240)
+            game.ui_srcka.append(heart)
 
+    # Prikaz HP
     ui_hp = turtle.Turtle()
     ui_hp.hideturtle()
     ui_hp.speed(0)
@@ -343,7 +345,8 @@ def user_interface_on():
     ui_hp.goto(-149, 273)
     ui_hp.write("{}".format(game.hp), font=("gameovercre", 17, "normal"))
 
-    game.ui_hp = ui_hp  # če jo potrebujemo kasneje
+    game.ui_hp = ui_hp
+
 
 
 # Inventory
@@ -471,8 +474,8 @@ def svet_levo():
 def zacetna_hisa():
     prikazi_ozadje("zacetna_hisa")
     game.set_mode("zacetna_hisa")
-    igralec.setx(0)
-    igralec.sety(-220)
+    game.igralec.setx(0)
+    game.igralec.sety(-220)
     move_chest()
 
 
@@ -508,72 +511,56 @@ def move_chest_inventory():
 
 # monster interface
 def move_monster_interface():
-    if mode == "svet_desno":
+    if game.mode == "svet_desno":
         game.ozadja["monster_interface"].hide()
-        golem_atk.clear()
-        golem_def.clear()
-        golem_spd.clear()
-        golem_dge.clear()
-        golem_hp.clear()
+        if hasattr(game, "monster_stats_ui"):
+            for t in game.monster_stats_ui.values():
+                t.clear()
+            game.monster_stats_ui.clear()
+
 
 def make_monster_interface():
+    monster = game.current_monster
+    if not monster:
+        return
+
     game.ozadja["monster_interface"] = Ozadje("oh no zojooooo\\slike\\monster_interface.gif")
     game.ozadja["monster_interface"].show(242, 270)
 
-    # Statistični prikaz pošasti ostane enak
-    global golem_atk, golem_def, golem_spd, golem_dge, golem_hp
-    golem_atk = turtle.Turtle()
-    golem_atk.hideturtle()
-    golem_atk.speed(0)
-    golem_atk.pencolor("black")
-    golem_atk.color("#BC1212")
-    golem_atk.penup()
-    golem_atk.goto(212, 256)
-    golem_atk.write(m.monster_atk, font=("gameovercre", 16, "normal"))
+    # Ustvari in shrani prikaz statistike v game
+    game.monster_stats_ui = {}
 
-    golem_def = turtle.Turtle()
-    golem_def.hideturtle()
-    golem_def.speed(0)
-    golem_def.pencolor("black")
-    golem_def.color("#BC1212")
-    golem_def.penup()
-    golem_def.goto(262, 256)
-    golem_def.write(m.monster_def, font=("gameovercre", 16, "normal"))
+    def create_stat_turtle(x, value):
+        t = turtle.Turtle()
+        t.hideturtle()
+        t.speed(0)
+        t.pencolor("black")
+        t.color("#BC1212")
+        t.penup()
+        t.goto(x, 256)
+        t.write(str(value), font=("gameovercre", 16, "normal"))
+        return t
 
-    golem_spd = turtle.Turtle()
-    golem_spd.hideturtle()
-    golem_spd.speed(0)
-    golem_spd.pencolor("black")
-    golem_spd.color("#BC1212")
-    golem_spd.penup()
-    golem_spd.goto(312, 256)
-    golem_spd.write(m.monster_spd, font=("gameovercre", 16, "normal"))
+    game.monster_stats_ui["atk"] = create_stat_turtle(212, monster.monster_atk)
+    game.monster_stats_ui["def"] = create_stat_turtle(262, monster.monster_def)
+    game.monster_stats_ui["spd"] = create_stat_turtle(312, monster.monster_spd)
+    game.monster_stats_ui["dge"] = create_stat_turtle(362, monster.monster_dge)
 
-    golem_dge = turtle.Turtle()
-    golem_dge.hideturtle()
-    golem_dge.speed(0)
-    golem_dge.pencolor("black")
-    golem_dge.color("#BC1212")
-    golem_dge.penup()
-    golem_dge.goto(362, 256)
-    golem_dge.write(m.monster_dge, font=("gameovercre", 16, "normal"))
-
-    golem_hp = turtle.Turtle()
-    golem_hp.hideturtle()
-    golem_hp.speed(0)
-    golem_hp.pencolor("black")
-    golem_hp.color("#BC1212")
-    golem_hp.penup()
-    golem_hp.goto(149, 273)
-    golem_hp.write("{}".format(m.monster_hp), font=("gameovercre", 17, "normal"))
-
-
+    hp_turtle = turtle.Turtle()
+    hp_turtle.hideturtle()
+    hp_turtle.speed(0)
+    hp_turtle.pencolor("black")
+    hp_turtle.color("#BC1212")
+    hp_turtle.penup()
+    hp_turtle.goto(149, 273)
+    hp_turtle.write(str(monster.monster_hp), font=("gameovercre", 17, "normal"))
+    game.monster_stats_ui["hp"] = hp_turtle
 
 
 
 def draw_monsters():
     for m in game.monsters:
-        if m.svet == mode:
+        if m.svet == game.mode:
             m.monster.showturtle()
         else:
             m.monster.hideturtle()
@@ -596,227 +583,116 @@ def fight_screen_monster():
 # premik gumbov
 
 def delete_button():
-    if mode == "svet_desno":
-        fight_button.clear()
-        dont_fight_button.clear()
-        items_button.clear()
+    if game.mode == "svet_desno":
+        for key in ["fight", "dont_fight", "items"]:
+            btn = game.fight_buttons.get(key)
+            if btn:
+                btn.clear()
+        # Počisti tudi slovar
+        for key in ["fight", "dont_fight", "items"]:
+            game.fight_buttons.pop(key, None)
 
         
 
 # fight gumb
 
-    
 def fight_button_on():
-    global fight_button_ui, items_button_ui, dont_fight_button_ui, run_button_ui
-
     # Ustvari gumbe
-    fight_button_ui = Button(
-        x=-220, y=-200, width=130, height=80,
-        text="FIGHT", font=("gameovercre", 20, "normal"),
-        text_offset=(30, 23)
-    )
-    items_button_ui = Button(
-        x=-65, y=-200, width=130, height=80,
-        text="ITEMS", font=("gameovercre", 20, "normal"),
-        text_offset=(27, 23)
-    )
-    dont_fight_button_ui = Button(
-        x=90, y=-200, width=130, height=80,
-        text="DON'T\nFIGHT", font=("gameovercre", 20, "normal"),
-        text_offset=(20, 10)
-    )
+    fight_btn = Button(x=-220, y=-200, width=130, height=80, text="FIGHT", font=("gameovercre", 20, "normal"), text_offset=(30, 23))
+    items_btn = Button(x=-65, y=-200, width=130, height=80, text="ITEMS", font=("gameovercre", 20, "normal"), text_offset=(27, 23))
+    dont_fight_btn = Button(x=90, y=-200, width=130, height=80, text="DON'T\nFIGHT", font=("gameovercre", 20, "normal"), text_offset=(20, 10))
 
     # Nariši gumbe
-    fight_button_ui.draw()
-    items_button_ui.draw()
-    dont_fight_button_ui.draw()
+    fight_btn.draw()
+    items_btn.draw()
+    dont_fight_btn.draw()
+
+    # Shrani v slovar
+    game.fight_buttons = {
+        "fight": fight_btn,
+        "items": items_btn,
+        "dont_fight": dont_fight_btn
+    }
 
     # Če smo v boju, dodamo še RUN gumb
     if game.mode == "in_fight":
-        run_button_ui = Button(
-            x=90, y=-200, width=130, height=80,
-            text="RUN", font=("gameovercre", 20, "normal"),
-            text_offset=(40, 23)
-        )
-        run_button_ui.draw()
+        run_btn = Button(x=90, y=-200, width=130, height=80, text="RUN", font=("gameovercre", 20, "normal"), text_offset=(40, 23))
+        run_btn.draw()
+        game.fight_buttons["run"] = run_btn
 
-    # Povežemo klik z obravnavo
+    # Povežemo klik
     wn.onclick(fight_click)
 
+def fight_click(x, y):
+    print(game.mode)
+
+    fight_btn = game.fight_buttons.get("fight")
+    items_btn = game.fight_buttons.get("items")
+    dont_fight_btn = game.fight_buttons.get("dont_fight")
+    run_btn = game.fight_buttons.get("run")
+
+    if game.mode == "start_fight":
+        if fight_btn and fight_btn.is_clicked(x, y):
+            move_fight_weapons()
+            fight_back_button_on()
+            clear_fight_buttons()
+            game.mode = "fight_weapons"
+            move_item("wooden_sword", -350, -100)
+
+        elif items_btn and items_btn.is_clicked(x, y):
+            move_fight_items()
+            fight_back_button_on()
+            clear_fight_buttons()
+            game.mode = "fight_items"
+
+        elif dont_fight_btn and dont_fight_btn.is_clicked(x, y):
+            game.mode = "svet_desno"
+            move_monster_interface()
+            svet_desno()
+            clear_fight_buttons()
+            igralec_premik()
+            game.inventory_on = True
+
+    elif game.mode == "in_fight" and run_btn and run_btn.is_clicked(x, y):
+        print("RUN clicked (v prihodnje: logika pobega)")
 
 
-
-
-# items gumb
-
-    global items_button
-    global items_button_x
-    global items_button_y
-    global items_button_length
-    global items_button_width
-    items_button = turtle.Turtle()
-    items_button.hideturtle()
-    items_button.speed(0)
-    items_button.pencolor("black")
-    items_button.color("black")
-
-    items_button_x = -65
-    items_button_y = -200
-    items_button_length = 130
-    items_button_width = 80
-
-    
-    def items_button_press():
-        items_button.penup()
-        items_button.fillcolor("white")
-        items_button.begin_fill()
-        items_button.goto(items_button_x, items_button_y)
-        items_button.goto(items_button_x + items_button_length, items_button_y)
-        items_button.goto(items_button_x + items_button_length, items_button_y + items_button_width)
-        items_button.goto(items_button_x, items_button_y + items_button_width)
-        items_button.goto(items_button_x, items_button_y)
-        items_button.end_fill()
-        items_button.goto(items_button_x + 27, items_button_y + 23)
-        items_button.write("ITEMS", font=("gameovercre", 20, "normal"))
-    items_button_press()
-
-# dont fight gumb
-    global dont_fight_button
-    global dont_fight_button_x
-    global dont_fight_button_y
-    global dont_fight_button_length
-    global dont_fight_button_width
-    dont_fight_button = turtle.Turtle()
-    dont_fight_button.hideturtle()
-    dont_fight_button.speed(0)
-    dont_fight_button.pencolor("black")
-    dont_fight_button.color("black")
-
-    dont_fight_button_x = 90
-    dont_fight_button_y = -200
-    dont_fight_button_length = 130
-    dont_fight_button_width = 80
-
-    
-    def dont_fight_button_press():
-        dont_fight_button.penup()
-        dont_fight_button.fillcolor("white")
-        dont_fight_button.begin_fill()
-        dont_fight_button.goto(dont_fight_button_x, dont_fight_button_y)
-        dont_fight_button.goto(dont_fight_button_x + dont_fight_button_length, dont_fight_button_y)
-        dont_fight_button.goto(dont_fight_button_x + dont_fight_button_length, dont_fight_button_y + dont_fight_button_width)
-        dont_fight_button.goto(dont_fight_button_x, dont_fight_button_y + dont_fight_button_width)
-        dont_fight_button.goto(dont_fight_button_x, dont_fight_button_y)
-        dont_fight_button.end_fill()
-        dont_fight_button.goto(dont_fight_button_x + 20, dont_fight_button_y + 10)
-        dont_fight_button.write(" DON'T\n FIGHT", font=("gameovercre", 20, "normal"))
-    dont_fight_button_press()
-    
-
-# run gumb
-    if mode == "in_fight":
-        global run_button
-        global run_button_x
-        global run_button_y
-        global run_button_length
-        global run_button_width
-        run_button = turtle.Turtle()
-        run_button.hideturtle()
-        run_button.speed(0)
-        run_button.pencolor("black")
-        run_button.color("black")
-
-        run_button_x = 90
-        run_button_y = -200
-        run_button_length = 130
-        run_button_width = 80
-
-    
-        def run_button_press():
-            run_button.penup()
-            run_button.fillcolor("white")
-            run_button.begin_fill()
-            run_button.goto(run_button_x, run_button_y)
-            run_button.goto(run_button_x + run_button_length, run_button_y)
-            run_button.goto(run_button_x + run_button_length, run_button_y + run_button_width)
-            run_button.goto(run_button_x, run_button_y + run_button_width)
-            run_button.goto(run_button_x, run_button_y)
-            run_button.end_fill()
-            run_button.goto(run_button_x + 40, run_button_y + 23)
-            run_button.write("RUN", font=("gameovercre", 20, "normal"))
-        run_button_press()
-    
-# detektor pritiska  fight gumbov
-    def fight_click(x, y):
-        global mode, inventory_on, wooden_sword_value
-        print(mode)
-        if mode == "start_fight":
-            if fight_button_ui.is_clicked(x, y):
-                move_fight_weapons()
-                fight_back_button_on()
-                clear_fight_buttons()
-                mode = "fight_weapons"
-                move_wooden_sword()
-
-            elif items_button_ui.is_clicked(x, y):
-                move_fight_items()
-                fight_back_button_on()
-                clear_fight_buttons()
-                mode = "fight_items"
-
-            elif dont_fight_button_ui.is_clicked(x, y):
-                mode = "svet_desno"
-                move_monster_interface()
-                svet_desno()
-                clear_fight_buttons()
-                igralec_premik()
-                inventory_on = True
-
-        elif mode == "in_fight" and run_button_ui.is_clicked(x, y):
-            print("RUN clicked (v prihodnje: logika pobega)")
 
 def clear_fight_buttons():
-    fight_button_ui.clear()
-    items_button_ui.clear()
-    dont_fight_button_ui.clear()
-    if mode == "in_fight":
-        run_button_ui.clear()
+    for btn in game.fight_buttons.values():
+        btn.clear()
+    game.fight_buttons.clear()
+
 
 # weapons
 
 def make_fight_weapons():
-    global fight_weapons
-    fight_weapons = turtle.Turtle()
-    fight_weapons.speed(0)
-    fight_weapons.shape('oh no zojooooo\slike\WEAPONS.gif')
-    fight_weapons.penup()
-    fight_weapons.goto(1000,1000)
+    game.ozadja["fight_weapons"] = Ozadje("oh no zojooooo\\slike\\WEAPONS.gif")
+
 
 
 def move_fight_weapons():
-    if mode != "fight_weapons":
-        fight_weapons.setx(0)
-        fight_weapons.sety(-183)
-    if mode == "fight_weapons":
-        fight_weapons.setx(1000)
-        fight_weapons.sety(1000)
-    if mode == "svet_desno":
-        fight_weapons.setx(1000)
-        fight_weapons.sety(1000)
+    if game.mode == "fight_weapons":
+        game.ozadja["fight_weapons"].hide()
+    elif game.mode == "svet_desno":
+        game.ozadja["fight_weapons"].hide()
+    else:
+        game.ozadja["fight_weapons"].show(0, -183)
+
 
 def make_fight_items():
     global fight_items
     fight_items = turtle.Turtle()
     fight_items.speed(0)
-    fight_items.shape('oh no zojooooo\slike\ITEMS.gif')
+    fight_items.shape(r'oh no zojooooo\slike\ITEMS.gif')
     fight_items.penup()
     fight_items.goto(1000,-1803)
 
 def move_fight_items():
-    if mode != "fight_items":
+    if game.mode != "fight_items":
         fight_items.setx(0)
         fight_items.sety(-183)
-    if mode == "fight_items":
+    if game.mode == "fight_items":
         fight_items.setx(1000)
         fight_items.sety(1000)
 
@@ -824,62 +700,40 @@ def move_fight_items():
 #back button
 
 def fight_back_button_on():
-    global fight_back_button
-    global fight_back_button_x
-    global fight_back_button_y
-    global fight_back_button_length
-    global fight_back_button_width
-    
-    fight_back_button = turtle.Turtle()
-    fight_back_button.hideturtle()
-    fight_back_button.speed(0)
-    fight_back_button.pencolor("black")
-    fight_back_button.color("black")
+    back_btn = Button(
+        x=207, y=-272, width=130, height=80,
+        text="BACK", font=("gameovercre", 20, "normal"),
+        color="#FEDA41", text_offset=(30, 23)
+    )
+    back_btn.draw()
+    game.fight_buttons["back"] = back_btn
 
-    fight_back_button_x = 207
-    fight_back_button_y = -272
-    fight_back_button_length = 130
-    fight_back_button_width = 80
-
-    
-    def fight_back_button_press():
-        fight_back_button.penup()
-        fight_back_button.fillcolor("#FEDA41")
-        fight_back_button.begin_fill()
-        fight_back_button.goto(fight_back_button_x, fight_back_button_y)
-        fight_back_button.goto(fight_back_button_x + fight_back_button_length, fight_back_button_y)
-        fight_back_button.goto(fight_back_button_x + fight_back_button_length, fight_back_button_y + fight_back_button_width)
-        fight_back_button.goto(fight_back_button_x, fight_back_button_y + fight_back_button_width)
-        fight_back_button.goto(fight_back_button_x, fight_back_button_y)
-        fight_back_button.end_fill()
-        fight_back_button.goto(fight_back_button_x + 30, fight_back_button_y + 23)
-        fight_back_button.write("BACK", font=("gameovercre", 20, "normal"))
-    fight_back_button_press()
-
-    def back_button_click(x,y):
-        global mode
-        global wooden_sword_value
-        if mode == "fight_weapons":
-            if fight_back_button_x <= x <= fight_back_button_x + fight_back_button_length:
-                if fight_back_button_y <= y <= fight_back_button_y + fight_back_button_width:
-                    move_fight_weapons() 
-                    fight_back_button.clear()
-                    mode = "start_fight"
-                    fight_button_on()
-                    move_wooden_sword()
-            if have_wooden_sword == True:
-                if -390 < x < -320:
-                    if -180 < y < -100:
-                        wooden_sword_value = True
-                        fight()
-        if mode == "fight_items":
-            if fight_back_button_x <= x <= fight_back_button_x + fight_back_button_length:
-                if fight_back_button_y <= y <= fight_back_button_y + fight_back_button_width:
-                    move_fight_items()
-                    fight_back_button.clear()
-                    mode = "start_fight"
-                    fight_button_on()
     wn.onclick(back_button_click)
+
+def back_button_click(x, y):
+    back_btn = game.fight_buttons.get("back")
+    if not back_btn or not back_btn.is_clicked(x, y):
+        return
+
+    if game.mode == "fight_weapons":
+        move_fight_weapons()
+        back_btn.clear()
+        game.fight_buttons.pop("back", None)
+        game.mode = "start_fight"
+        fight_button_on()
+        move_item("wooden_sword", -350, -100)
+
+        if game.have_wooden_sword:
+            if -390 < x < -320 and -180 < y < -100:
+                game.wooden_sword_value = True
+                fight()
+
+    elif game.mode == "fight_items":
+        move_fight_items()
+        back_btn.clear()
+        game.fight_buttons.pop("back", None)
+        game.mode = "start_fight"
+        fight_button_on()
 
 
 # rolling dice
@@ -895,106 +749,120 @@ def roll_d4(times_rolled):
 # fight
 
 def fight():
-    global monster_attacked
-    global player_attacked
-    if spd_value >= m.monster_spd:
-        player_attacked = True
+    monster = game.current_monster
+    if not monster:
+        return
+
+    if game.spd_value >= monster.monster_spd:
+        game.player_attacked = True
+        game.monster_attacked = False
         player_attack()
     else:
-        monster_attacked = True
+        game.monster_attacked = True
+        game.player_attacked = False
         monster_attack()
-        
-monster_attacked = False
-player_attacked = False
 
+
+        
 def player_attack():
-    global wooden_sword_value
-    global monster_attacked
-    if wooden_sword_value == True:
-        damage =  roll_d4(3) + (atk_value // 2)
+    monster = game.current_monster
+    if not monster:
+        return
+
+    if game.wooden_sword_value:
+        damage = roll_d4(3) + (game.atk_value // 2)
         print(damage)
-    if int(random.uniform(1,101)) < m.monster_dge :
-        print("u missed")
-    else:
-        m.monster_hp = m.monster_hp -(damage - m.monster_def // 2)
-        golem_hp.clear()
-        golem_hp.write( "{}".format(m.monster_hp), font=("gameovercre", 17, "normal"))
-    if monster_attacked == True:
+
+        if int(random.uniform(1, 101)) < monster.monster_dge:
+            print("u missed")
+        else:
+            monster.monster_hp -= (damage - monster.monster_def // 2)
+
+            if "hp" in game.monster_stats_ui:
+                game.monster_stats_ui["hp"].clear()
+                game.monster_stats_ui["hp"].write(str(monster.monster_hp), font=("gameovercre", 17, "normal"))
+
+    if game.monster_attacked:
         check_hp()
     else:
         monster_attack()
+
+
 
 
 def monster_attack():
-    global hp_value
-    damage =  roll_d4(1) + (m.monster_atk)
+    monster = game.current_monster
+    if not monster:
+        return
+
+    damage = roll_d4(1) + monster.monster_atk
     print(damage)
-    if int(random.uniform(1,101)) < m.monster_dge :
+
+    if int(random.uniform(1, 101)) < monster.monster_dge:
         print("it missed")
     else:
-        hp_value = hp_value -(damage - def_value // 2)
-        ui_hp.clear()
-        ui_hp.write( "{}".format(hp_value), font=("gameovercre", 17, "normal"))
-    if player_attacked == True:
+        game.hp -= (damage - game.def_value // 2)
+        game.ui_hp.clear()
+        game.ui_hp.write(str(game.hp), font=("gameovercre", 17, "normal"))
+
+    if game.player_attacked:
         check_hp()
     else:
         player_attack()
+
 
 
 
 
 
 def check_hp():
-    global mode
-    global inventory_on
-    global hp_value
-    global number_of_hearts
-    if hp_value <= 0:
+    monster = game.current_monster
+    if not monster:
+        return
+
+    if game.hp <= 0:
         print("you lost")
-        fight_back_button.clear()
-        mode = "svet_desno"
+        game.fight_buttons.get("back", Button(0, 0, 0, 0, "")).clear()
+        game.mode = "svet_desno"
         delete_button()
         move_fight_weapons()
-        move_wooden_sword()
+        hide_item("wooden_sword")
         move_monster_interface()
         svet_desno()
         igralec_premik()
-        inventory_on = True
-        ui_hp.clear()
-        hp_value = 100
-        ui_hp.write( "{}".format(hp_value), font=("gameovercre", 17, "normal"))
-        if number_of_hearts == 3:
-            ui_srcek3.setx(1000)
-            number_of_hearts = 2
-        elif number_of_hearts == 2:
-            ui_srcek2.setx(1000)
-            number_of_hearts = 1
-        elif number_of_hearts == 1:
-            ui_srcek1.setx(1000)
-            number_of_hearts = 0
-        elif number_of_hearts == 0:
+        game.inventory_on = True
+        game.ui_hp.clear()
+        game.hp = 100
+        game.ui_hp.write(str(game.hp), font=("gameovercre", 17, "normal"))
+
+        if game.number_of_hearts > 0:
+            game.ui_srcka[game.number_of_hearts - 1].setx(1000)
+            game.number_of_hearts -= 1
+        else:
             print("game over")
 
-    elif m.monster_hp <= 0:
+    elif monster.monster_hp <= 0:
         print("you win")
-        fight_back_button.clear()
+        game.fight_buttons.get("back", Button(0, 0, 0, 0, "")).clear()
         fight_button_on()
-        m.set_alive(False)
-        mode = "svet_desno"
-        move_fight_weapons() 
-        move_wooden_sword()
+        monster.set_alive(False)
+        game.mode = "svet_desno"
+        move_fight_weapons()
+        hide_item("wooden_sword")
         move_monster_interface()
         svet_desno()
         delete_button()
         igralec_premik()
         draw_monsters()
-        inventory_on = True
+        game.inventory_on = True
+
     else:
         move_fight_weapons()
-        fight_back_button.clear()
-        mode = "start_fight"
-        move_wooden_sword()
+        game.fight_buttons.get("back", Button(0, 0, 0, 0, "")).clear()
+        game.mode = "start_fight"
+        move_item("wooden_sword", -350, -100)
         fight_button_on()
+
 
 
 
@@ -1004,28 +872,38 @@ def check_hp():
 # premikanje igralca
 
 def igralec_premik():
-    if mode == "fight_screen_monster":
-        igralec.setx(1000)
-        igralec.sety(1000)
-    if mode == "svet_desno":
-        igralec.setx(150)
-        igralec.sety(0)
+    if game.mode == "fight_screen_monster":
+        game.igralec.setx(1000)
+        game.igralec.sety(1000)
+    elif game.mode == "svet_desno":
+        game.igralec.setx(150)
+        game.igralec.sety(0)
+    elif game.mode == "svet_levo":
+        game.igralec.setx(-150)
+        game.igralec.sety(0)
+    elif game.mode == "zacetna_hisa":
+        game.igralec.setx(0)
+        game.igralec.sety(-220)
+    elif game.mode == "svet":
+        game.igralec.setx(0)
+        game.igralec.sety(-200)
 
 
 
 
-# Igralec #naredi_igralca()
+
 def naredi_igralca():
-    global igralec
     igralec = turtle.Turtle()
     igralec.speed(0)
-    igralec.shape('oh no zojooooo\slike\zojo.gif')
+    igralec.shape('oh no zojooooo\\slike\\zojo.gif')
     igralec.penup()
-    igralec.goto(0,-200)
+    igralec.goto(0, -200)
+    game.igralec = igralec
+
     
     
-# hoja igralca
-    collisions = {
+
+collisions = {
         "svet" : [(65, 300, 400, 50),(-400,-80,-364, -237),(-392, -219,391, -291),(362, -80, 400, -300),(-396, 297,-311, 20),(-330, 295,-100, 201)],
         "zacetna_hisa" : [(1000,1000,1000,1000)],
         "svet_desno" : [(-395, 293,-378, 5),(-394, 294,-136, 103),(-169, 290,44, 169),(55, 176,389, 93),(-397, -83,-385, -286),(-383, -209,-199, -290),(-227, -133,-167, -289),(-163, -55,23, -169),(29, -131,389, -287),(379, -50,400, -300)],
@@ -1035,152 +913,143 @@ def naredi_igralca():
     }
 
 
-    def can_move(mode, x, y):
-        ovire = collisions[mode]
-        for xmin , ymax , xmax, ymin in ovire:
-            if (xmin < x < xmax and ymin < y < ymax):
-                return False
-        return True
-        
-        
-    def detection(mode, x, y):
-        global object_detection
-        ovire = game.objects[mode]
-        hit = False
-        object_detection = ""
-        for xmin , ymax , xmax, ymin, object_name in ovire:
-            if (xmin < x < xmax and ymin < y < ymax):
-                hit = True
-                object_detection = object_name
-        return object_detection and hit
-    
-    def fight_detection(x,y):
-        global m
-        for m in game.monsters:
-            if m.fight_monster(x,y, mode):
-                return m
-        return None
+def can_move(mode, x, y):
+    ovire = collisions[mode]
+    for xmin , ymax , xmax, ymin in ovire:
+        if (xmin < x < xmax and ymin < y < ymax):
+            return False
+    return True
         
         
 
+def detection(mode, x, y):
+    global object_detection
+    ovire = game.objects[mode]
+    hit = False
+    object_detection = ""
+    for xmin, ymax, xmax, ymin, object_name in ovire:
+        if xmin < x < xmax and ymin < y < ymax:
+            hit = True
+            object_detection = object_name
+    return object_detection and hit
+
     
-    def igralec_up():
-        global x
-        global y
-        global mode
-        global inventory_on
-        x = igralec.xcor()
-        y = igralec.ycor()
-        if can_move(game.mode, x, y+5):
-            y += 5
-            x += 0
-            igralec.sety(y)
-            igralec.setx(x)
-            igralec.shape('oh no zojooooo\slike\zojoback.gif')
-        if detection(game.mode, x, y+5):
+def fight_detection(x, y):
+    for monster in game.monsters:
+        if monster.fight_monster(x, y, game.mode):
+            game.current_monster = monster
+            return monster
+    return None
+
+
+        
+
+    
+def igralec_up():
+    x = game.igralec.xcor()
+    y = game.igralec.ycor()
+    if can_move(game.mode, x, y + 5):
+        y += 5
+        game.igralec.sety(y)
+        game.igralec.shape('oh no zojooooo\\slike\\zojoback.gif')
+
+        if detection(game.mode, x, y):
             if object_detection == "zacetna_hisa":
-                mode = "zacetna_hisa"
+                game.set_mode("zacetna_hisa")
                 time.sleep(0.1)
                 zacetna_hisa()
-            if object_detection == "chest":
+            elif object_detection == "chest":
                 print("hi")
                 move_chest_inventory()
                 open_inventory()
-        if fight_detection(x,y+5):
-            mode = "fight_screen_monster"
+
+        if fight_detection(x, y):
+            game.set_mode("fight_screen_monster")
             fight_screen_monster()
             make_monster_interface()
-            inventory_on = False
+            game.inventory_on = False
+
             
             
-    def igralec_down():
-        global x
-        global y
-        global mode
-        global inventory_on
-        x = igralec.xcor()
-        y = igralec.ycor()
-        if can_move(game.mode, x, y-5):
-            y -= 5
-            x += 0
-            igralec.sety(y)
-            igralec.setx(x)
-            igralec.shape('oh no zojooooo\slike\zojo.gif')
-        if detection(game.mode, x, y-5):
+def igralec_down():
+    x = game.igralec.xcor()
+    y = game.igralec.ycor()
+    if can_move(game.mode, x, y - 5):
+        y -= 5
+        game.igralec.sety(y)
+        game.igralec.shape('oh no zojooooo\\slike\\zojo.gif')
+
+        if detection(game.mode, x, y):
             if object_detection == "svet":
                 time.sleep(0.1)
-                igralec.setx(270)
-                igralec.sety(41)
-                mode = "svet"
+                game.igralec.setx(270)
+                game.igralec.sety(41)
+                game.set_mode("svet")
                 svet()
-        if fight_detection(x,y-5):
-            mode = "fight_screen_monster"
+
+        if fight_detection(x, y):
+            game.set_mode("fight_screen_monster")
             fight_screen_monster()
             make_monster_interface()
-            inventory_on = False
+            game.inventory_on = False
+
 
     
-    def igralec_right():
-        global x
-        global y
-        global mode
-        global inventory_on
-        x = igralec.xcor()
-        y = igralec.ycor()
-        if can_move(game.mode, x+5, y):
-            y -= 0
-            x += 5
-            igralec.sety(y)
-            igralec.setx(x)
-            igralec.shape('oh no zojooooo\slike\Zojoright.gif')
-        if detection(game.mode, x+5, y):
+def igralec_right():
+    x = game.igralec.xcor()
+    y = game.igralec.ycor()
+    if can_move(game.mode, x + 5, y):
+        x += 5
+        game.igralec.setx(x)
+        game.igralec.shape('oh no zojooooo\\slike\\Zojoright.gif')
+
+        if detection(game.mode, x, y):
             if object_detection == "svet_desno":
-                mode = "svet_desno"
+                game.set_mode("svet_desno")
                 svet_desno()
-                igralec.goto(-390,igralec.ycor()) 
-            if object_detection == "svet":
-                igralec.goto(-390,igralec.ycor())
-                mode = "svet"
-                svet()  
-        if fight_detection(x+5,y):
-            mode = "fight_screen_monster"
+                game.igralec.goto(-390, y)
+            elif object_detection == "svet":
+                game.set_mode("svet")
+                svet()
+                game.igralec.goto(-390, y)
+
+        if fight_detection(x, y):
+            game.set_mode("fight_screen_monster")
             fight_screen_monster()
             make_monster_interface()
-            inventory_on = False
+            game.inventory_on = False
+
 
     
-    def igralec_left():
-        global x
-        global y
-        global mode
-        global inventory_on
-        x = igralec.xcor()
-        y = igralec.ycor()
-        if can_move(game.mode, x-5, y):
-            y -= 0
-            x -= 5
-            igralec.sety(y)
-            igralec.setx(x)
-            igralec.shape('oh no zojooooo\slike\leftZojo.gif')
-        if detection(game.mode, x-5, y):
+def igralec_left():
+    x = game.igralec.xcor()
+    y = game.igralec.ycor()
+    if can_move(game.mode, x - 5, y):
+        x -= 5
+        game.igralec.setx(x)
+        game.igralec.shape('oh no zojooooo\\slike\\leftZojo.gif')
+
+        if detection(game.mode, x, y):
             if object_detection == "svet_levo":
-                mode = "svet_levo"
+                game.set_mode("svet_levo")
                 svet_levo()
-                igralec.goto(390,igralec.ycor())
-            if object_detection == "svet":
-                mode = "svet"
+                game.igralec.goto(390, y)
+            elif object_detection == "svet":
+                game.set_mode("svet")
                 svet()
-                igralec.goto(390,igralec.ycor())
-        if fight_detection(x-5,y):
-            mode = "fight_screen_monster"
+                game.igralec.goto(390, y)
+
+        if fight_detection(x, y):
+            game.set_mode("fight_screen_monster")
             fight_screen_monster()
             make_monster_interface()
-            inventory_on = False
-            
+            game.inventory_on = False
+
         
 
 
 # Tipkovnica
+def povezi_tipke():
     wn.listen()
     wn.onkeypress(igralec_up, "w")
     wn.onkeypress(igralec_down, "s")
@@ -1190,208 +1059,186 @@ def naredi_igralca():
     wn.onkeypress(igralec_down, "S")
     wn.onkeypress(igralec_right, "D")
     wn.onkeypress(igralec_left, "A")
-
     wn.onkeypress(open_inventory, "e")
     wn.onkeypress(open_inventory, "E")
-
-
     wn.onkeypress(menu_on, "Escape")
+
 
 # menu
 
 def make_menu():
-    global menu
     menu = turtle.Turtle()
     menu.speed(0)
-    menu.shape('oh no zojooooo\slike\menu.gif')
+    menu.shape('oh no zojooooo\\slike\\menu.gif')
     menu.penup()
-    menu.goto(1000,1000)
+    menu.goto(1000, 1000)
+    game.menu = menu
+
+
 def menu_on():
-    global curent_mode
-    global mode
-    global inventory_on
-    global menu_True
-    if inventory_on == True:
-        if menu_True == False:
-            curent_mode = mode
-            mode = ("menu")
-            menu.setx(0)
-            menu.sety(0)
+    if game.inventory_on:
+        if not game.menu_open:
+            game.curent_mode = game.mode
+            game.set_mode("menu")
+            game.menu.setx(0)
+            game.menu.sety(0)
             save_and_quit_on()
-            menu_True = True
-            ui_hp.clear()
-        elif menu_True == True:
-            mode = curent_mode
-            menu_True = False
-            menu.setx(1000)
-            menu.sety(1000)
-            save_and_quit.clear()
-            ui_hp.write( "{}".format(hp_value), font=("gameovercre", 17, "normal"))
-        
+            wn.onclick(menu_button_click)
+            game.menu_open = True
+            game.ui_hp.clear()
+        else:
+            game.set_mode(game.curent_mode)
+            game.menu_open = False
+            game.menu.setx(1000)
+            game.menu.sety(1000)
+            if hasattr(game, "save_button"):
+                game.save_button.clear()
+            game.ui_hp.write(str(game.hp), font=("gameovercre", 17, "normal"))
 
 
 
 def save_and_quit_on():
-    global save_and_quit
-    global save_and_quit_x
-    global save_and_quit_y
-    global save_and_quit_length
-    global save_and_quit_width
-    save_and_quit = turtle.Turtle()
-    save_and_quit.hideturtle()
-    save_and_quit.speed(0)
-    save_and_quit.pencolor("black")
-    save_and_quit.color("black")
+    # Ustvari gumb kot objekt razreda Button
+    save_button = Button(
+        x=-150, y=-100, width=300, height=80,
+        text="SAVE AND QUIT", font=("gameovercre", 20, "normal"),
+        color="#FEDA41", text_offset=(50, 23)
+    )
+    save_button.draw()
+    game.save_button = save_button  # Shrani v game
 
-    save_and_quit_x = -150
-    save_and_quit_y = -100
-    save_and_quit_length = 300
-    save_and_quit_width = 80
+def menu_button_click(x, y):
+    if game.mode == "menu" and hasattr(game, "save_button"):
+        if game.save_button.is_clicked(x, y):
+            save_game()
+            quit_game()
 
-    
-    def save_and_quit_press():
-        save_and_quit.penup()
-        save_and_quit.fillcolor("#FEDA41")
-        save_and_quit.begin_fill()
-        save_and_quit.goto(save_and_quit_x, save_and_quit_y)
-        save_and_quit.goto(save_and_quit_x + save_and_quit_length, save_and_quit_y)
-        save_and_quit.goto(save_and_quit_x + save_and_quit_length, save_and_quit_y + save_and_quit_width)
-        save_and_quit.goto(save_and_quit_x, save_and_quit_y + save_and_quit_width)
-        save_and_quit.goto(save_and_quit_x, save_and_quit_y)
-        save_and_quit.end_fill()
-        save_and_quit.goto(save_and_quit_x + 50, save_and_quit_y + 23)
-        save_and_quit.write("SAVE AND QUIT", font=("gameovercre", 20, "normal"))
-    save_and_quit_press()
 
-    def menu_button_click(x,y):
-        global mode
-        if mode == "menu":
-            if save_and_quit_x <= x <= save_and_quit_x + save_and_quit_length:
-                if save_and_quit_y <= y <= save_and_quit_y + save_and_quit_width:
-                    save_game()
-                    quit_game()
-                    
-    wn.onclick(menu_button_click)
 
 # save
 
 def save_game():
-    game.set_x(x)
-    game.set_y(y)
-    game.set_hp(hp_value)
+    game.set_x(game.igralec.xcor())
+    game.set_y(game.igralec.ycor())
+    game.set_hp(game.hp)
     game.save_game(f"game{game.game_n}.json")
     master.save_game("mastergame.json")
-    
+
 
 # quit game
 
 def quit_game():
-    global running
-    running = False
+    game.running = False
 
-# from turtle import *
-# import turtle as tur
-# def position(event):
-#     a, b = (event.x - 400), 0-(event.y - 300)
-#     print('{}, {}'.format(a, b))
 
-# ws = tur.getcanvas()
-# ws.bind('<Motion>', position)
-# tur.done()
+def animiraj_kocko(x, y, min_val=1, max_val=10, rolls=12, font=("gameovercre", 40, "normal")):
+    # Ustvari animator turtle za to lokacijo
+    animator = turtle.Turtle()
+    animator.hideturtle()
+    animator.speed(0)
+    animator.penup()
+    animator.goto(x, y - 20)
+    animator.color("black")
+
+    koncna_vrednost = None
+    for _ in range(rolls):
+        vrednost = random.randint(min_val, max_val)
+        animator.clear()
+        animator.write(str(vrednost), align="center", font=font)
+        time.sleep(0.03)
+        koncna_vrednost = vrednost
+
+    animator.clear()  # počisti zadnjo animacijo
+
+    # Ustvari turtle za končno vrednost
+    t = turtle.Turtle()
+    t.hideturtle()
+    t.speed(0)
+    t.penup()
+    t.goto(x, y - 20)
+    t.color("black")
+    t.write(str(koncna_vrednost), align="center", font=font)
+
+    # Shrani za kasnejše brisanje
+    game.stat_roll["turtles"].append(t)
+
+    return t, koncna_vrednost
+
+
 
 
 # loop igre 
 
-running = True
-while running:
+game.running = True
+while game.running:
     wn.update()
 
-    
-# vrtenje atk kocke
+    # ATK
+    if game.mode == "delitev_moci" and not game.stat_roll["atk_pressed"]:
+        t, value = animiraj_kocko(-230, 0)
+        game.stat_roll["atk_value"] = value
+        game.stat_roll["atk_turtle"] = t
 
-    if mode == "delitev_moci" and atk_button_pressed == False:
-        atk_kocka_value = turtle.Turtle()
-        atk_kocka_value.hideturtle()
-        atk_kocka_value.speed(0)
-        atk_kocka_value.pencolor("black")
-        atk_kocka_value.color("black")
-        atk_kocka_value.penup()
-        atk_kocka_value.goto(-245, -28)
-        atk_value = int(random.uniform(1,10))
-        atk_kocka_value.write( "{}".format(atk_value), font=("gameovercre", 40, "normal"))
-        time.sleep(0.1)
-        atk_kocka_value.clear()
-        
-    if mode == "def_kocka" and atk_button_pressed == True:
-        atk_kocka_value.write( "{}".format(atk_value), font=("gameovercre", 40, "normal"))
-        atk_button_pressed == False
-        game.set_atk(atk_value)
-        if atk_value < 4 and atk_spremenljivka == False:
-            min += (5 - atk_value)
-            atk_spremenljivka = True
-        
-# vrtenje def kocke      
+    if game.mode == "def_kocka" and game.stat_roll["atk_pressed"]:
+        t = game.stat_roll["atk_turtle"]
+        if t:
+            t.clear()
+            t.write(str(game.stat_roll["atk_value"]), align="center", font=("gameovercre", 40, "normal"))
+        game.stat_roll["atk_pressed"] = False
+        game.set_atk(game.stat_roll["atk_value"])
+        if game.stat_roll["atk_value"] < 4 and not game.stat_roll["atk_adjusted"]:
+            game.stat_roll["min"] += (5 - game.stat_roll["atk_value"])
+            game.stat_roll["atk_adjusted"] = True
 
-    if mode == "def_kocka" and def_button_pressed == False:
-        def_kocka_value = turtle.Turtle()
-        def_kocka_value.hideturtle()
-        def_kocka_value.speed(0)
-        def_kocka_value.pencolor("black")
-        def_kocka_value.color("black")
-        def_kocka_value.penup()
-        def_kocka_value.goto(-90, -28)
-        def_value = int(random.uniform(min,10))
-        def_kocka_value.write( "{}".format(def_value), font=("gameovercre", 40, "normal"))
-        time.sleep(0.1)
-        def_kocka_value.clear()
-        
-    if mode == "spd_kocka" and def_button_pressed == True:
-        def_kocka_value.write( "{}".format(def_value), font=("gameovercre", 40, "normal"))
-        def_button_pressed == False
-        game.set_def(def_value)
-        if def_value < 4 and def_spremenljivka == False:
-            min += (5 - def_value)
-            def_spremenljivka = True
-# vrtenje spd kocke
+    # DEF
+    if game.mode == "def_kocka" and not game.stat_roll["def_pressed"]:
+        t, value = animiraj_kocko(-75, 0, min_val=game.stat_roll["min"])
+        game.stat_roll["def_value"] = value
+        game.stat_roll["def_turtle"] = t
 
-    if mode == "spd_kocka" and spd_button_pressed == False:
-        spd_kocka_value = turtle.Turtle()
-        spd_kocka_value.hideturtle()
-        spd_kocka_value.speed(0)
-        spd_kocka_value.pencolor("black")
-        spd_kocka_value.color("black")
-        spd_kocka_value.penup()
-        spd_kocka_value.goto(60, -28)
-        spd_value = int(random.uniform(min,10))
-        spd_kocka_value.write( "{}".format(spd_value), font=("gameovercre", 40, "normal"))
-        time.sleep(0.1)
-        spd_kocka_value.clear()
-        
-    if mode == "dge_kocka" and spd_button_pressed == True:
-        spd_kocka_value.write( "{}".format(spd_value), font=("gameovercre", 40, "normal"))
-        spd_button_pressed == False
-        game.set_spd(spd_value)
-        if spd_value < 4 and spd_spremenljivka == False:
-            min += (5 - spd_value)
-            spd_spremenljivka = True
-#vrtenje dge kocke
-    if mode == "dge_kocka" and dge_button_pressed == False:
-        dge_kocka_value = turtle.Turtle()
-        dge_kocka_value.hideturtle()
-        dge_kocka_value.speed(0)
-        dge_kocka_value.pencolor("black")
-        dge_kocka_value.color("black")
-        dge_kocka_value.penup()
-        dge_kocka_value.goto(215, -28)
-        dge_value = int(random.uniform(min,10))
-        dge_kocka_value.write( "{}".format(dge_value), font=("gameovercre", 40, "normal"))
-        time.sleep(0.1)
-        dge_kocka_value.clear()
-        
-    if mode == "begin" and dge_button_pressed == True:
-        dge_kocka_value.write( "{}".format(dge_value), font=("gameovercre", 40, "normal"))
-        dge_button_pressed = False
-        game.set_dge(dge_value)
+    if game.mode == "spd_kocka" and game.stat_roll["def_pressed"]:
+        t = game.stat_roll["def_turtle"]
+        if t:
+            t.clear()
+            t.write(str(game.stat_roll["def_value"]), align="center", font=("gameovercre", 40, "normal"))
+        game.stat_roll["def_pressed"] = False
+        game.set_def(game.stat_roll["def_value"])
+        if game.stat_roll["def_value"] < 4 and not game.stat_roll["def_adjusted"]:
+            game.stat_roll["min"] += (5 - game.stat_roll["def_value"])
+            game.stat_roll["def_adjusted"] = True
+
+    # SPD
+    if game.mode == "spd_kocka" and not game.stat_roll["spd_pressed"]:
+        t, value = animiraj_kocko(75, 0, min_val=game.stat_roll["min"])
+        game.stat_roll["spd_value"] = value
+        game.stat_roll["spd_turtle"] = t
+
+    if game.mode == "dge_kocka" and game.stat_roll["spd_pressed"]:
+        t = game.stat_roll["spd_turtle"]
+        if t:
+            t.clear()
+            t.write(str(game.stat_roll["spd_value"]), align="center", font=("gameovercre", 40, "normal"))
+        game.stat_roll["spd_pressed"] = False
+        game.set_spd(game.stat_roll["spd_value"])
+        if game.stat_roll["spd_value"] < 4 and not game.stat_roll["spd_adjusted"]:
+            game.stat_roll["min"] += (5 - game.stat_roll["spd_value"])
+            game.stat_roll["spd_adjusted"] = True
+
+    # DGE
+    if game.mode == "dge_kocka" and not game.stat_roll["dge_pressed"]:
+        t, value = animiraj_kocko(230, 0, min_val=game.stat_roll["min"])
+        game.stat_roll["dge_value"] = value
+        game.stat_roll["dge_turtle"] = t
+
+    if game.mode == "begin" and game.stat_roll["dge_pressed"]:
+        t = game.stat_roll["dge_turtle"]
+        if t:
+            t.clear()
+            t.write(str(game.stat_roll["dge_value"]), align="center", font=("gameovercre", 40, "normal"))
+        game.stat_roll["dge_pressed"] = False
+        game.set_dge(game.stat_roll["dge_value"])
+
+
 
 
 
