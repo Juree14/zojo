@@ -302,6 +302,9 @@ class UIStat:
         self.turtle.clear()
         self.turtle.write(str(new_value), font=("gameovercre", 16, "normal"))
 
+    def clear(self):
+        self.turtle.clear()
+
 class Ozadje:
     def __init__(self, image, position_hidden=(1000, 1000)):
         self.turtle = turtle.Turtle()

@@ -11,7 +11,7 @@ import os.path
 import os
 from Model import InventoryItem
 from Model import Ozadje
-
+from Model import UIStat
 wn = turtle.Screen()
 wn.title("OH NO, Zojoooo!")
 #wn.bgpic('oh no zojooooo\slike\svet2.gif')
@@ -195,6 +195,7 @@ def narisi_kvadrat(x, y=0, velikost=100):
     game.stat_roll["kvadrati"].append(kvadrat)
 
 
+
 def soba_delitev_moci():
     wn.bgcolor("black")
     roll_stat = turtle.Turtle()
@@ -210,25 +211,34 @@ def soba_delitev_moci():
     narisi_kvadrat(-75, y=0)   # DEF
     narisi_kvadrat(75, y=0)    # SPD
     narisi_kvadrat(230, y=0)   # DGE
+    
 
     # Gumbi
-    global atk_button_ui, def_button_ui, spd_button_ui, dge_button_ui
-    atk_button_ui = Button(x=-280, y=-200, width=100, height=100, text="ROLL", font=("gameovercre", 20, "normal"), text_offset=(17, 32))
-    atk_button_ui.draw()
-    def_button_ui = Button(x=-125, y=-200, width=100, height=100, text="ROLL", font=("gameovercre", 20, "normal"), text_offset=(17, 32))
-    def_button_ui.draw()
-    spd_button_ui = Button(x=25, y=-200, width=100, height=100, text="ROLL", font=("gameovercre", 20, "normal"), text_offset=(17, 32))
-    spd_button_ui.draw()
-    dge_button_ui = Button(x=180, y=-200, width=100, height=100, text="ROLL", font=("gameovercre", 20, "normal"), text_offset=(17, 32))
-    dge_button_ui.draw()
-    game.stat_roll["atk_button_ui"] = atk_button_ui
-    game.stat_roll["def_button_ui"] = def_button_ui
-    game.stat_roll["spd_button_ui"] = spd_button_ui
-    game.stat_roll["dge_button_ui"] = dge_button_ui
+    
+    def narisi_naslednji_roll_gumb():
+        if not game.stat_roll["atk_pressed"]:
+            game.stat_roll["atk_button_ui"] = Button(x=-280, y=-200, width=100, height=100, text="ROLL", font=("gameovercre", 20, "normal"), text_offset=(17, 32))
+            game.stat_roll["atk_button_ui"].draw()
+        elif not game.stat_roll["def_pressed"]:
+            game.stat_roll["def_button_ui"] = Button(x=-125, y=-200, width=100, height=100, text="ROLL", font=("gameovercre", 20, "normal"), text_offset=(17, 32))
+            game.stat_roll["def_button_ui"].draw()
+        elif not game.stat_roll["spd_pressed"]:
+            game.stat_roll["spd_button_ui"] = Button(x=25, y=-200, width=100, height=100, text="ROLL", font=("gameovercre", 20, "normal"), text_offset=(17, 32))
+            game.stat_roll["spd_button_ui"].draw()
+        elif not game.stat_roll["dge_pressed"]:
+            game.stat_roll["dge_button_ui"] = Button(x=180, y=-200, width=100, height=100, text="ROLL", font=("gameovercre", 20, "normal"), text_offset=(17, 32))
+            game.stat_roll["dge_button_ui"].draw()
+    narisi_naslednji_roll_gumb()
+
 
     def stat_roll_click(x, y):
-        if atk_button_ui.is_clicked(x, y) and game.mode == "delitev_moci":
-            atk_button_ui.clear()
+        atk_btn = game.stat_roll.get("atk_button_ui")
+        def_btn = game.stat_roll.get("def_button_ui")
+        spd_btn = game.stat_roll.get("spd_button_ui")
+        dge_btn = game.stat_roll.get("dge_button_ui")
+
+        if atk_btn and atk_btn.is_clicked(x, y) and game.mode == "delitev_moci":
+            atk_btn.clear()
             game.mode = "def_kocka"
             game.stat_roll["atk_pressed"] = True
             t, value = animiraj_kocko(-230, -30)
@@ -238,9 +248,10 @@ def soba_delitev_moci():
             if value < 4 and not game.stat_roll["atk_adjusted"]:
                 game.stat_roll["min"] += (5 - value)
                 game.stat_roll["atk_adjusted"] = True
+            narisi_naslednji_roll_gumb()
 
-        elif def_button_ui.is_clicked(x, y) and game.mode == "def_kocka":
-            def_button_ui.clear()
+        elif def_btn and def_btn.is_clicked(x, y) and game.mode == "def_kocka":
+            def_btn.clear()
             game.mode = "spd_kocka"
             game.stat_roll["def_pressed"] = True
             t, value = animiraj_kocko(-75, -30, min_val=game.stat_roll["min"])
@@ -250,9 +261,10 @@ def soba_delitev_moci():
             if value < 4 and not game.stat_roll["def_adjusted"]:
                 game.stat_roll["min"] += (5 - value)
                 game.stat_roll["def_adjusted"] = True
+            narisi_naslednji_roll_gumb()
 
-        elif spd_button_ui.is_clicked(x, y) and game.mode == "spd_kocka":
-            spd_button_ui.clear()
+        elif spd_btn and spd_btn.is_clicked(x, y) and game.mode == "spd_kocka":
+            spd_btn.clear()
             game.mode = "dge_kocka"
             game.stat_roll["spd_pressed"] = True
             t, value = animiraj_kocko(75, -30, min_val=game.stat_roll["min"])
@@ -262,9 +274,10 @@ def soba_delitev_moci():
             if value < 4 and not game.stat_roll["spd_adjusted"]:
                 game.stat_roll["min"] += (5 - value)
                 game.stat_roll["spd_adjusted"] = True
+            narisi_naslednji_roll_gumb()
 
-        elif dge_button_ui.is_clicked(x, y) and game.mode == "dge_kocka":
-            dge_button_ui.clear()
+        elif dge_btn and dge_btn.is_clicked(x, y) and game.mode == "dge_kocka":
+            dge_btn.clear()
             game.mode = "begin"
             game.stat_roll["dge_pressed"] = True
             t, value = animiraj_kocko(230, -30, min_val=game.stat_roll["min"])
@@ -272,6 +285,7 @@ def soba_delitev_moci():
             game.stat_roll["dge_turtle"] = t
             game.set_dge(value)
             begin_button_on()
+
 
 
 
@@ -345,21 +359,11 @@ def user_interface_on():
     user_interface.penup()
     user_interface.goto(-245, 258)
 
-    def make_stat_turtle(x, value):
-        t = turtle.Turtle()
-        t.hideturtle()
-        t.speed(0)
-        t.pencolor("black")
-        t.color("#FEDA41")
-        t.penup()
-        t.goto(x, 256)
-        t.write("{}".format(value), font=("gameovercre", 16, "normal"))
-        return t
-
-    make_stat_turtle(-382, game.atk)
-    make_stat_turtle(-330, game.defense)
-    make_stat_turtle(-282, game.spd)
-    make_stat_turtle(-232, game.dge)
+    # Uporabi UIStat za prikaz statistike
+    UIStat(-382, 256, game.atk)
+    UIStat(-330, 256, game.defense)
+    UIStat(-282, 256, game.spd)
+    UIStat(-232, 256, game.dge)
 
     # Shrani srca v game.ui_srcka
     game.ui_srcka = []
@@ -372,17 +376,9 @@ def user_interface_on():
             heart.goto(x, 240)
             game.ui_srcka.append(heart)
 
-    # Prikaz HP
-    ui_hp = turtle.Turtle()
-    ui_hp.hideturtle()
-    ui_hp.speed(0)
-    ui_hp.pencolor("black")
-    ui_hp.color("#FEDA41")
-    ui_hp.penup()
-    ui_hp.goto(-149, 273)
-    ui_hp.write("{}".format(game.hp), font=("gameovercre", 17, "normal"))
+    # Prikaz HP z UIStat
+    game.ui_hp = UIStat(-149, 273, game.hp)
 
-    game.ui_hp = ui_hp
 
 
 
@@ -428,14 +424,6 @@ def move_item(name, x, y):
 def hide_item(name):
     if name in game.inventory_items:
         game.inventory_items[name].hide()
-
-
-
-
-        
-
-
-
 
 
 # gumb za inventory iteme
@@ -581,32 +569,11 @@ def make_monster_interface():
 
     # Ustvari in shrani prikaz statistike v game
     game.monster_stats_ui = {}
-
-    def create_stat_turtle(x, value):
-        t = turtle.Turtle()
-        t.hideturtle()
-        t.speed(0)
-        t.pencolor("black")
-        t.color("#BC1212")
-        t.penup()
-        t.goto(x, 256)
-        t.write(str(value), font=("gameovercre", 16, "normal"))
-        return t
-
-    game.monster_stats_ui["atk"] = create_stat_turtle(212, monster.monster_atk)
-    game.monster_stats_ui["def"] = create_stat_turtle(262, monster.monster_def)
-    game.monster_stats_ui["spd"] = create_stat_turtle(312, monster.monster_spd)
-    game.monster_stats_ui["dge"] = create_stat_turtle(362, monster.monster_dge)
-
-    hp_turtle = turtle.Turtle()
-    hp_turtle.hideturtle()
-    hp_turtle.speed(0)
-    hp_turtle.pencolor("black")
-    hp_turtle.color("#BC1212")
-    hp_turtle.penup()
-    hp_turtle.goto(149, 273)
-    hp_turtle.write(str(monster.monster_hp), font=("gameovercre", 17, "normal"))
-    game.monster_stats_ui["hp"] = hp_turtle
+    game.monster_stats_ui["atk"] = UIStat(212, 256, monster.monster_atk, color="#BC1212")
+    game.monster_stats_ui["def"] = UIStat(262, 256, monster.monster_def, color="#BC1212")
+    game.monster_stats_ui["spd"] = UIStat(312, 256, monster.monster_spd, color="#BC1212")
+    game.monster_stats_ui["dge"] = UIStat(362, 256, monster.monster_dge, color="#BC1212")
+    game.monster_stats_ui["hp"] = UIStat(149, 273, monster.monster_hp, color="#BC1212")
 
 
 
@@ -862,8 +829,7 @@ def player_attack():
             monster.monster_hp -= (damage - monster.monster_def // 2)
 
             if "hp" in game.monster_stats_ui:
-                game.monster_stats_ui["hp"].clear()
-                game.monster_stats_ui["hp"].write(str(monster.monster_hp), font=("gameovercre", 17, "normal"))
+                game.monster_stats_ui["hp"].update(monster.monster_hp)
 
     if game.monster_attacked:
         check_hp()
@@ -886,16 +852,13 @@ def monster_attack():
     else:
         animiraj_posast_napad()
         game.hp -= (damage - game.def_value // 2)
-        game.ui_hp.clear()
-        game.ui_hp.write(str(game.hp), font=("gameovercre", 17, "normal"))
+        game.ui_hp.update(game.hp)
+        
 
     if game.player_attacked:
         check_hp()
     else:
         player_attack()
-
-
-
 
 
 
@@ -915,9 +878,9 @@ def check_hp():
         svet_desno()
         igralec_premik()
         game.inventory_on = True
-        game.ui_hp.clear()
         game.hp = 100
-        game.ui_hp.write(str(game.hp), font=("gameovercre", 17, "normal"))
+        game.ui_hp.update(game.hp)
+        
 
         if game.number_of_hearts > 0:
             game.ui_srcka[game.number_of_hearts - 1].setx(1000)
@@ -949,9 +912,6 @@ def check_hp():
 
 
 
-
-
-
 # premikanje igralca
 
 def igralec_premik():
@@ -973,8 +933,6 @@ def igralec_premik():
 
 
 
-
-
 def naredi_igralca():
     igralec = turtle.Turtle()
     igralec.speed(0)
@@ -983,8 +941,6 @@ def naredi_igralca():
     igralec.goto(0, -200)
     game.igralec = igralec
 
-    
-    
 
 collisions = {
         "svet" : [(65, 300, 400, 50),(-400,-80,-364, -237),(-392, -219,391, -291),(362, -80, 400, -300),(-396, 297,-311, 20),(-330, 295,-100, 201)],
@@ -1175,7 +1131,7 @@ def menu_on():
             game.menu.sety(1000)
             if hasattr(game, "save_button"):
                 game.save_button.clear()
-            game.ui_hp.write(str(game.hp), font=("gameovercre", 17, "normal"))
+            game.ui_hp.update(game.hp)
 
 
 
@@ -1252,8 +1208,4 @@ game.running = True
 while game.running:
     wn.update()
     
-
-
-
-
 
