@@ -167,13 +167,13 @@ def load_data():
     povezi_tipke()
 
     if game.mode == "svet":
-        svet()
+        pojdi_v_svet("svet")
     elif game.mode == "svet_desno":
-        svet_desno()
+        pojdi_v_svet("svet_desno")
     elif game.mode == "zacetna_hisa":
-        zacetna_hisa()
+        pojdi_v_svet("zacetna_hisa")
     elif game.mode == "svet_levo":
-        svet_levo()
+        pojdi_v_svet("svet_levo")
 
     game.igralec.setx(x)
     game.igralec.sety(y)
@@ -335,7 +335,7 @@ def begin_button_on():
             make_fight_items()
             make_chest()
             make_chest_inventory()
-            svet()
+            pojdi_v_svet("svet")
             naredi_igralca()
             make_inventory()
             game.inventory_on = True
@@ -480,28 +480,22 @@ def prikazi_ozadje(ime):
     game.ozadja[ime].show()
 
 # svet
-def svet():
-    prikazi_ozadje("svet")
-    game.set_mode("svet")
-    move_chest()
-    draw_monsters()
+def pojdi_v_svet(ime_sveta):
+    prikazi_ozadje(ime_sveta)
+    game.set_mode(ime_sveta)
 
-def svet_desno():
-    prikazi_ozadje("svet_desno")
-    game.set_mode("svet_desno")
-    draw_monsters()
+    # Resetiraj igralca, če je to zacetna_hisa
+    if ime_sveta == "zacetna_hisa":
+        game.igralec.setx(0)
+        game.igralec.sety(-220)
+        move_chest()
+    elif ime_sveta == "svet":
+        move_chest()
+        draw_monsters()
+    elif ime_sveta in ["svet_desno", "svet_levo"]:
+        draw_monsters()
 
-def svet_levo():
-    prikazi_ozadje("svet_levo")
-    game.set_mode("svet_levo")
-
-# zacetna hisa
-def zacetna_hisa():
-    prikazi_ozadje("zacetna_hisa")
-    game.set_mode("zacetna_hisa")
-    game.igralec.setx(0)
-    game.igralec.sety(-220)
-    move_chest()
+    narisi_collision_kvadrate()
 
 
 
@@ -670,7 +664,7 @@ def fight_click(x, y):
         elif dont_fight_btn and dont_fight_btn.is_clicked(x, y):
             game.mode = "svet_desno"
             move_monster_interface()
-            svet_desno()
+            pojdi_v_svet("svet_desno")
             clear_fight_buttons()
             igralec_premik()
             game.inventory_on = True
@@ -802,7 +796,7 @@ def fight():
     if not monster:
         return
 
-    if game.spd_value >= monster.monster_spd:
+    if game.spd >= monster.monster_spd:
         game.player_attacked = True
         game.monster_attacked = False
         player_attack()
@@ -875,7 +869,7 @@ def check_hp():
         move_fight_weapons()
         hide_item("wooden_sword")
         move_monster_interface()
-        svet_desno()
+        pojdi_v_svet("svet_desno")
         igralec_premik()
         game.inventory_on = True
         game.hp = 100
@@ -897,7 +891,7 @@ def check_hp():
         move_fight_weapons()
         hide_item("wooden_sword")
         move_monster_interface()
-        svet_desno()
+        pojdi_v_svet("svet_desno")
         delete_button()
         igralec_premik()
         draw_monsters()
@@ -932,6 +926,36 @@ def igralec_premik():
         game.igralec.sety(-200)
 
 
+#risanje kvadratov
+def narisi_collision_kvadrate():
+    if not game.admin_mode:
+        return
+    for xmin, ymax, xmax, ymin, idx in collisions.get(game.mode, []):
+        # Nariši obrobo kvadrata
+        kvadrat = turtle.Turtle()
+        kvadrat.hideturtle()
+        kvadrat.speed(0)
+        kvadrat.penup()
+        kvadrat.pensize(2)
+        kvadrat.color("red")
+        kvadrat.goto(xmin, ymax)
+        kvadrat.pendown()
+        kvadrat.goto(xmax, ymax)
+        kvadrat.goto(xmax, ymin)
+        kvadrat.goto(xmin, ymin)
+        kvadrat.goto(xmin, ymax)
+        game.stat_roll["turtles"].append(kvadrat)
+
+        # Nariši številko (ID)
+        label = turtle.Turtle()
+        label.hideturtle()
+        label.speed(0)
+        label.penup()
+        label.color("black")
+        label.goto((xmin + xmax) // 2, (ymin + ymax) // 2)
+        label.write(str(idx), align="center", font=("gameovercre", 20, "normal"))
+        game.stat_roll["turtles"].append(label)
+
 
 def naredi_igralca():
     igralec = turtle.Turtle()
@@ -943,23 +967,127 @@ def naredi_igralca():
 
 
 collisions = {
-        "svet" : [(65, 300, 400, 50),(-400,-80,-364, -237),(-392, -219,391, -291),(362, -80, 400, -300),(-396, 297,-311, 20),(-330, 295,-100, 201)],
-        "zacetna_hisa" : [(1000,1000,1000,1000)],
-        "svet_desno" : [(-395, 293,-378, 5),(-394, 294,-136, 103),(-169, 290,44, 169),(55, 176,389, 93),(-397, -83,-385, -286),(-383, -209,-199, -290),(-227, -133,-167, -289),(-163, -55,23, -169),(29, -131,389, -287),(379, -50,400, -300)],
-        "svet_levo" : [(1000,1000,1000,1000)],
-        'start_fight' : [(-400,300,400,-300)],
-        'fight_screen_monster' : [(-400,300,400,-300)]
-    }
+    "svet": [
+        (65, 300, 400, 50, 0),
+        (-400, -80, -364, -237, 1),
+        (-392, -219, 391, -291, 2),
+        (362, -80, 400, -300, 3),
+        (-396, 297, -311, 20, 4),
+        (-330, 295, -100, 201, 5)
+    ],
+    "zacetna_hisa": [
+        (1000, 1000, 1000, 1000, 0)
+    ],
+    "svet_desno": [
+        (-395, 293, -378, 50, 0),
+        (-394, 294, -136, 103, 1),
+        (-180, 290, 60, 169, 2),
+        (55, 176, 389, 93, 3),
+        (-397, -83, -385, -286, 4),
+        (-383, -209, -199, -290, 5),
+        (-227, -133, -147, -289, 6),
+        (-163, -55, 23, -169, 7),
+        (9, -131, 389, -287, 8),
+        (379, -50, 400, -300, 9)
+    ],
+    "svet_levo": [
+        (1000, 1000, 1000, 1000, 0)
+    ],
+    "start_fight": [
+        (-400, 300, 400, -300, 0)
+    ],
+    "fight_screen_monster": [
+        (-400, 300, 400, -300, 0)
+    ],
+    "weapons": [
+        (-400, 300, 400, -300, 0)
+    ]
+}
+
 
 
 def can_move(mode, x, y):
     ovire = collisions[mode]
-    for xmin , ymax , xmax, ymin in ovire:
+    for xmin, ymax, xmax, ymin, *_ in ovire:
         if (xmin < x < xmax and ymin < y < ymax):
             return False
     return True
-        
-        
+
+
+def narisi_object_kvadrate():
+    if not game.admin_mode:
+        return
+    for xmin, ymax, xmax, ymin, name in game.objects.get(game.mode, []):
+        # Nariši obrobo kvadrata
+        kvadrat = turtle.Turtle()
+        kvadrat.hideturtle()
+        kvadrat.speed(0)
+        kvadrat.penup()
+        kvadrat.pensize(2)
+        kvadrat.color("blue")
+        kvadrat.goto(xmin, ymax)
+        kvadrat.pendown()
+        kvadrat.goto(xmax, ymax)
+        kvadrat.goto(xmax, ymin)
+        kvadrat.goto(xmin, ymin)
+        kvadrat.goto(xmin, ymax)
+        game.stat_roll["turtles"].append(kvadrat)
+
+        # Nariši ime objekta
+        label = turtle.Turtle()
+        label.hideturtle()
+        label.speed(0)
+        label.penup()
+        label.color("blue")
+        label.goto((xmin + xmax) // 2, (ymin + ymax) // 2)
+        label.write(name, align="center", font=("gameovercre", 10, "normal"))
+        game.stat_roll["turtles"].append(label)
+      
+def narisi_monster_kvadrate():
+    if not game.admin_mode:
+        return
+
+    for monster in game.monsters:
+        if monster.svet != game.mode or not monster.alive:
+            continue
+
+        x = monster.monster_x
+        y = monster.monster_y
+        width = 60
+        height = 90
+
+        xmin = x - width // 2
+        xmax = x + width // 2
+        ymin = y - height // 2
+        ymax = y + height // 2
+
+        # Zeleni kvadrat
+        kvadrat = turtle.Turtle()
+        kvadrat.hideturtle()
+        kvadrat.speed(0)
+        kvadrat.penup()
+        kvadrat.pensize(2)
+        kvadrat.color("green")
+        kvadrat.goto(xmin, ymax)
+        kvadrat.pendown()
+        kvadrat.goto(xmax, ymax)
+        kvadrat.goto(xmax, ymin)
+        kvadrat.goto(xmin, ymin)
+        kvadrat.goto(xmin, ymax)
+        game.stat_roll["turtles"].append(kvadrat)
+
+        # HP napis
+        label = turtle.Turtle()
+        label.hideturtle()
+        label.speed(0)
+        label.penup()
+        label.color("green")
+        label.goto(x, y)
+        label.write(f"HP: {monster.monster_hp}", align="center", font=("Arial", 12, "normal"))
+        game.stat_roll["turtles"].append(label)
+
+
+
 
 def detection(mode, x, y):
     global object_detection
@@ -996,7 +1124,7 @@ def igralec_up():
             if object_detection == "zacetna_hisa":
                 game.set_mode("zacetna_hisa")
                 time.sleep(0.1)
-                zacetna_hisa()
+                pojdi_v_svet("zacetna_hisa")
             elif object_detection == "chest":
                 print("hi")
                 move_chest_inventory()
@@ -1024,7 +1152,8 @@ def igralec_down():
                 game.igralec.setx(270)
                 game.igralec.sety(41)
                 game.set_mode("svet")
-                svet()
+                pojdi_v_svet("svet")
+
 
         if fight_detection(x, y):
             game.set_mode("fight_screen_monster")
@@ -1045,11 +1174,11 @@ def igralec_right():
         if detection(game.mode, x, y):
             if object_detection == "svet_desno":
                 game.set_mode("svet_desno")
-                svet_desno()
+                pojdi_v_svet("svet_desno")
                 game.igralec.goto(-390, y)
             elif object_detection == "svet":
                 game.set_mode("svet")
-                svet()
+                pojdi_v_svet("svet")
                 game.igralec.goto(-390, y)
 
         if fight_detection(x, y):
@@ -1071,11 +1200,11 @@ def igralec_left():
         if detection(game.mode, x, y):
             if object_detection == "svet_levo":
                 game.set_mode("svet_levo")
-                svet_levo()
+                pojdi_v_svet("svet_levo")
                 game.igralec.goto(390, y)
             elif object_detection == "svet":
                 game.set_mode("svet")
-                svet()
+                pojdi_v_svet("svet")
                 game.igralec.goto(390, y)
 
         if fight_detection(x, y):
@@ -1085,6 +1214,18 @@ def igralec_left():
             game.inventory_on = False
 
         
+#admin mode
+def toggle_admin_mode():
+    game.admin_mode = not game.admin_mode
+    print("Admin mode:", game.admin_mode)
+    for t in game.stat_roll["turtles"]:
+        t.clear()
+    game.stat_roll["turtles"].clear()
+    narisi_collision_kvadrate()
+    narisi_object_kvadrate()
+    narisi_monster_kvadrate()
+
+wn.onkeypress(toggle_admin_mode, "m")
 
 
 # Tipkovnica

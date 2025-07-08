@@ -5,6 +5,9 @@ import turtle
 
 class Game():
     def __init__(self):
+        #admin mode
+        self.admin_mode = False
+        
         self.running = True
         self.atk = None
         self.defense = None
