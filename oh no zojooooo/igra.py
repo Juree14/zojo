@@ -12,6 +12,10 @@ import os
 from Model import InventoryItem
 from Model import Ozadje
 from Model import UIStat
+from Model import Soba
+
+
+
 wn = turtle.Screen()
 wn.title("OH NO, Zojoooo!")
 #wn.bgpic('oh no zojooooo\slike\svet2.gif')
@@ -43,7 +47,7 @@ wn.addshape(r'oh no zojooooo\slike\svet2.gif')
 wn.addshape(r'oh no zojooooo\slike\zacetna_hisa.gif')
 wn.addshape(r'oh no zojooooo\slike\chest.gif')
 wn.addshape(r'oh no zojooooo\slike\chest_inventory.gif')
-
+wn.addshape(r'oh no zojooooo\slike\svet_levo.gif')
 #Spremenljivke
 
 game = Game()
@@ -329,8 +333,9 @@ def begin_button_on():
             game.stat_roll["dge_button_ui"].clear()
 
             # Nadaljuj igro
-            make_monsters()
+            
             game.mode = "svet"
+            make_monsters()
             make_fight_weapons()
             make_fight_items()
             make_chest()
@@ -364,6 +369,7 @@ def user_interface_on():
     UIStat(-330, 256, game.defense)
     UIStat(-282, 256, game.spd)
     UIStat(-232, 256, game.dge)
+    UIStat(-149, 245, game.denar)
 
     # Shrani srca v game.ui_srcka
     game.ui_srcka = []
@@ -404,7 +410,7 @@ def open_inventory():
             game.mode = game.curent_mode
             hide_item("wooden_sword")
             hide_item("heal_potion")
-            delete_inventory_buttons()  # <-- to je manjkalo
+            delete_inventory_buttons()
 
    
             
@@ -478,9 +484,16 @@ def prikazi_ozadje(ime):
     for oz in game.ozadja.values():
         oz.hide()
     game.ozadja[ime].show()
+    if game.mode == "trgovina":
+        wn.bgcolor("green")
 
 # svet
 def pojdi_v_svet(ime_sveta):
+    
+    for soba in game.sobe.values():
+        for monster in soba.monsters:
+            monster.monster.hideturtle()
+
     prikazi_ozadje(ime_sveta)
     game.set_mode(ime_sveta)
 
@@ -526,7 +539,7 @@ def move_chest_inventory():
 
 
 def make_monsters():
-    game.monsters = [
+    game.sobe["svet_desno"].monsters = [
         Monster(
             hp=50,
             atk=5,
@@ -572,7 +585,7 @@ def make_monster_interface():
 
 
 def draw_monsters():
-    for m in game.monsters:
+    for m in game.sobe[game.mode].monsters:
         if m.svet == game.mode:
             m.monster.showturtle()
         else:
@@ -644,7 +657,6 @@ def fight_click(x, y):
     items_btn = game.fight_buttons.get("items")
     dont_fight_btn = game.fight_buttons.get("dont_fight")
     run_btn = game.fight_buttons.get("run")
-    print(game.mode)
     if game.mode == "start_fight":      
         if fight_btn and fight_btn.is_clicked(x, y):
             clear_fight_buttons()
@@ -814,8 +826,6 @@ def player_attack():
 
     if game.wooden_sword_value:
         damage = roll_d4(3) + (game.atk_value // 2)
-        print(damage)
-
         if int(random.uniform(1, 101)) < monster.monster_dge:
             print("u missed")
         else:
@@ -839,7 +849,6 @@ def monster_attack():
         return
 
     damage = roll_d4(1) + monster.monster_atk
-    print(damage)
 
     if int(random.uniform(1, 101)) < game.dge:
         print("it missed")
@@ -930,7 +939,7 @@ def igralec_premik():
 def narisi_collision_kvadrate():
     if not game.admin_mode:
         return
-    for xmin, ymax, xmax, ymin, idx in collisions.get(game.mode, []):
+    for xmin, ymax, xmax, ymin, idx in game.sobe[game.mode].collisions:
         # Nariši obrobo kvadrata
         kvadrat = turtle.Turtle()
         kvadrat.hideturtle()
@@ -966,48 +975,12 @@ def naredi_igralca():
     game.igralec = igralec
 
 
-collisions = {
-    "svet": [
-        (65, 300, 400, 50, 0),
-        (-400, -80, -364, -237, 1),
-        (-392, -219, 391, -291, 2),
-        (362, -80, 400, -300, 3),
-        (-396, 297, -311, 20, 4),
-        (-330, 295, -100, 201, 5)
-    ],
-    "zacetna_hisa": [
-        (1000, 1000, 1000, 1000, 0)
-    ],
-    "svet_desno": [
-        (-395, 293, -378, 50, 0),
-        (-394, 294, -136, 103, 1),
-        (-180, 290, 60, 169, 2),
-        (55, 176, 389, 93, 3),
-        (-397, -83, -385, -286, 4),
-        (-383, -209, -199, -290, 5),
-        (-227, -133, -147, -289, 6),
-        (-163, -55, 23, -169, 7),
-        (9, -131, 389, -287, 8),
-        (379, -50, 400, -300, 9)
-    ],
-    "svet_levo": [
-        (1000, 1000, 1000, 1000, 0)
-    ],
-    "start_fight": [
-        (-400, 300, 400, -300, 0)
-    ],
-    "fight_screen_monster": [
-        (-400, 300, 400, -300, 0)
-    ],
-    "weapons": [
-        (-400, 300, 400, -300, 0)
-    ]
-}
+
 
 
 
 def can_move(mode, x, y):
-    ovire = collisions[mode]
+    ovire = game.sobe[game.mode].collisions
     for xmin, ymax, xmax, ymin, *_ in ovire:
         if (xmin < x < xmax and ymin < y < ymax):
             return False
@@ -1017,7 +990,7 @@ def can_move(mode, x, y):
 def narisi_object_kvadrate():
     if not game.admin_mode:
         return
-    for xmin, ymax, xmax, ymin, name in game.objects.get(game.mode, []):
+    for xmin, ymax, xmax, ymin, name in game.sobe[game.mode].objects:
         # Nariši obrobo kvadrata
         kvadrat = turtle.Turtle()
         kvadrat.hideturtle()
@@ -1047,7 +1020,7 @@ def narisi_monster_kvadrate():
     if not game.admin_mode:
         return
 
-    for monster in game.monsters:
+    for monster in game.sobe[game.mode].monsters:
         if monster.svet != game.mode or not monster.alive:
             continue
 
@@ -1091,7 +1064,7 @@ def narisi_monster_kvadrate():
 
 def detection(mode, x, y):
     global object_detection
-    ovire = game.objects[mode]
+    ovire = game.sobe[game.mode].objects
     hit = False
     object_detection = ""
     for xmin, ymax, xmax, ymin, object_name in ovire:
@@ -1102,7 +1075,7 @@ def detection(mode, x, y):
 
     
 def fight_detection(x, y):
-    for monster in game.monsters:
+    for monster in game.sobe[game.mode].monsters:
         if monster.fight_monster(x, y, game.mode):
             game.current_monster = monster
             return monster
@@ -1126,9 +1099,14 @@ def igralec_up():
                 time.sleep(0.1)
                 pojdi_v_svet("zacetna_hisa")
             elif object_detection == "chest":
-                print("hi")
                 move_chest_inventory()
                 open_inventory()
+            elif object_detection == "trgovina":
+                game.set_mode("trgovina")
+                pojdi_v_svet("trgovina")
+                game.igralec.setx(0)
+                game.igralec.sety(-200)
+
 
         if fight_detection(x, y):
             game.set_mode("fight_screen_monster")
@@ -1153,6 +1131,12 @@ def igralec_down():
                 game.igralec.sety(41)
                 game.set_mode("svet")
                 pojdi_v_svet("svet")
+            if object_detection == "svet_levo":
+                time.sleep(0.1)
+                game.igralec.setx(-110)
+                game.igralec.sety(-205)
+                game.set_mode("svet_levo")
+                pojdi_v_svet("svet_levo")
 
 
         if fight_detection(x, y):

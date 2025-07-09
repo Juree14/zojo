@@ -13,6 +13,8 @@ class Game():
         self.defense = None
         self.spd = None
         self.dge = None
+        self.denar = 10
+
         self.game_n = None
         self.mode = "zacetek"
         self.curent_mode = None
@@ -21,15 +23,55 @@ class Game():
         self.hp = 100
         self.golem_alive = True
         self.igralec = None
+        self.collisions = {
+                "svet": [
+                    (65, 300, 400, 50, 0),
+                    (-400, -80, -364, -237, 1),
+                    (-392, -219, 391, -291, 2),
+                    (362, -80, 400, -300, 3),
+                    (-396, 297, -311, 20, 4),
+                    (-330, 295, -100, 201, 5)
+                ],
+                "zacetna_hisa": [
+                    (1000, 1000, 1000, 1000, 0)
+                ],
+                "svet_desno": [
+                    (-395, 293, -378, 50, 0),
+                    (-394, 294, -136, 103, 1),
+                    (-180, 290, 60, 169, 2),
+                    (55, 176, 389, 93, 3),
+                    (-397, -83, -385, -286, 4),
+                    (-383, -209, -199, -290, 5),
+                    (-227, -133, -147, -289, 6),
+                    (-163, -55, 23, -169, 7),
+                    (9, -131, 389, -287, 8),
+                    (379, -50, 400, -300, 9)
+                ],
+                "svet_levo": [
+                    (-250, 50, 30, -195, 0)
+                ],
+                "start_fight": [
+                    (-400, 300, 400, -300, 0)
+                ],
+                "fight_screen_monster": [
+                    (-400, 300, 400, -300, 0)
+                ],
+                "weapons": [
+                    (-400, 300, 400, -300, 0)
+                ],
+                "trgovina": [(1000, 1000, 1000, 1000, 0)
+                ]
+            }
         self.objects = {
         "svet" : [(230, 50, 310, 44, "zacetna_hisa"), (390, 100, 400, -100,"svet_desno"),(-400, 100, -390, -100,"svet_levo")],
         "zacetna_hisa" : [(-50, -245, 50, -1000,"svet"),(-60, 300, 60, 90, "chest")],
         "svet_desno" : [(-400, 100, -390, -100,"svet")],
-        "svet_levo" : [(390, 100, 400, -100,"svet")],
+        "svet_levo" : [(390, 100, 400, -100,"svet"), (-130, -195, -90, -205, "trgovina")],
         'start_fight' : [(1000,1000,1000,1000,"neki")],
-        'fight_screen_monster' : [(1000,1000,1000,1000,"neki")]
+        'fight_screen_monster' : [(1000,1000,1000,1000,"neki")],
+        "trgovina":[(-50, -245, 50, -1000, "svet_levo")]
         }
-        self.monsters = [Monster(50, 5, 5, 5, 5, 250, 0, "svet_desno", 'oh no zojooooo\slike\golem.gif', "true")]
+        self.monsters = [Monster(50, 5, 5, 5, 5, 250, 0, "svet_desno", 'oh no zojooooo\\slike\\golem.gif', "true")]
         self.player_attacked = False
         self.monster_attacked = False
         self.inventory_on = False
@@ -54,32 +96,41 @@ class Game():
         self.inventory_items = {}
         self.inventory_buttons = {}
         self.ozadja = {
-    "svet": Ozadje("oh no zojooooo\\slike\\svet1.gif"),
-    "zacetna_hisa": Ozadje("oh no zojooooo\\slike\\zacetna_hisa.gif"),
-    "svet_desno": Ozadje("oh no zojooooo\\slike\\svet2.gif"),
-    "svet_levo": Ozadje("oh no zojooooo\\slike\\prozorno_ozadje.gif"),
-    "fight_screen_monster": Ozadje("oh no zojooooo\\slike\\prozorno_ozadje.gif"),
-}
+            "svet": Ozadje("oh no zojooooo\\slike\\svet1.gif"),
+            "zacetna_hisa": Ozadje("oh no zojooooo\\slike\\zacetna_hisa.gif"),
+            "svet_desno": Ozadje("oh no zojooooo\\slike\\svet2.gif"),
+            "svet_levo": Ozadje("oh no zojooooo\\slike\\svet_levo.gif"),
+            "fight_screen_monster": Ozadje("oh no zojooooo\\slike\\prozorno_ozadje.gif"),
+            "trgovina": Ozadje("oh no zojooooo\\slike\\prozorno_ozadje.gif")
+        }
         self.stat_roll = {
-    "atk_pressed": False,
-    "def_pressed": False,
-    "spd_pressed": False,
-    "dge_pressed": False,
-    "atk_value": None,
-    "def_value": None,
-    "spd_value": None,
-    "dge_value": None,
-    "atk_turtle": None,
-    "def_turtle": None,
-    "spd_turtle": None,
-    "dge_turtle": None,
-    "min": 1,
-    "atk_adjusted": False,
-    "def_adjusted": False,
-    "spd_adjusted": False,
-    "turtles": [],     
-    "kvadrati": []     
-}
+            "atk_pressed": False,
+            "def_pressed": False,
+            "spd_pressed": False,
+            "dge_pressed": False,
+            "atk_value": None,
+            "def_value": None,
+            "spd_value": None,
+            "dge_value": None,
+            "atk_turtle": None,
+            "def_turtle": None,
+            "spd_turtle": None,
+            "dge_turtle": None,
+            "min": 1,
+            "atk_adjusted": False,
+            "def_adjusted": False,
+            "spd_adjusted": False,
+            "turtles": [],     
+            "kvadrati": []     
+        }
+        self.sobe = {
+            "svet": Soba("svet", self.ozadja["svet"], self.collisions["svet"], self.objects["svet"], self.monsters),
+            "zacetna_hisa": Soba("zacetna_hisa", self.ozadja["zacetna_hisa"], self.collisions["zacetna_hisa"], self.objects["zacetna_hisa"]),
+            "svet_desno": Soba("svet_desno", self.ozadja["svet_desno"], self.collisions["svet_desno"], self.objects["svet_desno"]),
+            "svet_levo": Soba("svet_levo", self.ozadja["svet_levo"], self.collisions["svet_levo"], self.objects["svet_levo"]),
+            "fight_screen_monster": Soba("fight_screen_monster", self.ozadja["fight_screen_monster"], self.collisions["fight_screen_monster"]),
+            "trgovina": Soba("trgovina", self.ozadja["trgovina"], self.collisions["trgovina"], self.objects["trgovina"])
+        }
 
 
 
@@ -120,6 +171,7 @@ class Game():
             "def" : self.defense,
             "spd" : self.spd,
             "dge" : self.dge,
+            "denar": self.denar,
             "game_n": self.game_n,
             "mode" : self.mode,
             "x" : self.x,
@@ -142,6 +194,7 @@ class Game():
         self.defense = state["def"]
         self.spd = state["spd"]
         self.dge = state["dge"]
+        self.denar = state["denar"]
         self.game_n = state["game_n"]
         self.mode = state["mode"]
         self.x = state["x"]
@@ -149,7 +202,13 @@ class Game():
         self.hp = state["hp"]
 
         self.monsters = [Monster.from_json(monster) for monster in state["monsters"]]
-        
+        # Po nalaganju razporedi pošasti v ustrezne sobe
+        for soba in self.sobe.values():
+            soba.monsters = []
+        for monster in self.monsters:
+            if monster.svet in self.sobe:
+                self.sobe[monster.svet].monsters.append(monster)
+
     def is_menu_open(self):
         return self.menu_open
 
@@ -324,3 +383,32 @@ class Ozadje:
 
     def set_position(self, x, y):
         self.turtle.goto(x, y)
+
+
+class Soba:
+    def __init__(self, ime, ozadje, collisions=None, objects=None, monsters=None):
+        self.ime = ime
+        self.ozadje = ozadje
+        self.collisions = collisions if collisions is not None else []
+        self.objects = objects if objects is not None else []
+        self.monsters = monsters if monsters is not None else []
+
+    def to_json(self):
+        return {
+            "ime": self.ime,
+            "ozadje": self.ozadje,  # Lahko shraniš ime slike ali pot
+            "collisions": self.collisions,
+            "objects": self.objects,
+            "monsters": [monster.to_json() for monster in self.monsters]
+        }
+
+    @classmethod
+    def from_json(cls, data):
+        monsters = [Monster.from_json(m) for m in data.get("monsters", [])]
+        return cls(
+            ime=data["ime"],
+            ozadje=data["ozadje"],
+            collisions=data.get("collisions", []),
+            objects=data.get("objects", []),
+            monsters=monsters
+        )
