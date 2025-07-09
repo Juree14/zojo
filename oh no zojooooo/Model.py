@@ -336,7 +336,9 @@ class Button:
 
 
 class InventoryItem:
-    def __init__(self, image, position_hidden=(1000, 1000)):
+    def __init__(self, image, slot_index=None, category=None, position_hidden=(1000, 1000)):
+        self.slot_index = slot_index  # številka slota (0–11)
+        self.category = category      # "weapons" ali "items"
         self.turtle = turtle.Turtle()
         self.turtle.shape(image)
         self.turtle.penup()
@@ -348,6 +350,7 @@ class InventoryItem:
 
     def hide(self, position=(1000, 1000)):
         self.move_to(*position)
+
 
 class UIStat:
     def __init__(self, x, y, value, color="#FEDA41"):

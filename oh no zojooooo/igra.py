@@ -393,34 +393,93 @@ def user_interface_on():
 def make_inventory():
     game.ozadja["inventory"] = Ozadje("oh no zojooooo\\slike\\inventory.gif")
 
+# Slot pozicije
+inventory_slots = [(-225 + (i % 6) * 90, -75 - (i // 6) * 95) for i in range(12)]
 
 
+# Posodobi prikaz inventarja
+def update_inventory_display():
+    for item in game.inventory_items.values():
+        if item.slot_index is not None and item.category == game.mode:
+            coords = inventory_slots[item.slot_index]
+            item.move_to(*coords)
+        else:
+            item.hide()
 
+
+# Odpri/zapri inventory
 def open_inventory():
     if game.inventory_on:
         if game.mode not in ["weapons", "items"]:
             game.ozadja["inventory"].show(0, 0)
             game.curent_mode = game.mode
             game.mode = "weapons"
-            move_item("wooden_sword", -225, -75)
-            hide_item("heal_potion")
             inventory_button_on()
+            update_inventory_display()
+            
         else:
             game.ozadja["inventory"].hide()
             game.mode = game.curent_mode
-            hide_item("wooden_sword")
-            hide_item("heal_potion")
+            for item in game.inventory_items.values():
+                item.hide()
             delete_inventory_buttons()
 
-   
-            
-    
-# orozje
-# items
-
+# Ustvari predmete v inventarju
 def make_inventory_items():
-    game.inventory_items["wooden_sword"] = InventoryItem("oh no zojooooo\\slike\\woodensword.gif")
-    game.inventory_items["heal_potion"] = InventoryItem("oh no zojooooo\\slike\\heal_potion.gif")
+    game.inventory_items["wooden_sword"] = InventoryItem(
+        "oh no zojooooo\\slike\\woodensword.gif", slot_index=0, category="weapons"
+    )
+    game.inventory_items["heal_potion"] = InventoryItem(
+        "oh no zojooooo\\slike\\heal_potion.gif", slot_index=0, category="items"
+    )
+
+# Gumbi za preklop med ITEMS in WEAPONS
+def inventory_button_on():
+    items_button = Button(
+        x=20, y=19, width=215, height=56,
+        text="ITEMS", font=("gameovercre", 30, "normal"),
+        color="#FFFB83", text_offset=(55, 3)
+    )
+    items_button.draw()
+
+    weapons_button = Button(
+        x=-240, y=19, width=215, height=56,
+        text="WEAPONS", font=("gameovercre", 30, "normal"),
+        color="#FFFB83", text_offset=(20, 3)
+    )
+    weapons_button.draw()
+
+    game.inventory_buttons = {
+        "items": items_button,
+        "weapons": weapons_button
+    }
+
+    wn.onclick(inventory_items_click)
+
+# Klik za preklop med kategorijama
+def inventory_items_click(x, y):
+    if "items" not in game.inventory_buttons or "weapons" not in game.inventory_buttons:
+        return  # Gumbi ne obstajajo, nič ne naredimo
+
+    items_btn = game.inventory_buttons["items"]
+    weapons_btn = game.inventory_buttons["weapons"]
+
+    if game.mode == "weapons" and items_btn.is_clicked(x, y):
+        game.mode = "items"
+        update_inventory_display()
+
+    elif game.mode == "items" and weapons_btn.is_clicked(x, y):
+        game.mode = "weapons"
+        update_inventory_display()
+
+
+# Počisti gumbe
+def delete_inventory_buttons():
+    for btn in game.inventory_buttons.values():
+        btn.clear()
+    game.inventory_buttons.clear()
+
+
 
 
 def move_item(name, x, y):
@@ -431,52 +490,6 @@ def hide_item(name):
     if name in game.inventory_items:
         game.inventory_items[name].hide()
 
-
-# gumb za inventory iteme
-
-def inventory_button_on():
-    # Gumb za ITEMS
-    items_button = Button(
-        x=20, y=19, width=215, height=56,
-        text="ITEMS", font=("gameovercre", 30, "normal"),
-        color="#FFFB83", text_offset=(55, 3)
-    )
-    items_button.draw()
-
-    # Gumb za WEAPONS
-    weapons_button = Button(
-        x=-240, y=19, width=215, height=56,
-        text="WEAPONS", font=("gameovercre", 30, "normal"),
-        color="#FFFB83", text_offset=(20, 3)
-    )
-    weapons_button.draw()
-
-    # Shrani gumbe v game, če jih potrebuješ kasneje
-    game.inventory_buttons = {
-        "items": items_button,
-        "weapons": weapons_button
-    }
-
-    wn.onclick(intventory_items_click)
-
-def intventory_items_click(x, y):
-    items_btn = game.inventory_buttons["items"]
-    weapons_btn = game.inventory_buttons["weapons"]
-
-    if game.mode == "weapons" and items_btn.is_clicked(x, y):
-        game.mode = "items"
-        move_item("heal_potion", -225, -75)
-        hide_item("wooden_sword")
-
-    elif game.mode == "items" and weapons_btn.is_clicked(x, y):
-        game.mode = "weapons"
-        move_item("wooden_sword", -225, -75)
-        hide_item("heal_potion")
-
-def delete_inventory_buttons():
-    for btn in game.inventory_buttons.values():
-        btn.clear()
-    game.inventory_buttons.clear()
 
 
 
