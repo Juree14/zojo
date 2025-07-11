@@ -1101,8 +1101,9 @@ def fight_detection(x, y):
 def igralec_up():
     x = game.igralec.xcor()
     y = game.igralec.ycor()
-    if can_move(game.mode, x, y + 5):
-        y += 5
+    dy = game.movement_speed * game.delta_time
+    if can_move(game.mode, x, y + dy):
+        y += dy
         game.igralec.sety(y)
         game.igralec.shape('oh no zojooooo\\slike\\zojoback.gif')
 
@@ -1120,20 +1121,21 @@ def igralec_up():
                 game.igralec.setx(0)
                 game.igralec.sety(-200)
 
-
         if fight_detection(x, y):
             game.set_mode("fight_screen_monster")
             fight_screen_monster()
             make_monster_interface()
             game.inventory_on = False
 
+
             
             
 def igralec_down():
     x = game.igralec.xcor()
     y = game.igralec.ycor()
-    if can_move(game.mode, x, y - 5):
-        y -= 5
+    dy = game.movement_speed * game.delta_time
+    if can_move(game.mode, x, y - dy):
+        y -= dy
         game.igralec.sety(y)
         game.igralec.shape('oh no zojooooo\\slike\\zojo.gif')
 
@@ -1151,7 +1153,6 @@ def igralec_down():
                 game.set_mode("svet_levo")
                 pojdi_v_svet("svet_levo")
 
-
         if fight_detection(x, y):
             game.set_mode("fight_screen_monster")
             fight_screen_monster()
@@ -1159,12 +1160,13 @@ def igralec_down():
             game.inventory_on = False
 
 
-    
+
 def igralec_right():
     x = game.igralec.xcor()
     y = game.igralec.ycor()
-    if can_move(game.mode, x + 5, y):
-        x += 5
+    dx = game.movement_speed * game.delta_time
+    if can_move(game.mode, x + dx, y):
+        x += dx
         game.igralec.setx(x)
         game.igralec.shape('oh no zojooooo\\slike\\Zojoright.gif')
 
@@ -1185,12 +1187,14 @@ def igralec_right():
             game.inventory_on = False
 
 
+
     
 def igralec_left():
     x = game.igralec.xcor()
     y = game.igralec.ycor()
-    if can_move(game.mode, x - 5, y):
-        x -= 5
+    dx = game.movement_speed * game.delta_time
+    if can_move(game.mode, x - dx, y):
+        x -= dx
         game.igralec.setx(x)
         game.igralec.shape('oh no zojooooo\\slike\\leftZojo.gif')
 
@@ -1210,6 +1214,7 @@ def igralec_left():
             make_monster_interface()
             game.inventory_on = False
 
+
         
 #admin mode
 def toggle_admin_mode():
@@ -1224,14 +1229,31 @@ def toggle_admin_mode():
 
 wn.onkeypress(toggle_admin_mode, "m")
 
+pressed_keys = set()
+
+def key_down_w(): pressed_keys.add("w")
+def key_up_w(): pressed_keys.discard("w")
+def key_down_a(): pressed_keys.add("a")
+def key_up_a(): pressed_keys.discard("a")
+def key_down_s(): pressed_keys.add("s")
+def key_up_s(): pressed_keys.discard("s")
+def key_down_d(): pressed_keys.add("d")
+def key_up_d(): pressed_keys.discard("d")
+
+
+
 
 # Tipkovnica
 def povezi_tipke():
     wn.listen()
-    wn.onkeypress(igralec_up, "w")
-    wn.onkeypress(igralec_down, "s")
-    wn.onkeypress(igralec_right, "d")
-    wn.onkeypress(igralec_left, "a")
+    wn.onkeypress(key_down_w, "w")
+    wn.onkeyrelease(key_up_w, "w")
+    wn.onkeypress(key_down_a, "a")
+    wn.onkeyrelease(key_up_a, "a")
+    wn.onkeypress(key_down_s, "s")
+    wn.onkeyrelease(key_up_s, "s")
+    wn.onkeypress(key_down_d, "d")
+    wn.onkeyrelease(key_up_d, "d")
     wn.onkeypress(igralec_up, "W")
     wn.onkeypress(igralec_down, "S")
     wn.onkeypress(igralec_right, "D")
@@ -1342,8 +1364,34 @@ def animiraj_kocko(x, y, min_val=1, max_val=10, rolls=12, font=("gameovercre", 4
 
 # loop igre 
 
-game.running = True
-while game.running:
-    wn.update()
-    
+last_time = time.time()
 
+def game_loop():
+    global last_time
+    current_time = time.time()
+    game.delta_time = current_time - last_time
+    last_time = current_time
+
+    # Premikanje glede na pritisnjene tipke
+    if "w" in pressed_keys:
+        igralec_up()
+    if "a" in pressed_keys:
+        igralec_left()
+    if "s" in pressed_keys:
+        igralec_down()
+    if "d" in pressed_keys:
+        igralec_right()
+
+    wn.update()
+
+    if game.running:
+        wn.ontimer(game_loop, 16)  # približno 60 FPS
+
+
+# Zaženi game loop
+
+game.running = True
+game_loop()
+
+# Poskrbi, da se okno ne zapre takoj
+wn.mainloop()

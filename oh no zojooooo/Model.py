@@ -15,6 +15,9 @@ class Game():
         self.dge = None
         self.denar = 10
 
+        self.movement_speed = 150
+        self.delta_time = 0
+        
         self.game_n = None
         self.mode = "zacetek"
         self.curent_mode = None
@@ -48,7 +51,12 @@ class Game():
                     (379, -50, 400, -300, 9)
                 ],
                 "svet_levo": [
-                    (-250, 50, 30, -195, 0)
+                    (-250, 50, 30, -195, 0),
+                    (-400, -250, 400, -300, 1),
+                    (-400, 300, -380, -300, 2),
+                    (-400, 300, 400, 280, 3),
+                    (380, 300, 400, 20, 4),
+                    (380, -100, 400, -300, 5)
                 ],
                 "start_fight": [
                     (-400, 300, 400, -300, 0)
