@@ -67,8 +67,18 @@ class Game():
                 "weapons": [
                     (-400, 300, 400, -300, 0)
                 ],
-                "trgovina": [(1000, 1000, 1000, 1000, 0)
+                "trgovina": [                    
+                    (-400, -97, 400, -300, 1),
+                    (-400, 300, -150, -300, 2),
+                    (-400, 300, 400, 100, 3),
+                    (150, 300, 400, -300, 4),
+                    (-160, 20, -50, -83, 5),
+                    (50, 20, 200, -88, 6),
+                    (-200, 100, -30, 30, 7),
+                    (-30, 135, 75, 40, 8),
+                    (75, 100, 200, 30, 9)                   
                 ]
+
             }
         self.objects = {
         "svet" : [(230, 50, 310, 44, "zacetna_hisa"), (390, 100, 400, -100,"svet_desno"),(-400, 100, -390, -100,"svet_levo")],
@@ -77,7 +87,7 @@ class Game():
         "svet_levo" : [(390, 100, 400, -100,"svet"), (-130, -195, -90, -205, "trgovina")],
         'start_fight' : [(1000,1000,1000,1000,"neki")],
         'fight_screen_monster' : [(1000,1000,1000,1000,"neki")],
-        "trgovina":[(-50, -245, 50, -1000, "svet_levo")]
+        "trgovina":[(-30, -93, 30, -120, "svet_levo")]
         }
         self.monsters = [Monster(50, 5, 5, 5, 5, 250, 0, "svet_desno", 'oh no zojooooo\\slike\\golem.gif', "true")]
         self.player_attacked = False
@@ -109,7 +119,7 @@ class Game():
             "svet_desno": Ozadje("oh no zojooooo\\slike\\svet2.gif"),
             "svet_levo": Ozadje("oh no zojooooo\\slike\\svet_levo.gif"),
             "fight_screen_monster": Ozadje("oh no zojooooo\\slike\\prozorno_ozadje.gif"),
-            "trgovina": Ozadje("oh no zojooooo\\slike\\prozorno_ozadje.gif")
+            "trgovina": Ozadje("oh no zojooooo\\slike\\trgovina.gif")
         }
         self.stat_roll = {
             "atk_pressed": False,
@@ -140,6 +150,14 @@ class Game():
             "trgovina": Soba("trgovina", self.ozadja["trgovina"], self.collisions["trgovina"], self.objects["trgovina"])
         }
 
+    
+    def can_move_now(self):
+            return (
+                not self.menu_open and
+                self.mode not in [
+                    "fight_screen_monster", "start_fight", "fight_weapons", "fight_items", "in_fight","weapons", "items"
+                ]
+            )
 
 
     def set_atk(self, atk):
@@ -185,7 +203,6 @@ class Game():
             "x" : self.x,
             "y" : self.y,
             "hp": self.hp,
-            "objects": self.objects,
             "monsters": [monster.to_json() for monster in self.monsters]
             }
 

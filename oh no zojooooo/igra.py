@@ -48,6 +48,7 @@ wn.addshape(r'oh no zojooooo\slike\zacetna_hisa.gif')
 wn.addshape(r'oh no zojooooo\slike\chest.gif')
 wn.addshape(r'oh no zojooooo\slike\chest_inventory.gif')
 wn.addshape(r'oh no zojooooo\slike\svet_levo.gif')
+wn.addshape(r'oh no zojooooo\slike\trgovina.gif')
 #Spremenljivke
 
 game = Game()
@@ -178,6 +179,8 @@ def load_data():
         pojdi_v_svet("zacetna_hisa")
     elif game.mode == "svet_levo":
         pojdi_v_svet("svet_levo")
+    elif game.mode == "trgovina":
+        pojdi_v_svet("trgovina")
 
     game.igralec.setx(x)
     game.igralec.sety(y)
@@ -412,6 +415,7 @@ def open_inventory():
     if game.inventory_on:
         if game.mode not in ["weapons", "items"]:
             game.ozadja["inventory"].show(0, 0)
+            game.menu_open = True
             game.curent_mode = game.mode
             game.mode = "weapons"
             inventory_button_on()
@@ -419,6 +423,7 @@ def open_inventory():
             
         else:
             game.ozadja["inventory"].hide()
+            game.menu_open = False
             game.mode = game.curent_mode
             for item in game.inventory_items.values():
                 item.hide()
@@ -946,6 +951,9 @@ def igralec_premik():
     elif game.mode == "svet":
         game.igralec.setx(0)
         game.igralec.sety(-200)
+    elif game.mode == "trgovina":
+        game.igralec.setx(0)
+        game.igralec.sety(-80)
 
 
 #risanje kvadratov
@@ -973,7 +981,7 @@ def narisi_collision_kvadrate():
         label.hideturtle()
         label.speed(0)
         label.penup()
-        label.color("black")
+        label.color("pink")
         label.goto((xmin + xmax) // 2, (ymin + ymax) // 2)
         label.write(str(idx), align="center", font=("gameovercre", 20, "normal"))
         game.stat_roll["turtles"].append(label)
@@ -1112,14 +1120,13 @@ def igralec_up():
                 game.set_mode("zacetna_hisa")
                 time.sleep(0.1)
                 pojdi_v_svet("zacetna_hisa")
-            elif object_detection == "chest":
+            if object_detection == "chest":
                 move_chest_inventory()
                 open_inventory()
-            elif object_detection == "trgovina":
+            if object_detection == "trgovina":
                 game.set_mode("trgovina")
                 pojdi_v_svet("trgovina")
-                game.igralec.setx(0)
-                game.igralec.sety(-200)
+                igralec_premik()
 
         if fight_detection(x, y):
             game.set_mode("fight_screen_monster")
@@ -1141,13 +1148,11 @@ def igralec_down():
 
         if detection(game.mode, x, y):
             if object_detection == "svet":
-                time.sleep(0.1)
                 game.igralec.setx(270)
                 game.igralec.sety(41)
                 game.set_mode("svet")
                 pojdi_v_svet("svet")
             if object_detection == "svet_levo":
-                time.sleep(0.1)
                 game.igralec.setx(-110)
                 game.igralec.sety(-205)
                 game.set_mode("svet_levo")
@@ -1175,10 +1180,19 @@ def igralec_right():
                 game.set_mode("svet_desno")
                 pojdi_v_svet("svet_desno")
                 game.igralec.goto(-390, y)
-            elif object_detection == "svet":
+            if object_detection == "svet":
                 game.set_mode("svet")
                 pojdi_v_svet("svet")
                 game.igralec.goto(-390, y)
+            if object_detection == "svet_levo":
+                game.igralec.setx(-110)
+                game.igralec.sety(-205)
+                game.set_mode("svet_levo")
+                pojdi_v_svet("svet_levo")
+            if object_detection == "trgovina":
+                game.set_mode("trgovina")
+                pojdi_v_svet("trgovina")
+                igralec_premik()
 
         if fight_detection(x, y):
             game.set_mode("fight_screen_monster")
@@ -1199,7 +1213,7 @@ def igralec_left():
         game.igralec.shape('oh no zojooooo\\slike\\leftZojo.gif')
 
         if detection(game.mode, x, y):
-            if object_detection == "svet_levo":
+            if object_detection == "svet_levo" and game.mode == "svet":
                 game.set_mode("svet_levo")
                 pojdi_v_svet("svet_levo")
                 game.igralec.goto(390, y)
@@ -1207,6 +1221,15 @@ def igralec_left():
                 game.set_mode("svet")
                 pojdi_v_svet("svet")
                 game.igralec.goto(390, y)
+            if object_detection == "svet_levo" and game.mode == "trgovina":
+                game.igralec.setx(-110)
+                game.igralec.sety(-205)
+                game.set_mode("svet_levo")
+                pojdi_v_svet("svet_levo")
+            if object_detection == "trgovina":
+                game.set_mode("trgovina")
+                pojdi_v_svet("trgovina")
+                igralec_premik()
 
         if fight_detection(x, y):
             game.set_mode("fight_screen_monster")
@@ -1274,24 +1297,25 @@ def make_menu():
     game.menu = menu
 
 def menu_on():
-    if game.inventory_on:
-        if not game.menu_open:
-            game.curent_mode = game.mode  # shrani trenutni način
-            # NE nastavljamo več game.mode = "menu"
-            game.menu.setx(0)
-            game.menu.sety(0)
-            save_and_quit_on()
-            wn.onclick(menu_button_click)
-            game.menu_open = True
-            game.ui_hp.clear()
-        else:
-            # povrnemo prejšnji način igre
-            game.menu_open = False
-            game.menu.setx(1000)
-            game.menu.sety(1000)
-            if hasattr(game, "save_button"):
-                game.save_button.clear()
-            game.ui_hp.update(game.hp)
+    if game.can_move_now():        
+        game.inventory_on = False
+        game.curent_mode = game.mode  # shrani trenutni način
+        # NE nastavljamo več game.mode = "menu"
+        game.menu.setx(0)
+        game.menu.sety(0)
+        save_and_quit_on()
+        wn.onclick(menu_button_click)
+        game.menu_open = True
+        game.ui_hp.clear()
+    else:
+        # povrnemo prejšnji način igre
+        game.inventory_on = True
+        game.menu_open = False
+        game.menu.setx(1000)
+        game.menu.sety(1000)
+        if hasattr(game, "save_button"):
+            game.save_button.clear()
+        game.ui_hp.update(game.hp)
 
 
 
@@ -1328,6 +1352,7 @@ def save_game():
 
 def quit_game():
     game.running = False
+    wn.bye()
 
 def animiraj_kocko(x, y, min_val=1, max_val=10, rolls=12, font=("gameovercre", 40, "normal")):
     animator = turtle.Turtle()
@@ -1362,6 +1387,7 @@ def animiraj_kocko(x, y, min_val=1, max_val=10, rolls=12, font=("gameovercre", 4
 
 
 
+
 # loop igre 
 
 last_time = time.time()
@@ -1371,21 +1397,22 @@ def game_loop():
     current_time = time.time()
     game.delta_time = current_time - last_time
     last_time = current_time
-
+    
     # Premikanje glede na pritisnjene tipke
-    if "w" in pressed_keys:
-        igralec_up()
-    if "a" in pressed_keys:
-        igralec_left()
-    if "s" in pressed_keys:
-        igralec_down()
-    if "d" in pressed_keys:
-        igralec_right()
+    if game.can_move_now():
+        if "w" in pressed_keys:
+            igralec_up()
+        if "a" in pressed_keys:
+            igralec_left()
+        if "s" in pressed_keys:
+            igralec_down()
+        if "d" in pressed_keys:
+            igralec_right()
 
     wn.update()
-
     if game.running:
         wn.ontimer(game_loop, 16)  # približno 60 FPS
+
 
 
 # Zaženi game loop
